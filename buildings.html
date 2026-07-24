@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buildings & Roads — Tractform</title>
+  <meta name="description" content="Shelter, storage, workshops, and the paths that connect them. Tractform helps you size and sequence the structures your land needs." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center">
+          <span class="text-white font-bold text-sm">T</span>
+        </div>
+        <span class="font-semibold text-lg tracking-tight">Tractform</span>
+      </a>
+      <nav class="hidden sm:flex items-center gap-8 text-sm font-medium text-stone-600">
+        <a href="/" class="hover:text-stone-900 transition">Home</a>
+        <a href="/land.html" class="hover:text-stone-900 transition">Land</a>
+        <a href="/infrastructure.html" class="hover:text-stone-900 transition">Infrastructure</a>
+        <a href="/buildings.html" class="text-emerald-800 font-semibold">Buildings</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-6 pt-16 pb-12">
+    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-3">Stage 3 of the path</p>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">Buildings & Roads</h1>
+    <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
+      Shelter, storage, workshops, and the paths that connect them. This stage sizes what you need, where it should sit, and in what order to build so the land becomes usable without wasted effort.
+    </p>
+  </section>
+
+  <!-- Core question -->
+  <section class="bg-emerald-900 text-white py-10">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-emerald-100 text-sm uppercase tracking-wide mb-2">The question this stage answers</p>
+      <p class="text-xl sm:text-2xl font-medium leading-snug max-w-3xl">
+        “What structures and access does this land need to support daily life, animals, and work — and how should they be sized, placed, and sequenced?”
+      </p>
+    </div>
+  </section>
+
+  <!-- Inputs -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <h2 class="text-2xl font-semibold mb-2">Inputs</h2>
+    <p class="text-stone-600 mb-10 max-w-xl">What you tell Tractform about the people, animals, and work the buildings must serve.</p>
+
+    <div class="space-y-10">
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">1</span>
+          Household & use
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Number of people living on the land (now and planned)</li>
+          <li>• Full-time residence vs seasonal / weekend use</li>
+          <li>• Work done on site (shop, office, processing, guests)</li>
+          <li>• Existing structures and their condition</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">2</span>
+          Animals & production
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Livestock types and approximate numbers</li>
+          <li>• Need for coops, barns, loafing sheds, milking parlor</li>
+          <li>• Feed and equipment storage requirements</li>
+          <li>• Garden / crop processing and cold storage needs</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">3</span>
+          Site & access
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Current road and driveway condition</li>
+          <li>• Distance from public road to main building sites</li>
+          <li>• Terrain, drainage, and frost heave risk</li>
+          <li>• Preferred building locations and solar orientation</li>
+          <li>• Equipment that must access the site (truck, tractor, trailer)</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">4</span>
+          Constraints & preferences
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Budget for structures and access</li>
+          <li>• DIY vs hired construction capacity</li>
+          <li>• Material preferences (pole barn, stick, metal, timber frame)</li>
+          <li>• Local code, setback, and permit requirements</li>
+          <li>• Phasing preference (shelter first vs production first)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outputs -->
+  <section class="bg-white border-y border-stone-200 py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-2xl font-semibold mb-2">Outputs</h2>
+      <p class="text-stone-600 mb-10 max-w-xl">What Tractform calculates so you can size, place, and sequence buildings and roads correctly.</p>
+
+      <div class="grid sm:grid-cols-2 gap-8">
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Structure list & sizing</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Recommended buildings (house or cabin, barn, coop, workshop, storage, root cellar) with approximate footprint and capacity based on household and livestock numbers.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Placement guidance</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Suggested locations relative to water, power, wind, solar, drainage, and daily movement patterns. Separation needs for animals, feed, and living space.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Access & roads</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Driveway and internal path requirements. Width, grade, and surface recommendations for year-round access by truck, tractor, or emergency vehicles.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Build sequence</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Ordered plan for what to build first so the land becomes usable quickly. Temporary vs permanent options and when each structure becomes critical.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Cost ranges</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Rough capital cost for each major structure and for access work. DIY vs contractor ranges and notes on where cost commonly overruns.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Code & permit flags</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Likely permit triggers, setback issues, and agricultural exemptions that may apply. What to verify with the county before breaking ground.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Integration with earlier stages</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">How building locations and sizes interact with water, power, and septic already planned. Conflicts or efficiencies called out clearly.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Readiness for production</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">What must be standing before animals arrive or serious gardening begins. Minimum viable shelter and storage package.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Path navigation -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <div class="grid sm:grid-cols-2 gap-6">
+      <div class="bg-stone-100 rounded-2xl p-8">
+        <p class="text-sm font-medium text-stone-500 uppercase tracking-wide mb-2">Previous</p>
+        <h2 class="text-xl font-semibold mb-3">Infrastructure</h2>
+        <p class="text-stone-600 mb-6 text-sm">Water and power — the systems that make everything else possible.</p>
+        <a href="/infrastructure.html" class="inline-flex items-center text-sm font-medium text-emerald-800 hover:text-emerald-900">
+          ← Back to Infrastructure
+        </a>
+      </div>
+      <div class="bg-stone-100 rounded-2xl p-8">
+        <p class="text-sm font-medium text-emerald-800 uppercase tracking-wide mb-2">Next on the path</p>
+        <h2 class="text-xl font-semibold mb-3">Production</h2>
+        <p class="text-stone-600 mb-6 text-sm">Animals or garden — the living systems that feed the household.</p>
+        <span class="text-sm text-stone-400">Coming next</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 py-10">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center">
+          <span class="text-white font-bold text-xs">T</span>
+        </div>
+        <span>Tractform</span>
+      </a>
+      <p>&copy; 2026 Tractform. Built for people who want to live well on the land.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
