@@ -4,177 +4,161 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Land — Tractform</title>
-  <meta name="description" content="From no land to owning land. Tractform helps you evaluate parcels, estimate carrying capacity, and understand the true cost of ownership." />
+  <meta name="description" content="What to look for in land, how to evaluate a parcel, and what capacity really means." />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', system-ui, sans-serif; }
-  </style>
+  <style>body{font-family:'Inter',system-ui,sans-serif}</style>
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
-
-  <!-- Header -->
   <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
     <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center">
-          <span class="text-white font-bold text-sm">T</span>
-        </div>
+        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div>
         <span class="font-semibold text-lg tracking-tight">Tractform</span>
       </a>
-      <nav class="hidden sm:flex items-center gap-8 text-sm font-medium text-stone-600">
-        <a href="/" class="hover:text-stone-900 transition">Home</a>
+      <nav class="hidden sm:flex gap-6 text-sm font-medium text-stone-600">
         <a href="/land.html" class="text-emerald-800 font-semibold">Land</a>
-        <a href="/infrastructure.html" class="hover:text-stone-900 transition">Infrastructure</a>
+        <a href="/infrastructure.html" class="hover:text-stone-900">Water & Power</a>
+        <a href="/buildings.html" class="hover:text-stone-900">Buildings</a>
+        <a href="/production.html" class="hover:text-stone-900">Livestock</a>
+        <a href="/gardens.html" class="hover:text-stone-900">Gardens</a>
+        <a href="/family.html" class="hover:text-stone-900">Household</a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="max-w-5xl mx-auto px-6 pt-16 pb-12">
-    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-3">Stage 1 of the path</p>
-    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">From no land to owning land</h1>
-    <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
-      The first step is choosing the right ground. Tractform helps you evaluate parcels, estimate what the land can realistically support, and understand the true cost of bringing it to life.
-    </p>
+  <section class="max-w-5xl mx-auto px-6 pt-12 pb-8">
+    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Land</p>
+    <h1 class="text-3xl font-bold tracking-tight mb-3">Evaluate ground with clear eyes</h1>
+    <p class="text-stone-600 max-w-xl">Guidance for searching and judging parcels — not a listing search. Choose a focus below to see what matters.</p>
   </section>
 
-  <!-- Core question -->
-  <section class="bg-emerald-900 text-white py-10">
-    <div class="max-w-5xl mx-auto px-6">
-      <p class="text-emerald-100 text-sm uppercase tracking-wide mb-2">The question this stage answers</p>
-      <p class="text-xl sm:text-2xl font-medium leading-snug max-w-3xl">
-        “Can this piece of land actually support the life I want to live on it — and what will it take to get there?”
-      </p>
+  <section class="max-w-5xl mx-auto px-6 pb-8">
+    <div class="flex flex-wrap gap-2">
+      <button data-topic="search" class="topic-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">What to look for</button>
+      <button data-topic="capacity" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Carrying capacity</button>
+      <button data-topic="checklist" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Parcel checklist</button>
+      <button data-topic="prep" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">After you buy</button>
     </div>
   </section>
 
-  <!-- Inputs -->
-  <section class="max-w-5xl mx-auto px-6 py-16">
-    <h2 class="text-2xl font-semibold mb-2">Inputs</h2>
-    <p class="text-stone-600 mb-10 max-w-xl">What you tell Tractform about your situation and preferences.</p>
-
-    <div class="space-y-10">
-      <div>
-        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
-          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">1</span>
-          Location & constraints
-        </h3>
-        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
-          <li>• Preferred regions / states / counties</li>
-          <li>• Maximum distance from work, family, or town</li>
-          <li>• Hard climate limits (zone, freeze dates, rainfall)</li>
-          <li>• Must-haves vs nice-to-haves (well, septic, power, road access, timber, pasture)</li>
-        </ul>
+  <section class="max-w-5xl mx-auto px-6 pb-20">
+    <div data-panel="search" class="topic-panel space-y-6">
+      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold mb-2">What to look for</h2>
+        <p class="text-emerald-100 text-sm">Turn goals into a short search brief you can take to listings or a realtor.</p>
       </div>
-
-      <div>
-        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
-          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">2</span>
-          Household
-        </h3>
-        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
-          <li>• Number of people</li>
-          <li>• Primary goals (food, livestock, timber, privacy, off-grid, income)</li>
-          <li>• Skill level and available labor hours</li>
-          <li>• Capital available for purchase + initial setup</li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
-          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">3</span>
-          Land preferences
-        </h3>
-        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
-          <li>• Target acreage range</li>
-          <li>• Terrain (flat, rolling, steep, mixed)</li>
-          <li>• Existing improvements (house, barn, fencing, well, septic)</li>
-          <li>• Soil type preferences or deal-breakers</li>
-          <li>• Water sources (well, spring, creek, pond, municipal)</li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
-          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">4</span>
-          Risk tolerance
-        </h3>
-        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
-          <li>• Flood, wildfire, drought, wind, frost pocket tolerance</li>
-          <li>• Willingness to do heavy clearing or earthwork</li>
-          <li>• Timeline (need land this year vs 2–5 years)</li>
-        </ul>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Climate fit</h3>
+          <p class="text-sm text-stone-600">Hardiness zone, frost dates, and rainfall set what you can grow and stock. Set hard limits (e.g. “zone 7 or warmer”) before you fall in love with a view.</p>
+        </div>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Distance</h3>
+          <p class="text-sm text-stone-600">Max drive to work, family, or town is a lifestyle constraint. Long drives cut time on the land and raise true cost.</p>
+        </div>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Must-haves</h3>
+          <p class="text-sm text-stone-600">Well, septic, power at the road, legal access, usable open ground — list what you will not compromise on.</p>
+        </div>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Nice-to-haves</h3>
+          <p class="text-sm text-stone-600">Timber, pond, existing barn, south slope, privacy. Score these so you can compare parcels honestly.</p>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Outputs -->
-  <section class="bg-white border-y border-stone-200 py-16">
-    <div class="max-w-5xl mx-auto px-6">
-      <h2 class="text-2xl font-semibold mb-2">Outputs</h2>
-      <p class="text-stone-600 mb-10 max-w-xl">What Tractform calculates and shows so you can decide with clarity.</p>
-
-      <div class="grid sm:grid-cols-2 gap-8">
-        <div class="border border-stone-200 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">Suitability score</h3>
-          <p class="text-sm text-stone-600 leading-relaxed">How well a specific parcel matches your goals and constraints. Clear flags for deal-breakers (no water rights, severe flood zone, impossible access).</p>
+    <div data-panel="capacity" class="topic-panel space-y-6 hidden">
+      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold mb-2">Carrying capacity</h2>
+        <p class="text-emerald-100 text-sm">Rough sense of what acreage and climate can support before you commit.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Livestock</h3>
+          <p class="text-sm text-stone-600">Stocking rates depend on rainfall and forage quality. Use regional rules of thumb (e.g. sheep per acre, acres per cow), then cut them if the ground is poor or drought-prone.</p>
         </div>
-
-        <div class="border border-stone-200 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">Carrying capacity estimates</h3>
-          <p class="text-sm text-stone-600 leading-relaxed">Rough livestock capacity based on acreage, rainfall, and forage. Garden and crop potential based on soil, zone, and available open land. Timber or firewood potential if wooded.</p>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Gardens</h3>
+          <p class="text-sm text-stone-600">Open, sunny, workable soil near water matters more than total acreage. A quarter-acre of good ground can outproduce five acres of shade and clay.</p>
         </div>
-
-        <div class="border border-stone-200 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">Infrastructure readiness</h3>
-          <p class="text-sm text-stone-600 leading-relaxed">What already exists versus what must be built. Estimated cost and complexity for well, septic, power, driveway, and fencing.</p>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Timber & fuel</h3>
+          <p class="text-sm text-stone-600">Wooded land can supply firewood and posts if managed. It does not automatically mean pasture or garden without clearing cost and time.</p>
         </div>
-
-        <div class="border border-stone-200 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">True cost of ownership</h3>
-          <p class="text-sm text-stone-600 leading-relaxed">Purchase price + closing + initial infrastructure + first-year operating costs. Ongoing property tax and insurance estimates.</p>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">Water limits</h3>
+          <p class="text-sm text-stone-600">Well yield, surface water rights, and drought history often cap animals and irrigation harder than acreage does.</p>
         </div>
+      </div>
+    </div>
 
-        <div class="border border-stone-200 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">Preparation path</h3>
-          <p class="text-sm text-stone-600 leading-relaxed">Ordered list of what must be done after purchase before animals or serious gardening can begin. Time and capital required for each major step.</p>
+    <div data-panel="checklist" class="topic-panel space-y-6 hidden">
+      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold mb-2">Parcel checklist</h2>
+        <p class="text-emerald-100 text-sm">Questions to ask and flags to notice when you walk a property.</p>
+      </div>
+      <div class="border border-stone-200 rounded-xl p-6 bg-white space-y-3 text-sm text-stone-700">
+        <p>• Legal access and easements recorded?</p>
+        <p>• Water source, yield, and quality tested or documented?</p>
+        <p>• Septic permitted and functional — or soil suitable for one?</p>
+        <p>• Power at the property or distance and cost to extend?</p>
+        <p>• Flood, fire, and wind exposure?</p>
+        <p>• Soil: depth, drainage, rock, contamination history?</p>
+        <p>• Fencing condition and predator pressure?</p>
+        <p>• Restrictions: HOA, ag exemptions, building setbacks?</p>
+      </div>
+    </div>
+
+    <div data-panel="prep" class="topic-panel space-y-6 hidden">
+      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8">
+        <h2 class="text-xl font-semibold mb-2">After you buy</h2>
+        <p class="text-emerald-100 text-sm">Order of work so the land becomes usable without wasting capital.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">1. Access & boundaries</h3>
+          <p class="text-sm text-stone-600">Driveway, gates, survey awareness. Know where you can legally work and drive.</p>
         </div>
-
-        <div class="border border-stone-200 rounded-xl p-6">
-          <h3 class="font-semibold mb-2">Risk summary</h3>
-          <p class="text-sm text-stone-600 leading-relaxed">Climate, water, access, legal (easements, HOA, agricultural restrictions), and soil risks in plain language.</p>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">2. Water & power</h3>
+          <p class="text-sm text-stone-600">Secure reliable water and a basic power plan before animals or serious building.</p>
+        </div>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">3. Shelter & storage</h3>
+          <p class="text-sm text-stone-600">Minimum dry space for people, tools, and feed. Temporary is fine if permanent comes next.</p>
+        </div>
+        <div class="border border-stone-200 rounded-xl p-5 bg-white">
+          <h3 class="font-semibold mb-2">4. Production</h3>
+          <p class="text-sm text-stone-600">Only then stock animals or expand gardens at a scale the household can sustain.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Next stage -->
-  <section class="max-w-5xl mx-auto px-6 py-16">
-    <div class="bg-stone-100 rounded-2xl p-8 sm:p-10">
-      <p class="text-sm font-medium text-emerald-800 uppercase tracking-wide mb-2">Next on the path</p>
-      <h2 class="text-xl font-semibold mb-3">Infrastructure</h2>
-      <p class="text-stone-600 mb-6 max-w-xl">Once the land is chosen, the next stage focuses on water and power — the systems that make everything else possible.</p>
-      <a href="/infrastructure.html" class="inline-flex items-center text-sm font-medium text-emerald-800 hover:text-emerald-900">
-        Continue to Infrastructure →
-      </a>
-    </div>
-  </section>
-
-  <!-- Footer -->
   <footer class="border-t border-stone-200 py-10">
     <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
       <a href="/" class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center">
-          <span class="text-white font-bold text-xs">T</span>
-        </div>
+        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div>
         <span>Tractform</span>
       </a>
-      <p>&copy; 2026 Tractform. Built for people who want to live well on the land.</p>
+      <p>&copy; 2026 Tractform</p>
     </div>
   </footer>
-
+  <script>
+    document.querySelectorAll('.topic-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.topic;
+        document.querySelectorAll('.topic-btn').forEach(b => {
+          b.classList.remove('bg-emerald-800','text-white','border-emerald-800');
+          b.classList.add('bg-white','text-stone-700','border-stone-300');
+        });
+        btn.classList.add('bg-emerald-800','text-white','border-emerald-800');
+        btn.classList.remove('bg-white','text-stone-700','border-stone-300');
+        document.querySelectorAll('.topic-panel').forEach(p => p.classList.add('hidden'));
+        document.querySelector(`[data-panel="${id}"]`).classList.remove('hidden');
+      });
+    });
+  </script>
 </body>
 </html>
