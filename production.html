@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Production — Tractform</title>
+  <meta name="description" content="Animals or garden — the living systems that feed the household. Tractform helps you size herds, gardens, feed, and yields to match your land and labor." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center">
+          <span class="text-white font-bold text-sm">T</span>
+        </div>
+        <span class="font-semibold text-lg tracking-tight">Tractform</span>
+      </a>
+      <nav class="hidden sm:flex items-center gap-8 text-sm font-medium text-stone-600">
+        <a href="/" class="hover:text-stone-900 transition">Home</a>
+        <a href="/land.html" class="hover:text-stone-900 transition">Land</a>
+        <a href="/infrastructure.html" class="hover:text-stone-900 transition">Infrastructure</a>
+        <a href="/buildings.html" class="hover:text-stone-900 transition">Buildings</a>
+        <a href="/production.html" class="text-emerald-800 font-semibold">Production</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-6 pt-16 pb-12">
+    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-3">Stage 4 of the path</p>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">Production</h1>
+    <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
+      Animals or garden — or both. This stage sizes the living systems that feed the household so they match the land, the labor available, and the buildings already planned.
+    </p>
+  </section>
+
+  <!-- Core question -->
+  <section class="bg-emerald-900 text-white py-10">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-emerald-100 text-sm uppercase tracking-wide mb-2">The question this stage answers</p>
+      <p class="text-xl sm:text-2xl font-medium leading-snug max-w-3xl">
+        “What combination of animals and gardens can this land and this household realistically support — and what will it take to keep them productive?”
+      </p>
+    </div>
+  </section>
+
+  <!-- Inputs -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <h2 class="text-2xl font-semibold mb-2">Inputs</h2>
+    <p class="text-stone-600 mb-10 max-w-xl">What you tell Tractform about goals, land capacity, and available labor.</p>
+
+    <div class="space-y-10">
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">1</span>
+          Goals & priorities
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Primary aim (food for household, surplus for sale, breeding stock, self-reliance)</li>
+          <li>• Preference for livestock, gardens, or both</li>
+          <li>• Species or crops of interest (and hard no’s)</li>
+          <li>• Target share of household food from the land</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">2</span>
+          Land capacity
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Open / pasture acreage and quality</li>
+          <li>• Wooded or marginal land that can support animals or forage</li>
+          <li>• Garden-ready ground (soil, sun, water access)</li>
+          <li>• Climate zone, frost dates, and rainfall</li>
+          <li>• Existing fencing, coops, barns, or beds</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">3</span>
+          Household capacity
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Available labor hours per week</li>
+          <li>• Skill level with animals and gardening</li>
+          <li>• Number of people who will do daily chores</li>
+          <li>• Willingness to process meat, milk, eggs, or harvest</li>
+          <li>• Time away from the land (travel, off-farm work)</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">4</span>
+          Constraints
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Budget for stock, seed, feed, fencing, and tools</li>
+          <li>• Local regulations (animal limits, slaughter, sales)</li>
+          <li>• Predator and pest pressure</li>
+          <li>• Water available for livestock and irrigation</li>
+          <li>• Preference for low-input vs intensive systems</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outputs -->
+  <section class="bg-white border-y border-stone-200 py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-2xl font-semibold mb-2">Outputs</h2>
+      <p class="text-stone-600 mb-10 max-w-xl">What Tractform calculates so production stays matched to land and labor.</p>
+
+      <div class="grid sm:grid-cols-2 gap-8">
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Livestock package</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Recommended species and numbers based on acreage, forage, labor, and goals. Starter flock or herd sizes that stay manageable in year one.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Garden & crop plan</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Bed or field area needed for target yields. Crop mix suited to the zone and household diet. Succession and season-extension notes.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Feed & inputs</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Estimated annual feed, seed, amendments, and bedding. How much can be grown on-site versus purchased.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Labor load</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Daily, weekly, and seasonal chore estimates. Flags when the plan exceeds available hours or skill.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Yield & food contribution</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Realistic output in eggs, meat, milk, vegetables, or calories. Share of household food needs the plan can cover.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Infrastructure dependencies</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Shelter, fencing, water, and storage that must already exist (or be built next) before animals or serious planting begin.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Phased start</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Year-one starter package versus full target. What to add only after the first season succeeds.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Risk flags</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Overstocking, drought feed gaps, predator exposure, labor bottlenecks, and regulatory limits called out in plain language.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Path navigation -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <div class="grid sm:grid-cols-2 gap-6">
+      <div class="bg-stone-100 rounded-2xl p-8">
+        <p class="text-sm font-medium text-stone-500 uppercase tracking-wide mb-2">Previous</p>
+        <h2 class="text-xl font-semibold mb-3">Buildings & Roads</h2>
+        <p class="text-stone-600 mb-6 text-sm">Shelter, storage, workshops, and the paths that connect them.</p>
+        <a href="/buildings.html" class="inline-flex items-center text-sm font-medium text-emerald-800 hover:text-emerald-900">
+          ← Back to Buildings
+        </a>
+      </div>
+      <div class="bg-stone-100 rounded-2xl p-8">
+        <p class="text-sm font-medium text-emerald-800 uppercase tracking-wide mb-2">Next on the path</p>
+        <h2 class="text-xl font-semibold mb-3">Family Needs</h2>
+        <p class="text-stone-600 mb-6 text-sm">Ongoing capacity: labor, food requirements, time, and realistic limits.</p>
+        <span class="text-sm text-stone-400">Coming next</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 py-10">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center">
+          <span class="text-white font-bold text-xs">T</span>
+        </div>
+        <span>Tractform</span>
+      </a>
+      <p>&copy; 2026 Tractform. Built for people who want to live well on the land.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
