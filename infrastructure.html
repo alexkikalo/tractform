@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infrastructure — Tractform</title>
+  <meta name="description" content="Water and power first. Tractform helps you plan the systems that make everything else on the land possible." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center">
+          <span class="text-white font-bold text-sm">T</span>
+        </div>
+        <span class="font-semibold text-lg tracking-tight">Tractform</span>
+      </a>
+      <nav class="hidden sm:flex items-center gap-8 text-sm font-medium text-stone-600">
+        <a href="/" class="hover:text-stone-900 transition">Home</a>
+        <a href="/land.html" class="hover:text-stone-900 transition">Land</a>
+        <a href="/infrastructure.html" class="text-emerald-800 font-semibold">Infrastructure</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-6 pt-16 pb-12">
+    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-3">Stage 2 of the path</p>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">Infrastructure</h1>
+    <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
+      Water and power first. These are the systems that make buildings, animals, gardens, and daily life possible. Get them right and everything downstream becomes simpler.
+    </p>
+  </section>
+
+  <!-- Core question -->
+  <section class="bg-emerald-900 text-white py-10">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-emerald-100 text-sm uppercase tracking-wide mb-2">The question this stage answers</p>
+      <p class="text-xl sm:text-2xl font-medium leading-snug max-w-3xl">
+        “What water and power systems does this land need to support the life I want — and what will it cost and take to put them in place?”
+      </p>
+    </div>
+  </section>
+
+  <!-- Inputs -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <h2 class="text-2xl font-semibold mb-2">Inputs</h2>
+    <p class="text-stone-600 mb-10 max-w-xl">What you tell Tractform about the land and your needs.</p>
+
+    <div class="space-y-10">
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">1</span>
+          Existing conditions
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Current water sources (well, spring, creek, pond, municipal, none)</li>
+          <li>• Well depth, yield, and water quality if known</li>
+          <li>• Existing power (grid, solar, generator, none)</li>
+          <li>• Distance to nearest power line or transformer</li>
+          <li>• Existing septic or sewer connection</li>
+          <li>• Known easements or utility rights-of-way</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">2</span>
+          Demand profile
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Number of people living on the land</li>
+          <li>• Planned livestock (species and approximate numbers)</li>
+          <li>• Garden / crop irrigation needs</li>
+          <li>• Buildings that will need water and power</li>
+          <li>• Desired level of independence (grid-tied, hybrid, full off-grid)</li>
+          <li>• Seasonal use vs year-round residence</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">3</span>
+          Site constraints
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Soil type and percolation for septic</li>
+          <li>• Topography and drainage patterns</li>
+          <li>• Frost depth and freeze risk for pipes</li>
+          <li>• Solar exposure and shading</li>
+          <li>• Wind resource if considering wind power</li>
+          <li>• Local regulations and permitting difficulty</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <span class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 text-sm flex items-center justify-center font-medium">4</span>
+          Budget & timeline
+        </h3>
+        <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-stone-700 text-sm pl-9">
+          <li>• Capital available for infrastructure</li>
+          <li>• Preference for phased vs all-at-once build</li>
+          <li>• DIY capacity vs hired work</li>
+          <li>• Target date for basic water and power online</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outputs -->
+  <section class="bg-white border-y border-stone-200 py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-2xl font-semibold mb-2">Outputs</h2>
+      <p class="text-stone-600 mb-10 max-w-xl">What Tractform calculates so you can plan water and power with confidence.</p>
+
+      <div class="grid sm:grid-cols-2 gap-8">
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Water demand estimate</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Daily and peak water needs for household, livestock, and irrigation. Comparison against known well yield or surface sources.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Water system options</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Recommended approach (well, spring development, rainwater, hauled, or hybrid). Storage sizing, pump requirements, and basic distribution layout.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Power demand estimate</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Baseline and peak electrical loads for the planned buildings, tools, pumps, and lifestyle. Seasonal variation if relevant.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Power system options</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Grid extension cost vs solar + battery vs generator hybrid. Rough system size, panel count, and battery capacity for off-grid or hybrid goals.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Septic & wastewater</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">System type suitability based on soil and household size. Estimated cost range and permitting notes.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Phased build plan</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Ordered sequence of work with rough cost and time for each major step. What must be done first so later stages (buildings, animals, garden) can proceed.</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">True infrastructure cost</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Combined capital cost for water, power, and septic to reach a basic livable standard. Ongoing operating cost estimates (fuel, maintenance, utility bills).</p>
+        </div>
+
+        <div class="border border-stone-200 rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Risk & dependency flags</h3>
+          <p class="text-sm text-stone-600 leading-relaxed">Single points of failure, drought vulnerability, grid outage exposure, and regulatory hurdles called out in plain language.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Path navigation -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <div class="grid sm:grid-cols-2 gap-6">
+      <div class="bg-stone-100 rounded-2xl p-8">
+        <p class="text-sm font-medium text-stone-500 uppercase tracking-wide mb-2">Previous</p>
+        <h2 class="text-xl font-semibold mb-3">Land</h2>
+        <p class="text-stone-600 mb-6 text-sm">Finding, evaluating, and preparing the ground.</p>
+        <a href="/land.html" class="inline-flex items-center text-sm font-medium text-emerald-800 hover:text-emerald-900">
+          ← Back to Land
+        </a>
+      </div>
+      <div class="bg-stone-100 rounded-2xl p-8">
+        <p class="text-sm font-medium text-emerald-800 uppercase tracking-wide mb-2">Next on the path</p>
+        <h2 class="text-xl font-semibold mb-3">Buildings & Roads</h2>
+        <p class="text-stone-600 mb-6 text-sm">Shelter, storage, workshops, and the paths that connect them.</p>
+        <span class="text-sm text-stone-400">Coming next</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 py-10">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center">
+          <span class="text-white font-bold text-xs">T</span>
+        </div>
+        <span>Tractform</span>
+      </a>
+      <p>&copy; 2026 Tractform. Built for people who want to live well on the land.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
