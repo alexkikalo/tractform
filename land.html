@@ -47,7 +47,7 @@
 
         <div class="bg-white border border-stone-200 rounded-2xl p-5 space-y-4">
           <div>
-            <label class="block text-sm font-semibold mb-2">Land setting</label>
+            <label class="block text-sm font-semibold mb-2">Land setting <span class="font-normal text-stone-500">(used if no local market match)</span></label>
             <div class="flex flex-wrap gap-2" id="setting-controls"></div>
             <p id="setting-hint" class="text-xs text-stone-500 mt-2"></p>
           </div>
@@ -84,10 +84,13 @@
           <p id="tot-note" class="text-xs text-emerald-200/70 mt-2"></p>
         </div>
 
-        <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200">
-          <h3 class="text-sm font-semibold mb-2">Approximate land cost</h3>
-          <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header to see approximate land cost.</p>
-          <p id="cost-detail" class="text-xs text-stone-500 mt-2"></p>
+        <!-- Cost: listings first, estimate second -->
+        <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200 space-y-3">
+          <h3 class="text-sm font-semibold">Land cost</h3>
+          <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header.</p>
+          <p id="cost-note" class="text-xs text-stone-500"></p>
+          <p id="cost-detail" class="text-xs text-stone-500"></p>
+          <div id="listing-links" class="hidden flex flex-wrap gap-2 pt-1"></div>
         </div>
       </div>
 
@@ -102,8 +105,7 @@
           <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
             <div class="flex justify-between"><span class="text-emerald-300/80">Activities</span><span id="sum-count" class="font-medium">0</span></div>
             <div class="flex justify-between"><span class="text-emerald-300/80">Lot size</span><span id="sum-acres" class="font-medium tabular-nums">—</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Setting</span><span id="sum-setting" class="font-medium text-right">—</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Parcel type</span><span id="sum-market" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Market data</span><span id="sum-market-src" class="font-medium text-right text-xs">—</span></div>
             <div class="flex justify-between"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium">—</span></div>
             <div class="flex justify-between pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost range</span><span id="sum-cost" class="font-medium text-right">—</span></div>
           </div>
@@ -127,7 +129,7 @@
       ['homesite', 'medium'],
       ['garden', 'medium']
     ]);
-    let setting = 'mixed'; // Decatur-style default is more useful than pure rural
+    let setting = 'mixed';
     let market = 'homestead';
     let resolvedState = null;
     let lookingUp = false;
@@ -149,15 +151,12 @@
           ${a.short}
         </button>`;
       }).join('');
-
       wrap.querySelectorAll('.act-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.id;
           if (selected.has(id)) {
             if (selected.size > 1) selected.delete(id);
-          } else {
-            selected.set(id, 'medium');
-          }
+          } else selected.set(id, 'medium');
           buildActivityControls();
           buildScalePanel();
           refresh();
@@ -172,7 +171,6 @@
         panel.innerHTML = '<p class="text-sm text-stone-500">Select at least one activity.</p>';
         return;
       }
-
       panel.innerHTML = '<p class="text-sm font-semibold mb-1">Scale for each activity</p>' +
         Array.from(selected.entries()).map(([id, scaleKey]) => {
           const a = acts[id];
@@ -194,7 +192,6 @@
             <p class="text-xs text-stone-500">${current.desc} · <span class="tabular-nums font-medium text-stone-700">${current.acres} ac</span></p>
           </div>`;
         }).join('');
-
       panel.querySelectorAll('.scale-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           selected.set(btn.dataset.id, btn.dataset.scale);
@@ -215,19 +212,15 @@
           ${s.label}
         </button>`;
       }).join('');
-
       wrap.querySelectorAll('.set-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           setting = btn.dataset.id;
           buildSettingControls();
-          document.getElementById('setting-hint').textContent =
-            window.TractformLand.SETTINGS[setting].hint;
+          document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint;
           refresh();
         });
       });
-
-      document.getElementById('setting-hint').textContent =
-        window.TractformLand.SETTINGS[setting].hint;
+      document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint;
     }
 
     function buildMarketControls() {
@@ -241,24 +234,19 @@
           ${m.label}
         </button>`;
       }).join('');
-
       wrap.querySelectorAll('.mkt-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           market = btn.dataset.id;
           buildMarketControls();
-          document.getElementById('market-hint').textContent =
-            window.TractformLand.MARKETS[market].hint;
+          document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint;
           refresh();
         });
       });
-
-      document.getElementById('market-hint').textContent =
-        window.TractformLand.MARKETS[market].hint;
+      document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint;
     }
 
     function render(r) {
-      const body = document.getElementById('breakdown-body');
-      body.innerHTML = r.rows.map(row => `
+      document.getElementById('breakdown-body').innerHTML = r.rows.map(row => `
         <tr>
           <td class="px-5 py-3">
             <div class="font-medium text-stone-900">${row.name}</div>
@@ -280,27 +268,50 @@
 
       const costCard = document.getElementById('cost-card');
       const costMain = document.getElementById('cost-main');
+      const costNote = document.getElementById('cost-note');
       const costDetail = document.getElementById('cost-detail');
+      const listingLinks = document.getElementById('listing-links');
 
       if (lookingUp) {
-        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200';
+        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
         costMain.className = 'text-sm text-stone-600';
         costMain.textContent = 'Looking up location…';
+        costNote.textContent = '';
         costDetail.textContent = '';
+        listingLinks.className = 'hidden';
       } else if (!r.cost.hasLocation) {
-        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200';
+        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
         costMain.className = 'text-sm text-stone-600';
         costMain.textContent = r.cost.message;
-        costDetail.textContent =
-          'Tip: enter a ZIP or "City, ST". For Decatur-style markets pick Mixed / edge of town + Homestead.';
+        costNote.textContent = 'Cost estimates are only useful after you check live listings near the place you care about.';
+        costDetail.textContent = '';
+        listingLinks.className = 'hidden';
       } else {
-        costCard.className = 'rounded-2xl border p-5 bg-emerald-50 border-emerald-200';
-        costMain.className = 'text-sm text-emerald-900 font-medium';
+        const isLocal = r.cost.sourceType === 'local';
+        costCard.className = isLocal
+          ? 'rounded-2xl border p-5 bg-emerald-50 border-emerald-200 space-y-3'
+          : 'rounded-2xl border p-5 bg-amber-50 border-amber-200 space-y-3';
+        costMain.className = isLocal
+          ? 'text-sm text-emerald-900 font-medium'
+          : 'text-sm text-amber-950 font-medium';
+
+        const where = r.cost.localName || r.cost.stateName;
         costMain.textContent =
-          `${money(r.cost.perAcreLow)}–${money(r.cost.perAcreHigh)}/acre in ${r.cost.stateName} · ` +
-          `${r.cost.settingLabel} / ${r.cost.marketLabel} · ` +
+          `${money(r.cost.perAcreLow)}–${money(r.cost.perAcreHigh)}/acre · ${where} · ` +
           `lot ~${money(r.cost.totalLow)}–${money(r.cost.totalHigh)}`;
-        costDetail.textContent = r.cost.source;
+
+        costNote.textContent = r.cost.note || '';
+        costDetail.textContent = r.cost.source || '';
+
+        if (r.cost.listings) {
+          listingLinks.className = 'flex flex-wrap gap-2 pt-1';
+          listingLinks.innerHTML =
+            `<span class="text-xs text-stone-600 self-center mr-1">Check live listings:</span>` +
+            `<a class="text-xs font-medium px-2.5 py-1.5 rounded-md bg-white border border-stone-300 hover:border-emerald-700" target="_blank" rel="noopener" href="${r.cost.listings.landwatch}">LandWatch</a>` +
+            `<a class="text-xs font-medium px-2.5 py-1.5 rounded-md bg-white border border-stone-300 hover:border-emerald-700" target="_blank" rel="noopener" href="${r.cost.listings.zillow}">Zillow Land</a>`;
+        } else {
+          listingLinks.className = 'hidden';
+        }
       }
 
       const names = r.rows.map(x => x.short).join(', ');
@@ -312,8 +323,9 @@
           : 'Pick activities on the left.';
       document.getElementById('sum-count').textContent = r.rows.length;
       document.getElementById('sum-acres').textContent = r.totalAcres + ' ac';
-      document.getElementById('sum-setting').textContent = r.setting.label;
-      document.getElementById('sum-market').textContent = r.market.label;
+      document.getElementById('sum-market-src').textContent =
+        r.cost.sourceType === 'local' ? 'Local band' :
+        r.cost.sourceType === 'state' ? 'State fallback' : '—';
       document.getElementById('sum-season').textContent = r.season;
       document.getElementById('sum-cost').textContent =
         r.cost.hasLocation
@@ -321,8 +333,10 @@
           : '—';
       document.getElementById('sum-cost-note').textContent =
         r.cost.hasLocation
-          ? `${r.cost.stateName} · planning range, not a listing price.`
-          : 'Set location in the header for cost range.';
+          ? (r.cost.sourceType === 'local'
+              ? r.cost.localName + '. Verify with listings.'
+              : 'State fallback — can understate near cities. Check listings.')
+          : 'Set location in the header.';
     }
 
     async function refresh() {
@@ -345,6 +359,16 @@
         if (st) {
           resolvedState = st;
           state.stateCode = st;
+          r = window.TractformLand.calculate(state);
+        }
+      }
+
+      // Local market can match on city name even before state resolves
+      if (!r.cost.hasLocation && loc.place) {
+        const local = window.TractformLand.findLocalMarket(loc.place, resolvedState);
+        if (local) {
+          resolvedState = local.state;
+          state.stateCode = local.state;
           r = window.TractformLand.calculate(state);
         }
       }
