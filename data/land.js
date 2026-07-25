@@ -2,7 +2,6 @@
    Multi-activity planning with scale, terrain, and location-banded cost.
 */
 (function () {
-  // Each activity has three scales so 2 chickens and 50 chickens are different
   const ACTIVITIES = {
     homesite: {
       id: 'homesite',
@@ -110,8 +109,8 @@
     }
   };
 
-  // USDA-ish 2025 statewide farm real estate base ($/acre).
-  // Used as the midpoint for "rural" setting; other settings multiply this.
+  // USDA 2025 statewide farm real estate base ($/acre).
+  // Multipliers below convert this into retail-ish homestead bands.
   const STATE_PRICE = {
     AL: 4200, AK: 2800, AZ: 3800, AR: 4100, CA: 13700,
     CO: 2200, CT: 14400, DE: 9550, FL: 7200, GA: 4800,
@@ -138,36 +137,62 @@
     VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
   };
 
-  // Setting multipliers relative to statewide average.
-  // Large states (TX, CA, NY) vary enormously; this band is the honest way to show that.
+  /* Setting multipliers calibrated against retail asking prices (2025–26).
+     Example check: Decatur / Wise County TX
+     - Small/medium homestead tracts often list $20k–$55k/acre
+     - Larger ranch tracts often $8k–$25k/acre
+     - Pure remote ag is closer to the raw USDA base
+     With TX base $2,800:
+       mixed + homestead → roughly $20k–$55k/acre
+       rural + working   → roughly $7k–$22k/acre
+  */
   const SETTINGS = {
     remote: {
       id: 'remote',
       label: 'Remote rural',
-      hint: 'Far from towns, limited services',
-      low: 0.45,
-      high: 0.75
+      hint: 'Far from towns, limited services, pure country',
+      low: 1.0,
+      high: 2.5
     },
     rural: {
       id: 'rural',
       label: 'Rural',
-      hint: 'Countryside, not next to a city',
-      low: 0.75,
-      high: 1.15
+      hint: 'Countryside, not on a metro fringe',
+      low: 3.0,
+      high: 8.0
     },
     mixed: {
       id: 'mixed',
       label: 'Mixed / edge of town',
-      hint: 'Small-town fringe or popular rural areas',
-      low: 1.2,
-      high: 2.2
+      hint: 'Small-town fringe or popular rural areas (e.g. Decatur-style)',
+      low: 7.0,
+      high: 15.0
     },
     metro: {
       id: 'metro',
       label: 'Near metro',
-      hint: 'Within commuting distance of a larger city',
-      low: 2.0,
-      high: 5.0
+      hint: 'Commuting distance to a larger city / growth corridor',
+      low: 12.0,
+      high: 25.0
+    }
+  };
+
+  // Parcel type shifts the band: working land stays closer to ag value;
+  // homestead/small acreage reflects the retail premium buyers actually pay.
+  const MARKETS = {
+    working: {
+      id: 'working',
+      label: 'Working ranch / ag',
+      hint: 'Larger tracts used mainly for grazing or crops',
+      low: 0.85,
+      high: 1.0
+    },
+    homestead: {
+      id: 'homestead',
+      label: 'Homestead / small acreage',
+      hint: 'Residential-oriented 2–30 acre parcels (most common buyer market)',
+      low: 1.0,
+      high: 1.35
     }
   };
 
@@ -198,8 +223,9 @@
 
   /**
    * state = {
-   *   activities: [{ id, scale }],  // scale: small|medium|large
+   *   activities: [{ id, scale }],
    *   setting: remote|rural|mixed|metro,
+   *   market: working|homestead,
    *   place, zone, stateCode
    * }
    */
@@ -210,6 +236,8 @@
 
     const settingKey = state.setting || 'rural';
     const setting = SETTINGS[settingKey] || SETTINGS.rural;
+    const marketKey = state.market || 'homestead';
+    const market = MARKETS[marketKey] || MARKETS.homestead;
 
     const rows = activityList.map(item => {
       const a = ACTIVITIES[item.id];
@@ -236,7 +264,6 @@
     const buffer = hasBuffer ? 0 : Math.max(0.25, +(acresSum * 0.1).toFixed(2));
     const totalAcres = +(acresSum + buffer).toFixed(2);
 
-    // Cost
     let cost = {
       hasLocation: false,
       lookingUp: false,
@@ -250,6 +277,7 @@
       totalHigh: null,
       totalMid: null,
       settingLabel: setting.label,
+      marketLabel: market.label,
       source: null
     };
 
@@ -259,8 +287,8 @@
 
     if (stateCode && STATE_PRICE[stateCode]) {
       const base = STATE_PRICE[stateCode];
-      const perLow = Math.round(base * setting.low);
-      const perHigh = Math.round(base * setting.high);
+      const perLow = Math.round(base * setting.low * market.low);
+      const perHigh = Math.round(base * setting.high * market.high);
       const perMid = Math.round((perLow + perHigh) / 2);
       cost = {
         hasLocation: true,
@@ -275,12 +303,13 @@
         totalHigh: Math.round(perHigh * totalAcres),
         totalMid: Math.round(perMid * totalAcres),
         settingLabel: setting.label,
-        source: 'Based on USDA statewide farm real estate average, adjusted for ' +
-          setting.label.toLowerCase() + ' setting. Large states vary widely by county — this is a planning range, not a listing price.'
+        marketLabel: market.label,
+        source:
+          'Planning range only. Starts from USDA statewide farm real estate average, then scales for location setting and parcel type. ' +
+          'Retail asking prices for small homestead tracts near towns are often much higher than pure ag land. Always check local listings.'
       };
     }
 
-    // Climate
     const zone = state.zone || null;
     const zoneNum = zone && window.TractformLocation
       ? window.TractformLocation.zoneNumber(zone)
@@ -301,6 +330,7 @@
       buffer,
       hasBuffer,
       setting,
+      market,
       cost,
       season,
       frost,
@@ -313,6 +343,7 @@
   window.TractformLand = {
     ACTIVITIES,
     SETTINGS,
+    MARKETS,
     STATE_PRICE,
     STATE_NAMES,
     calculate,

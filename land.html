@@ -38,23 +38,26 @@
     <div class="grid lg:grid-cols-3 gap-6 items-start">
       <div class="lg:col-span-2 space-y-4">
 
-        <!-- Activities -->
         <div class="bg-white border border-stone-200 rounded-2xl p-5">
           <label class="block text-sm font-semibold mb-3">Activities <span class="font-normal text-stone-500">(select all that apply)</span></label>
           <div class="flex flex-wrap gap-2" id="activity-controls"></div>
         </div>
 
-        <!-- Scale per selected activity -->
         <div id="scale-panel" class="bg-white border border-stone-200 rounded-2xl p-5 space-y-4"></div>
 
-        <!-- Location setting for cost -->
-        <div class="bg-white border border-stone-200 rounded-2xl p-5">
-          <label class="block text-sm font-semibold mb-2">Land setting <span class="font-normal text-stone-500">(affects cost range)</span></label>
-          <div class="flex flex-wrap gap-2" id="setting-controls"></div>
-          <p id="setting-hint" class="text-xs text-stone-500 mt-2"></p>
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Land setting</label>
+            <div class="flex flex-wrap gap-2" id="setting-controls"></div>
+            <p id="setting-hint" class="text-xs text-stone-500 mt-2"></p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-2">Parcel type</label>
+            <div class="flex flex-wrap gap-2" id="market-controls"></div>
+            <p id="market-hint" class="text-xs text-stone-500 mt-2"></p>
+          </div>
         </div>
 
-        <!-- Breakdown -->
         <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden">
           <div class="px-5 py-3 border-b border-stone-100">
             <h3 class="text-sm font-semibold">Land use breakdown</h3>
@@ -75,14 +78,12 @@
           <p id="breakdown-note" class="px-5 py-3 text-xs text-stone-500 border-t border-stone-100"></p>
         </div>
 
-        <!-- Totals -->
         <div class="bg-emerald-900 text-white rounded-2xl p-5">
           <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Recommended lot size</h3>
           <p id="tot-typical" class="font-semibold text-2xl tabular-nums">—</p>
           <p id="tot-note" class="text-xs text-emerald-200/70 mt-2"></p>
         </div>
 
-        <!-- Cost -->
         <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200">
           <h3 class="text-sm font-semibold mb-2">Approximate land cost</h3>
           <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header to see approximate land cost.</p>
@@ -90,7 +91,6 @@
         </div>
       </div>
 
-      <!-- Right summary -->
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Parcel media</div>
@@ -102,7 +102,8 @@
           <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
             <div class="flex justify-between"><span class="text-emerald-300/80">Activities</span><span id="sum-count" class="font-medium">0</span></div>
             <div class="flex justify-between"><span class="text-emerald-300/80">Lot size</span><span id="sum-acres" class="font-medium tabular-nums">—</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Setting</span><span id="sum-setting" class="font-medium">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Setting</span><span id="sum-setting" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Parcel type</span><span id="sum-market" class="font-medium text-right">—</span></div>
             <div class="flex justify-between"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium">—</span></div>
             <div class="flex justify-between pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost range</span><span id="sum-cost" class="font-medium text-right">—</span></div>
           </div>
@@ -122,12 +123,12 @@
   <script src="/site.js"></script>
   <script src="/data/land.js"></script>
   <script>
-    // selected: Map of activityId -> scaleKey
     const selected = new Map([
       ['homesite', 'medium'],
       ['garden', 'medium']
     ]);
-    let setting = 'rural';
+    let setting = 'mixed'; // Decatur-style default is more useful than pure rural
+    let market = 'homestead';
     let resolvedState = null;
     let lookingUp = false;
 
@@ -229,8 +230,33 @@
         window.TractformLand.SETTINGS[setting].hint;
     }
 
+    function buildMarketControls() {
+      const wrap = document.getElementById('market-controls');
+      const markets = window.TractformLand.MARKETS;
+      wrap.innerHTML = Object.values(markets).map(m => {
+        const on = m.id === market;
+        return `<button type="button" data-id="${m.id}"
+          class="mkt-btn px-3 py-2 rounded-lg border text-sm font-medium transition
+          ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
+          ${m.label}
+        </button>`;
+      }).join('');
+
+      wrap.querySelectorAll('.mkt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          market = btn.dataset.id;
+          buildMarketControls();
+          document.getElementById('market-hint').textContent =
+            window.TractformLand.MARKETS[market].hint;
+          refresh();
+        });
+      });
+
+      document.getElementById('market-hint').textContent =
+        window.TractformLand.MARKETS[market].hint;
+    }
+
     function render(r) {
-      // Breakdown
       const body = document.getElementById('breakdown-body');
       body.innerHTML = r.rows.map(row => `
         <tr>
@@ -252,7 +278,6 @@
       document.getElementById('tot-note').textContent =
         'Based on the scales you chose. Adjust scales or activities to refine.';
 
-      // Cost
       const costCard = document.getElementById('cost-card');
       const costMain = document.getElementById('cost-main');
       const costDetail = document.getElementById('cost-detail');
@@ -267,17 +292,17 @@
         costMain.className = 'text-sm text-stone-600';
         costMain.textContent = r.cost.message;
         costDetail.textContent =
-          'Tip: enter a ZIP or "City, ST" (e.g. Decatur, TX). Then pick Remote / Rural / Mixed / Near metro to tighten the range.';
+          'Tip: enter a ZIP or "City, ST". For Decatur-style markets pick Mixed / edge of town + Homestead.';
       } else {
         costCard.className = 'rounded-2xl border p-5 bg-emerald-50 border-emerald-200';
         costMain.className = 'text-sm text-emerald-900 font-medium';
         costMain.textContent =
-          `${money(r.cost.perAcreLow)}–${money(r.cost.perAcreHigh)}/acre in ${r.cost.stateName} (${r.cost.settingLabel}) · ` +
+          `${money(r.cost.perAcreLow)}–${money(r.cost.perAcreHigh)}/acre in ${r.cost.stateName} · ` +
+          `${r.cost.settingLabel} / ${r.cost.marketLabel} · ` +
           `lot ~${money(r.cost.totalLow)}–${money(r.cost.totalHigh)}`;
         costDetail.textContent = r.cost.source;
       }
 
-      // Summary card
       const names = r.rows.map(x => x.short).join(', ');
       document.getElementById('selection-summary').textContent =
         r.rows.length ? names : 'Select activities';
@@ -288,6 +313,7 @@
       document.getElementById('sum-count').textContent = r.rows.length;
       document.getElementById('sum-acres').textContent = r.totalAcres + ' ac';
       document.getElementById('sum-setting').textContent = r.setting.label;
+      document.getElementById('sum-market').textContent = r.market.label;
       document.getElementById('sum-season').textContent = r.season;
       document.getElementById('sum-cost').textContent =
         r.cost.hasLocation
@@ -295,7 +321,7 @@
           : '—';
       document.getElementById('sum-cost-note').textContent =
         r.cost.hasLocation
-          ? `${r.cost.stateName} · ${r.cost.settingLabel}. Planning range only.`
+          ? `${r.cost.stateName} · planning range, not a listing price.`
           : 'Set location in the header for cost range.';
     }
 
@@ -306,6 +332,7 @@
       const state = {
         activities: activityList,
         setting,
+        market,
         place: loc.place || '',
         zone: loc.zone || null,
         stateCode: resolvedState
@@ -313,7 +340,6 @@
 
       let r = window.TractformLand.calculate(state);
 
-      // Immediate parse from "City, ST"
       if (!r.cost.hasLocation && loc.place) {
         const st = window.TractformLand.parseStateFromPlace(loc.place);
         if (st) {
@@ -323,7 +349,6 @@
         }
       }
 
-      // Async ZIP lookup if needed
       if (r._pendingZip && !resolvedState) {
         lookingUp = true;
         render(r);
@@ -339,7 +364,6 @@
       render(r);
     }
 
-    // Live updates when location chip changes
     if (window.TractformLocation) {
       window.TractformLocation.onChange(() => {
         resolvedState = null;
@@ -348,12 +372,12 @@
       });
     }
 
-    // Also poll localStorage briefly after focus in case chip updated without event
     window.addEventListener('focus', () => refresh());
 
     buildActivityControls();
     buildScalePanel();
     buildSettingControls();
+    buildMarketControls();
     refresh();
   </script>
 </body>
