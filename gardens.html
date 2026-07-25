@@ -4,19 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gardens & Crops — Tractform</title>
-  <meta name="description" content="Space, yields, water, soil, and labor for food production." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',system-ui,sans-serif}</style>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;max-width:220px;aspect-ratio:1;border-radius:.75rem;background:#f5f5f4;border:1px dashed #d6d3d1;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.75rem;text-align:center;padding:1rem}</style>
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
   <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div>
-        <span class="font-semibold text-lg tracking-tight">Tractform</span>
-      </a>
-      <nav class="hidden sm:flex gap-6 text-sm font-medium text-stone-600">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div><span class="font-semibold text-lg tracking-tight">Tractform</span></a>
+      <nav class="hidden sm:flex gap-5 text-sm font-medium text-stone-600">
         <a href="/land.html" class="hover:text-stone-900">Land</a>
         <a href="/infrastructure.html" class="hover:text-stone-900">Water & Power</a>
         <a href="/buildings.html" class="hover:text-stone-900">Buildings</a>
@@ -27,74 +23,131 @@
     </div>
   </header>
 
-  <section class="max-w-5xl mx-auto px-6 pt-12 pb-8">
+  <section class="max-w-6xl mx-auto px-6 pt-10 pb-4">
     <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Gardens & Crops</p>
-    <h1 class="text-3xl font-bold tracking-tight mb-3">Food from the ground</h1>
-    <p class="text-stone-600 max-w-xl">Select a focus for space, water, soil, and labor realities. Set your USDA zone above for climate context.</p>
+    <h1 class="text-3xl font-bold tracking-tight mb-2">Configure production</h1>
+    <p class="text-stone-600 text-sm max-w-2xl">Choose focus and scale. Season length tracks your USDA zone.</p>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-8">
-    <div class="flex flex-wrap gap-2">
-      <button data-topic="space" class="topic-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Space & yield</button>
-      <button data-topic="soil" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Soil & water</button>
-      <button data-topic="labor" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Labor & season</button>
+  <section class="max-w-6xl mx-auto px-6 pb-16">
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6">
+          <label class="block text-sm font-semibold mb-3">Focus</label>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" data-g="kitchen" class="g-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Kitchen garden</button>
+            <button type="button" data-g="calorie" class="g-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Calorie crops</button>
+            <button type="button" data-g="orchard" class="g-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Orchard / perennials</button>
+            <button type="button" data-g="market" class="g-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Market garden</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Area</label>
+            <div class="flex gap-2 items-center">
+              <input id="area" type="number" min="50" max="200000" value="800" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" />
+              <span class="text-sm text-stone-500 whitespace-nowrap">sq ft</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-2">Water method</label>
+            <select id="water" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm">
+              <option value="hand">Hand / hose</option>
+              <option value="drip" selected>Drip</option>
+              <option value="overhead">Overhead</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-start">
+          <div class="media-ph">Garden<br/>media placeholder</div>
+          <div class="flex-1">
+            <h2 id="g-name" class="text-xl font-bold mb-1">Kitchen garden</h2>
+            <p id="g-sum" class="text-sm text-emerald-800 font-medium mb-2"></p>
+            <p id="g-blurb" class="text-sm text-stone-600"></p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-900 text-white rounded-2xl p-5 sm:p-6">
+          <h3 class="text-sm font-medium text-emerald-200 uppercase tracking-wide mb-4">Season (placeholder)</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+            <div><p class="text-emerald-200/80 text-xs mb-1">Frost-free days</p><p id="t-days" class="text-lg font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs mb-1">Peak weekly labor</p><p id="t-labor" class="text-lg font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs mb-1">Water in season</p><p id="t-h2o" class="text-lg font-semibold">—</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-1">
+        <div class="lg:sticky lg:top-28 space-y-3">
+          <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide">Live stats</h3>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Season length</span><span id="s-sea-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-sea" class="stat-fill bg-emerald-600" style="width:50%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Water demand</span><span id="s-wat-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-wat" class="stat-fill bg-sky-600" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Labor load</span><span id="s-lab-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-lab" class="stat-fill bg-violet-600" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Soil work</span><span id="s-soil-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-soil" class="stat-fill bg-amber-700" style="width:45%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Yield density</span><span id="s-yld-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-yld" class="stat-fill bg-lime-600" style="width:50%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Startup barrier</span><span id="s-bar-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-bar" class="stat-fill bg-rose-600" style="width:30%"></div></div></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-20">
-    <div data-panel="space" class="topic-panel space-y-6">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Space & yield</h2><p class="text-emerald-100 text-sm">How much ground you need depends on diet goals and intensity — not on a single magic number.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Kitchen garden</h3><p class="text-sm text-stone-600">A few hundred square feet of intensive beds can supply significant vegetables for a small household if managed well.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Serious self-feed</h3><p class="text-sm text-stone-600">Calories (potatoes, corn, beans, grains) need more space and storage. Scale honestly to labor, not just ambition.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Sun & access</h3><p class="text-sm text-stone-600">Full sun and close to the house beat a large remote patch that gets neglected. Water access is part of “space.”</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Expansion path</h3><p class="text-sm text-stone-600">Start smaller than you think. Add beds only after one full season of success and compost capacity.</p></div>
-      </div>
-    </div>
-    <div data-panel="soil" class="topic-panel space-y-6 hidden">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Soil & water</h2><p class="text-emerald-100 text-sm">Soil quality and irrigation decide whether effort turns into food.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Soil</h3><p class="text-sm text-stone-600">Texture, drainage, organic matter, and pH. Test before large amendments. Build fertility with compost and cover crops over time.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Water</h3><p class="text-sm text-stone-600">Consistent moisture beats occasional flooding. Drip or careful hand watering near the house scales better than hoping for rain.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Mulch & cover</h3><p class="text-sm text-stone-600">Mulch reduces watering and weeds. Cover crops protect and feed soil in the off season.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Hard limits</h3><p class="text-sm text-stone-600">Rock, contamination, deep shade, or no water rights can make a “garden acre” nearly useless. Verify before committing.</p></div>
-      </div>
-    </div>
-    <div data-panel="labor" class="topic-panel space-y-6 hidden">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Labor & season</h2><p class="text-emerald-100 text-sm">Gardens fail more often from time shortage than from lack of knowledge.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Weekly rhythm</h3><p class="text-sm text-stone-600">Weeding, watering, and harvest in season are continuous. Size the garden to hours you will actually give every week.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Peak seasons</h3><p class="text-sm text-stone-600">Spring planting and late-summer processing spike labor. Plan preservation (canning, freezing) as part of the system.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Frost calendar</h3><p class="text-sm text-stone-600">Last and first frost define the outdoor window. Season extension (cloth, tunnels) adds food and also adds work.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Realistic goal</h3><p class="text-sm text-stone-600">A reliable supply of high-value crops beats an abandoned “full self-sufficiency” plot. Match ambition to the household.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="border-t border-stone-200 py-10">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
-      <a href="/" class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div>
-        <span>Tractform</span>
-      </a>
-      <p>&copy; 2026 Tractform</p>
-    </div>
-  </footer>
+  <footer class="border-t border-stone-200 py-10"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div><span>Tractform</span></a><p>&copy; 2026 Tractform</p></div></footer>
   <script src="/site.js"></script>
   <script>
-    document.querySelectorAll('.topic-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.topic;
-        document.querySelectorAll('.topic-btn').forEach(b => {
-          b.classList.remove('bg-emerald-800','text-white','border-emerald-800');
-          b.classList.add('bg-white','text-stone-700','border-stone-300');
-        });
-        btn.classList.add('bg-emerald-800','text-white','border-emerald-800');
-        btn.classList.remove('bg-white','text-stone-700','border-stone-300');
-        document.querySelectorAll('.topic-panel').forEach(p => p.classList.add('hidden'));
-        document.querySelector(`[data-panel="${id}"]`).classList.remove('hidden');
+    const goals = {
+      kitchen: { name: 'Kitchen garden', blurb: 'High-value vegetables near the house. Intensity over acreage.', labor: 0.02, water: 0.08, soil: 50, yld: 70, bar: 25 },
+      calorie: { name: 'Calorie crops', blurb: 'Potatoes, corn, beans, grains — space and storage dominate.', labor: 0.012, water: 0.06, soil: 60, yld: 55, bar: 40 },
+      orchard: { name: 'Orchard / perennials', blurb: 'Multi-year establishment. Lower weekly labor after year 3.', labor: 0.006, water: 0.05, soil: 40, yld: 45, bar: 55 },
+      market: { name: 'Market garden', blurb: 'High labor, high turnover beds. Water and succession planting critical.', labor: 0.035, water: 0.12, soil: 70, yld: 85, bar: 65 }
+    };
+    let g = 'kitchen';
+    function bar(id, pct, label) {
+      document.getElementById(id).style.width = Math.min(95, pct) + '%';
+      document.getElementById(id + '-l').textContent = label;
+    }
+    function lbl(p) { return p > 70 ? 'High' : p > 40 ? 'Moderate' : 'Low'; }
+    function refresh() {
+      const goal = goals[g];
+      const area = +document.getElementById('area').value || 100;
+      const waterM = document.getElementById('water').value;
+      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
+      const zn = loc.zone && window.TractformLocation ? window.TractformLocation.zoneNumber(loc.zone) : 7;
+
+      document.querySelectorAll('.g-btn').forEach(b => {
+        const on = b.dataset.g === g;
+        b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
+        b.classList.toggle('bg-white', !on); b.classList.toggle('text-stone-700', !on); b.classList.toggle('border-stone-300', !on);
       });
-    });
+
+      document.getElementById('g-name').textContent = goal.name;
+      document.getElementById('g-blurb').textContent = goal.blurb;
+      document.getElementById('g-sum').textContent = area.toLocaleString() + ' sq ft · ' + waterM;
+
+      const seasonPct = Math.min(95, 15 + zn * 7);
+      const days = zn <= 4 ? '~100–140' : zn <= 6 ? '~140–180' : zn <= 8 ? '~180–230' : '~240–320';
+      let waterPct = goal.water * Math.sqrt(area) * (waterM === 'overhead' ? 1.3 : waterM === 'hand' ? 1.1 : 0.9);
+      waterPct = Math.min(95, waterPct);
+      const laborHrs = goal.labor * area;
+      const laborPct = Math.min(95, laborHrs * 2);
+
+      bar('s-sea', seasonPct, lbl(seasonPct));
+      bar('s-wat', waterPct, lbl(waterPct));
+      bar('s-lab', laborPct, lbl(laborPct));
+      bar('s-soil', goal.soil, lbl(goal.soil));
+      bar('s-yld', goal.yld, lbl(goal.yld));
+      bar('s-bar', goal.bar, lbl(goal.bar));
+
+      document.getElementById('t-days').textContent = days;
+      document.getElementById('t-labor').textContent = laborHrs < 5 ? '~' + laborHrs.toFixed(1) + ' hr' : '~' + Math.round(laborHrs) + ' hr';
+      document.getElementById('t-h2o').textContent = waterM === 'drip' ? 'Efficient' : waterM === 'hand' ? 'Flexible' : 'Higher use';
+    }
+    document.querySelectorAll('.g-btn').forEach(b => b.addEventListener('click', () => { g = b.dataset.g; refresh(); }));
+    document.getElementById('area').addEventListener('input', refresh);
+    document.getElementById('water').addEventListener('change', refresh);
+    if (window.TractformLocation) window.TractformLocation.onChange(refresh);
+    refresh();
   </script>
 </body>
 </html>
