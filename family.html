@@ -5,7 +5,7 @@
   <title>Household — Tractform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
 </head>
 <body class="bg-stone-100 text-stone-900 antialiased">
   <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
@@ -38,28 +38,23 @@
             <div><label class="text-xs text-stone-500">Kid help</label><select id="help" class="w-full mt-1 rounded-lg border border-stone-300 px-3 py-2.5 text-sm"><option value="low">Low</option><option value="some" selected>Some</option><option value="high">High</option></select></div>
           </div>
         </div>
-        <div class="bg-emerald-900 text-white rounded-2xl p-5">
-          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Capacity</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <div><p class="text-emerald-200/80 text-xs">People</p><p id="t-people" class="font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs">Chore hrs/wk</p><p id="t-hours" class="font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs">Food scale</p><p id="t-food" class="font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs">Projects</p><p id="t-proj" class="font-semibold">—</p></div>
-          </div>
-        </div>
       </div>
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Household media</div>
-          <div><h2 class="text-lg font-bold text-white">Capacity</h2><p id="h-sum" class="text-sm text-emerald-300"></p><p class="text-xs text-emerald-100/80 mt-2">Labor after off-farm work and care for young kids sets the real ceiling.</p></div>
-          <div class="border-t border-emerald-800 pt-3 space-y-3">
-            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Live stats</p>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Available labor</span><span id="s-lab-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-lab" class="stat-fill bg-emerald-400" style="width:50%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Care load</span><span id="s-care-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-care" class="stat-fill bg-rose-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Food need</span><span id="s-food-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-food" class="stat-fill bg-amber-400" style="width:45%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Animal ceiling</span><span id="s-ani-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-ani" class="stat-fill bg-sky-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Garden ceiling</span><span id="s-gar-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-gar" class="stat-fill bg-lime-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Build bandwidth</span><span id="s-bld-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-bld" class="stat-fill bg-violet-400" style="width:35%"></div></div></div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Capacity</h2>
+            <p id="h-sum" class="text-sm text-emerald-300"></p>
+            <p class="text-xs text-emerald-100/80 mt-2">Labor after off-farm work and care for young kids sets the real ceiling.</p>
+          </div>
+          <div class="border-t border-emerald-800 pt-3 space-y-2.5 text-sm">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">Estimates</p>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">People</span><span id="s-people" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Chore capacity</span><span id="s-hours" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Food scale</span><span id="s-food" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between gap-2 pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Animal room</span><span id="s-ani" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Garden room</span><span id="s-gar" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Build bandwidth</span><span id="s-bld" class="font-medium text-right">—</span></div>
           </div>
         </div>
       </div>
@@ -68,14 +63,39 @@
   <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
   <script src="/site.js"></script>
   <script>
-    function bar(id,pct,label){document.getElementById(id).style.width=Math.min(95,Math.max(5,pct))+'%';document.getElementById(id+'-l').textContent=label;}function lbl(p){return p>70?'High':p>40?'Moderate':'Low';}
-    function refresh(){const adults=+document.getElementById('adults').value||1;const off=+document.getElementById('offfarm').value||0;const c05=+document.getElementById('c05').value||0;const c611=+document.getElementById('c611').value||0;const c1215=+document.getElementById('c1215').value||0;const help=document.getElementById('help').value;
-      const kids=c05+c611+c1215;const people=adults+kids;let adultHrs=Math.max(2,adults*25-off*0.35);let kidHrs=c611*2+c1215*5;if(help==='low')kidHrs*=0.4;if(help==='high')kidHrs*=1.3;const careDrain=c05*8+c611*3;const netHrs=Math.max(1,adultHrs+kidHrs-careDrain*0.3);
-      const laborPct=Math.min(95,netHrs*2.2);const carePct=Math.min(95,careDrain*3);const foodPct=Math.min(95,people*12);const aniPct=Math.min(95,netHrs*2);const garPct=Math.min(95,netHrs*1.8);const bldPct=Math.min(95,Math.max(5,(adultHrs-10)*2));
-      bar('s-lab',laborPct,lbl(laborPct));bar('s-care',carePct,lbl(carePct));bar('s-food',foodPct,people+' mouths');bar('s-ani',aniPct,lbl(aniPct));bar('s-gar',garPct,lbl(garPct));bar('s-bld',bldPct,lbl(bldPct));
-      document.getElementById('h-sum').textContent=adults+' adult'+(adults===1?'':'s')+' · '+kids+' child'+(kids===1?'':'ren');
-      document.getElementById('t-people').textContent=people;document.getElementById('t-hours').textContent='~'+Math.round(netHrs)+' hr';document.getElementById('t-food').textContent=people+' person';document.getElementById('t-proj').textContent=bldPct>55?'Room for a build':bldPct>30?'One small project':'Stabilize first';}
-    ['adults','offfarm','c05','c611','c1215','help'].forEach(id=>{document.getElementById(id).addEventListener('input',refresh);document.getElementById(id).addEventListener('change',refresh);});refresh();
+    function refresh() {
+      const adults = +document.getElementById('adults').value || 1;
+      const off = +document.getElementById('offfarm').value || 0;
+      const c05 = +document.getElementById('c05').value || 0;
+      const c611 = +document.getElementById('c611').value || 0;
+      const c1215 = +document.getElementById('c1215').value || 0;
+      const help = document.getElementById('help').value;
+
+      const kids = c05 + c611 + c1215;
+      const people = adults + kids;
+      let adultHrs = Math.max(2, adults * 25 - off * 0.35);
+      let kidHrs = c611 * 2 + c1215 * 5;
+      if (help === 'low') kidHrs *= 0.4;
+      if (help === 'high') kidHrs *= 1.3;
+      const careDrain = c05 * 8 + c611 * 3;
+      const netHrs = Math.max(1, adultHrs + kidHrs - careDrain * 0.3);
+
+      document.getElementById('h-sum').textContent =
+        adults + ' adult' + (adults === 1 ? '' : 's') + ' · ' + kids + ' child' + (kids === 1 ? '' : 'ren');
+
+      document.getElementById('s-people').textContent = people;
+      document.getElementById('s-hours').textContent = '~' + Math.round(netHrs) + ' hr/wk';
+      document.getElementById('s-food').textContent = people + ' person' + (people === 1 ? '' : 's');
+      document.getElementById('s-ani').textContent = netHrs >= 20 ? 'Room for stock' : netHrs >= 10 ? 'Small flock OK' : 'Keep minimal';
+      document.getElementById('s-gar').textContent = netHrs >= 15 ? 'Serious garden' : netHrs >= 8 ? 'Kitchen scale' : 'Beds only';
+      document.getElementById('s-bld').textContent = (adultHrs - 10) > 15 ? 'Room for a build' : (adultHrs - 10) > 5 ? 'One small project' : 'Stabilize first';
+    }
+
+    ['adults','offfarm','c05','c611','c1215','help'].forEach(id => {
+      document.getElementById(id).addEventListener('input', refresh);
+      document.getElementById(id).addEventListener('change', refresh);
+    });
+    refresh();
   </script>
 </body>
 </html>
