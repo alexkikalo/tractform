@@ -36,7 +36,7 @@
 
   function getLocation() {
     const d = load();
-    // Normalize legacy shape { place: "Decatur, TX" } into city/state if possible
+    // Normalize legacy shape { place: "City, ST" } into city/state if possible
     if (d.place && !d.state) {
       const m = String(d.place).match(/,\s*([A-Za-z]{2})\s*$/);
       if (m) {
@@ -150,7 +150,7 @@
         '<div class="grid grid-cols-3 gap-2 mb-3">' +
           '<div class="col-span-2">' +
             '<label class="block text-xs text-stone-500 mb-1">City</label>' +
-            '<input id="tf-city" type="text" placeholder="Decatur" ' +
+            '<input id="tf-city" type="text" placeholder="" ' +
               'class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700" />' +
           '</div>' +
           '<div>' +
@@ -161,7 +161,7 @@
           '</div>' +
         '</div>' +
         '<label class="block text-xs text-stone-500 mb-1">ZIP <span class="font-normal">(optional — fills zone)</span></label>' +
-        '<input id="tf-zip" type="text" inputmode="numeric" maxlength="10" placeholder="76234" ' +
+        '<input id="tf-zip" type="text" inputmode="numeric" maxlength="10" placeholder="" ' +
           'class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700" />' +
         '<p id="tf-lookup-status" class="text-xs text-stone-400 mb-3 min-h-[1rem]"></p>' +
         '<label class="block text-xs text-stone-500 mb-1">USDA hardiness zone</label>' +
@@ -235,7 +235,7 @@
         parts.push('Zone ' + z);
       }
       statusEl.textContent = parts.length
-        ? parts.join(' · ') + ' from ZIP ' + zip
+        ? parts.join(' · ') + ' from ZIP'
         : 'Couldn’t auto-detect — set state and zone';
       persist();
     }
