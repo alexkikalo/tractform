@@ -6,7 +6,8 @@
   const ANIMALS = {
     sheep: {
       name: 'Sheep',
-      video: '/videos/Sheep.mp4',
+      // Fallback only; each breed has its own video under /videos/animals/sheep/
+      video: '/videos/animals/sheep/Katahdin.mp4',
       unit: 'head',
       blurb: 'Meat, wool, or dual-purpose. Manageable on small acreage when stocking rates and fencing are right.',
       zoneMin: 3,
@@ -16,11 +17,12 @@
       breeds: {
         katahdin: {
           name: 'Katahdin',
+          video: '/videos/animals/sheep/Katahdin.mp4',
           note: 'Hair sheep — no shearing. Easy care, good meat.',
-          landPer: 0.25,          // acres per head (moderate forage)
-          waterGal: 2.0,          // gal/day adult
-          feedLb: 3.5,            // dry matter lb/day
-          laborMin: 3,            // min/day/head chore time
+          landPer: 0.25,
+          waterGal: 2.0,
+          feedLb: 3.5,
+          laborMin: 3,
           shelterSqFt: 16,
           uses: 'Meat',
           zoneMin: 3,
@@ -31,6 +33,7 @@
         },
         dorper: {
           name: 'Dorper',
+          video: '/videos/animals/sheep/Dorper.mp4',
           note: 'Hair sheep, hardy, fast growth.',
           landPer: 0.25,
           waterGal: 2.0,
@@ -46,6 +49,7 @@
         },
         suffolk: {
           name: 'Suffolk',
+          video: '/videos/animals/sheep/Suffolk.mp4',
           note: 'Wool + meat. Needs shearing.',
           landPer: 0.30,
           waterGal: 2.5,
@@ -61,6 +65,7 @@
         },
         'east-friesian': {
           name: 'East Friesian',
+          video: '/videos/animals/sheep/Friesian.mp4',
           note: 'Dairy-oriented. Higher feed and labor.',
           landPer: 0.35,
           waterGal: 3.5,
@@ -399,14 +404,12 @@
       ? window.TractformLocation.zoneNumber(zone)
       : null;
 
-    // Base totals
     const landAcres = breed.landPer * qty;
     const waterGal = breed.waterGal * qty;
     const feedLb = breed.feedLb * qty;
     const laborMin = breed.laborMin * qty;
     const shelterSqFt = breed.shelterSqFt * qty;
 
-    // Intensity bars (0–100) — scale mildly with quantity for realism
     const scaleFactor = Math.min(1.25, 0.85 + Math.log10(qty + 1) * 0.2);
 
     const landIntensity = Math.min(95, Math.round(breed.landPer * 55 * scaleFactor));
@@ -418,7 +421,6 @@
     const yield = breed.yield;
     const life = breed.life;
 
-    // Zone fit
     let zoneFit = { status: 'unknown', label: 'Set zone in the header for climate fit.', detail: '' };
     if (zoneNum != null) {
       const zMin = breed.zoneMin || animal.zoneMin;
@@ -445,7 +447,6 @@
       }
     }
 
-    // Human-readable totals
     let landLabel;
     if (animalKey === 'chickens') {
       landLabel = `~${Math.ceil(qty * 3)} sq ft coop + run`;
@@ -463,10 +464,13 @@
       ? `~${Math.round(laborMin)} min/day`
       : `~${(laborMin / 60).toFixed(1)} hr/day`;
 
+    // Breed video takes priority when present (e.g. sheep breeds)
+    const video = breed.video || animal.video;
+
     return {
       animalKey,
       animalName: animal.name,
-      video: animal.video,
+      video,
       unit: animal.unit,
       blurb: animal.blurb,
       breedKey,
@@ -475,7 +479,6 @@
       quantity: qty,
       uses: breed.uses,
 
-      // Totals
       landAcres,
       landLabel,
       waterGal,
@@ -485,7 +488,6 @@
       laborLabel,
       shelterSqFt,
 
-      // Bars (0–100)
       bars: {
         land: { pct: landIntensity, label: landIntensity > 70 ? 'High' : landIntensity > 40 ? 'Moderate' : 'Low' },
         water: { pct: waterIntensity, label: waterIntensity > 70 ? 'High' : waterIntensity > 35 ? 'Moderate' : 'Low' },
