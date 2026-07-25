@@ -31,13 +31,13 @@
 
   <section class="max-w-6xl mx-auto px-6 pt-8 pb-3">
     <h1 class="text-2xl font-bold tracking-tight">Land</h1>
-    <p class="text-sm text-stone-500 mt-1">Pick activities and scale. See acreage, terrain, and a cost range for your area.</p>
+    <p class="text-sm text-stone-500 mt-1">Pick activities and scale. See acreage, terrain, and cost in the plan summary.</p>
   </section>
 
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
+      <!-- INPUTS ONLY -->
       <div class="lg:col-span-2 space-y-4">
-
         <div class="bg-white border border-stone-200 rounded-2xl p-5">
           <label class="block text-sm font-semibold mb-3">Activities <span class="font-normal text-stone-500">(select all that apply)</span></label>
           <div class="flex flex-wrap gap-2" id="activity-controls"></div>
@@ -57,39 +57,9 @@
             <p id="market-hint" class="text-xs text-stone-500 mt-2"></p>
           </div>
         </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden">
-          <div class="px-5 py-3 border-b border-stone-100">
-            <h3 class="text-sm font-semibold">Land use detail</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead class="bg-stone-50 text-stone-500 text-xs uppercase tracking-wide">
-                <tr>
-                  <th class="text-left px-5 py-2.5 font-medium">Activity</th>
-                  <th class="text-left px-3 py-2.5 font-medium">Scale</th>
-                  <th class="text-left px-3 py-2.5 font-medium">Acres</th>
-                  <th class="text-left px-3 py-2.5 font-medium">Optimal terrain</th>
-                </tr>
-              </thead>
-              <tbody id="breakdown-body" class="divide-y divide-stone-100"></tbody>
-            </table>
-          </div>
-          <p id="breakdown-note" class="px-5 py-3 text-xs text-stone-500 border-t border-stone-100"></p>
-        </div>
-
-        <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200 space-y-3">
-          <h3 class="text-sm font-semibold">Land cost</h3>
-          <p id="cost-main" class="text-sm text-stone-600">Select a state in the header location control.</p>
-          <p id="cost-note" class="text-xs text-stone-500"></p>
-          <p id="cost-detail" class="text-xs text-stone-500"></p>
-          <div id="listing-links" class="hidden flex flex-wrap gap-2 pt-1"></div>
-          <p id="cost-disclaimer" class="text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80">
-            Planning estimate only. Prices vary by parcel, access, water, and demand — verify with current local listings before relying on this range.
-          </p>
-        </div>
       </div>
 
+      <!-- OUTPUTS ONLY -->
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Parcel media</div>
@@ -98,10 +68,9 @@
             <p id="plan-blurb" class="text-xs text-emerald-100/80 mt-1.5 leading-relaxed"></p>
           </div>
 
-          <!-- Cart-style land use breakdown -->
           <div class="border-t border-emerald-800 pt-3">
             <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-2">Land use</p>
-            <div id="cart-lines" class="space-y-2 text-sm"></div>
+            <div id="cart-lines" class="space-y-2.5 text-sm"></div>
             <div id="cart-buffer" class="hidden flex justify-between gap-2 text-sm pt-1">
               <span class="text-emerald-300/70">Buffer / access</span>
               <span id="cart-buffer-acres" class="tabular-nums text-emerald-200/90"></span>
@@ -116,9 +85,15 @@
             <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">Context</p>
             <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium tabular-nums text-right">—</span></div>
             <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Market data</span><span id="sum-market-src" class="font-medium text-right text-xs">—</span></div>
-            <div class="flex justify-between gap-2 pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost range</span><span id="sum-cost" class="font-medium text-right">—</span></div>
           </div>
-          <p id="sum-cost-note" class="text-[11px] text-emerald-400/70 leading-relaxed"></p>
+
+          <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">Land cost</p>
+            <p id="sum-cost-main" class="text-sm text-emerald-50 font-medium leading-snug">—</p>
+            <p id="sum-cost-note" class="text-[11px] text-emerald-400/70 leading-relaxed"></p>
+            <div id="listing-links" class="hidden flex flex-wrap gap-2 pt-1"></div>
+            <p class="text-[11px] text-emerald-500/60 leading-relaxed pt-1">Planning estimate only — verify with current local listings.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -134,10 +109,7 @@
   <script src="/site.js"></script>
   <script src="/data/land.js"></script>
   <script>
-    const selected = new Map([
-      ['homesite', 'medium'],
-      ['garden', 'medium']
-    ]);
+    const selected = new Map([['homesite', 'medium'], ['garden', 'medium']]);
     let setting = 'mixed';
     let market = 'homestead';
 
@@ -161,9 +133,8 @@
       wrap.querySelectorAll('.act-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.id;
-          if (selected.has(id)) {
-            if (selected.size > 1) selected.delete(id);
-          } else selected.set(id, 'medium');
+          if (selected.has(id)) { if (selected.size > 1) selected.delete(id); }
+          else selected.set(id, 'medium');
           buildActivityControls();
           buildScalePanel();
           refresh();
@@ -196,7 +167,7 @@
               <span class="text-sm font-medium">${a.name}</span>
               <div class="flex gap-1.5">${buttons}</div>
             </div>
-            <p class="text-xs text-stone-500">${current.desc} · <span class="tabular-nums font-medium text-stone-700">${current.acres} ac</span></p>
+            <p class="text-xs text-stone-500">${current.desc}</p>
           </div>`;
         }).join('');
       panel.querySelectorAll('.scale-btn').forEach(btn => {
@@ -253,24 +224,6 @@
     }
 
     function render(r) {
-      // Left detail table
-      document.getElementById('breakdown-body').innerHTML = r.rows.map(row => `
-        <tr>
-          <td class="px-5 py-3">
-            <div class="font-medium text-stone-900">${row.name}</div>
-            <div class="text-xs text-stone-500 mt-0.5">${row.scaleDesc}</div>
-          </td>
-          <td class="px-3 py-3">${row.scaleLabel}</td>
-          <td class="px-3 py-3 tabular-nums font-medium">${row.acres}</td>
-          <td class="px-3 py-3 text-stone-600">${row.terrainLabel}</td>
-        </tr>
-      `).join('');
-
-      document.getElementById('breakdown-note').textContent = r.hasBuffer
-        ? 'Includes buffer/access in the total.'
-        : `A small buffer (~${r.buffer} ac) is added for lanes, setbacks, and flexibility.`;
-
-      // Right card — cart lines
       const cart = document.getElementById('cart-lines');
       if (!r.rows.length) {
         cart.innerHTML = '<p class="text-emerald-300/70 text-xs">No activities selected</p>';
@@ -279,7 +232,7 @@
           <div class="flex justify-between gap-3 items-start">
             <div class="min-w-0">
               <div class="text-emerald-50 font-medium truncate">${row.short}</div>
-              <div class="text-[11px] text-emerald-300/60">${row.scaleLabel}</div>
+              <div class="text-[11px] text-emerald-300/60">${row.scaleLabel} · ${row.terrainLabel}</div>
             </div>
             <span class="tabular-nums text-emerald-100 shrink-0">${row.acres} ac</span>
           </div>
@@ -299,75 +252,47 @@
       document.getElementById('sum-acres').textContent = r.totalAcres + ' ac';
       document.getElementById('plan-blurb').textContent =
         r.rows.length
-          ? r.rows.length + ' activit' + (r.rows.length === 1 ? 'y' : 'ies') + ' · adjust scale on the left'
+          ? r.rows.length + ' activit' + (r.rows.length === 1 ? 'y' : 'ies') + ' selected'
           : 'Pick activities on the left.';
 
-      // Cost card
-      const costCard = document.getElementById('cost-card');
-      const costMain = document.getElementById('cost-main');
-      const costNote = document.getElementById('cost-note');
-      const costDetail = document.getElementById('cost-detail');
+      document.getElementById('sum-season').textContent = r.season;
+      document.getElementById('sum-market-src').textContent =
+        r.cost.sourceType === 'local' ? 'Local band' :
+        r.cost.sourceType === 'state' ? 'State fallback' : '—';
+
+      const costMain = document.getElementById('sum-cost-main');
+      const costNote = document.getElementById('sum-cost-note');
       const listingLinks = document.getElementById('listing-links');
-      const costDisclaimer = document.getElementById('cost-disclaimer');
 
       if (!r.cost.hasLocation) {
-        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
-        costMain.className = 'text-sm text-stone-600';
-        costMain.textContent = r.cost.message;
-        costNote.textContent = 'Open Location in the header, choose a state (required), and optionally city + ZIP.';
-        costDetail.textContent = '';
+        costMain.textContent = 'Select a state in Location';
+        costNote.textContent = r.cost.message || '';
         listingLinks.className = 'hidden';
-        costDisclaimer.className = 'text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80';
       } else {
-        const isLocal = r.cost.sourceType === 'local';
-        costCard.className = isLocal
-          ? 'rounded-2xl border p-5 bg-emerald-50 border-emerald-200 space-y-3'
-          : 'rounded-2xl border p-5 bg-amber-50 border-amber-200 space-y-3';
-        costMain.className = isLocal
-          ? 'text-sm text-emerald-900 font-medium'
-          : 'text-sm text-amber-950 font-medium';
-
         const where = r.cost.localName || r.cost.stateName;
         costMain.textContent =
-          `${money(r.cost.perAcreLow)}–${money(r.cost.perAcreHigh)}/acre · ${where} · ` +
-          `lot ~${money(r.cost.totalLow)}–${money(r.cost.totalHigh)}`;
-
-        costNote.textContent = r.cost.note || '';
-        costDetail.textContent = r.cost.source || '';
+          money(r.cost.perAcreLow) + '–' + money(r.cost.perAcreHigh) + '/acre · ' + where +
+          '\nlot ~' + money(r.cost.totalLow) + '–' + money(r.cost.totalHigh);
+        costMain.innerHTML =
+          money(r.cost.perAcreLow) + '–' + money(r.cost.perAcreHigh) + '/acre<br>' +
+          '<span class="text-emerald-200/80 font-normal text-xs">' + where + '</span><br>' +
+          'lot ~' + money(r.cost.totalLow) + '–' + money(r.cost.totalHigh);
+        costNote.textContent = r.cost.note || 'Verify with current local listings.';
 
         if (r.cost.listings) {
           listingLinks.className = 'flex flex-wrap gap-2 pt-1';
           listingLinks.innerHTML =
-            `<span class="text-xs text-stone-600 self-center mr-1">Check live listings:</span>` +
-            `<a class="text-xs font-medium px-2.5 py-1.5 rounded-md bg-white border border-stone-300 hover:border-emerald-700" target="_blank" rel="noopener" href="${r.cost.listings.landwatch}">LandWatch</a>` +
-            `<a class="text-xs font-medium px-2.5 py-1.5 rounded-md bg-white border border-stone-300 hover:border-emerald-700" target="_blank" rel="noopener" href="${r.cost.listings.zillow}">Zillow Land</a>`;
+            `<a class="text-[11px] font-medium px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/15" target="_blank" rel="noopener" href="${r.cost.listings.landwatch}">LandWatch</a>` +
+            `<a class="text-[11px] font-medium px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/15" target="_blank" rel="noopener" href="${r.cost.listings.zillow}">Zillow Land</a>`;
         } else {
           listingLinks.className = 'hidden';
         }
-
-        costDisclaimer.className = isLocal
-          ? 'text-[11px] text-emerald-800/60 leading-relaxed pt-1 border-t border-emerald-200/80'
-          : 'text-[11px] text-amber-900/55 leading-relaxed pt-1 border-t border-amber-200/80';
       }
-
-      document.getElementById('sum-market-src').textContent =
-        r.cost.sourceType === 'local' ? 'Local band' :
-        r.cost.sourceType === 'state' ? 'State fallback' : '—';
-      document.getElementById('sum-season').textContent = r.season;
-      document.getElementById('sum-cost').textContent =
-        r.cost.hasLocation
-          ? money(r.cost.totalLow) + '–' + money(r.cost.totalHigh)
-          : '—';
-      document.getElementById('sum-cost-note').textContent =
-        r.cost.hasLocation
-          ? 'Verify with current local listings.'
-          : 'Set state in the header location control.';
     }
 
     function refresh() {
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       const activityList = Array.from(selected.entries()).map(([id, scale]) => ({ id, scale }));
-
       const r = window.TractformLand.calculate({
         activities: activityList,
         setting,
@@ -378,14 +303,10 @@
         place: loc.place || (window.TractformLocation && window.TractformLocation.displayPlace(loc)) || '',
         zone: loc.zone || null
       });
-
       render(r);
     }
 
-    if (window.TractformLocation) {
-      window.TractformLocation.onChange(() => refresh());
-    }
-
+    if (window.TractformLocation) window.TractformLocation.onChange(() => refresh());
     window.addEventListener('focus', () => refresh());
 
     buildActivityControls();
