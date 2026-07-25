@@ -1,215 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Land — Tractform</title>
-  <meta name="description" content="Evaluate land with climate, capacity, and parcel stats." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body{font-family:'Inter',system-ui,sans-serif}
-    .stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}
-    .media-ph{width:100%;max-width:220px;aspect-ratio:1;border-radius:.75rem;background:#f5f5f4;border:1px dashed #d6d3d1;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.75rem;text-align:center;padding:1rem}
-  </style>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
 </head>
-<body class="bg-stone-50 text-stone-900 antialiased">
-  <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-2 shrink-0">
-        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div>
-        <span class="font-semibold text-lg tracking-tight">Tractform</span>
-      </a>
-      <nav class="hidden sm:flex gap-5 text-sm font-medium text-stone-600">
-        <a href="/land.html" class="text-emerald-800 font-semibold">Land</a>
-        <a href="/infrastructure.html" class="hover:text-stone-900">Water & Power</a>
-        <a href="/buildings.html" class="hover:text-stone-900">Buildings</a>
-        <a href="/production.html" class="hover:text-stone-900">Livestock</a>
-        <a href="/gardens.html" class="hover:text-stone-900">Gardens</a>
-        <a href="/family.html" class="hover:text-stone-900">Household</a>
+<body class="bg-stone-100 text-stone-900 antialiased">
+  <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div><span class="font-semibold tracking-tight">Tractform</span></a>
+      <nav class="hidden sm:flex gap-5 text-sm font-medium text-emerald-100/90">
+        <a href="/land.html" class="text-white font-semibold">Land</a>
+        <a href="/utilities.html" class="hover:text-white">Utilities</a>
+        <a href="/buildings.html" class="hover:text-white">Buildings</a>
+        <a href="/production.html" class="hover:text-white">Livestock</a>
+        <a href="/gardens.html" class="hover:text-white">Gardens</a>
+        <a href="/family.html" class="hover:text-white">Household</a>
       </nav>
     </div>
   </header>
-
-  <section class="max-w-6xl mx-auto px-6 pt-10 pb-4">
-    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Land</p>
-    <h1 class="text-3xl font-bold tracking-tight mb-2">Configure the parcel</h1>
-    <p class="text-stone-600 text-sm max-w-2xl">Set use and ground type. Climate stats follow your zone from the header.</p>
-  </section>
-
+  <section class="max-w-6xl mx-auto px-6 pt-8 pb-3"><h1 class="text-2xl font-bold tracking-tight">Land</h1></section>
   <section class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="grid lg:grid-cols-3 gap-8 items-start">
-      <div class="lg:col-span-2 space-y-6">
-
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6">
+    <div class="grid lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white border border-stone-200 rounded-2xl p-5">
           <label class="block text-sm font-semibold mb-3">Primary use</label>
-          <div class="flex flex-wrap gap-2" id="use-controls">
+          <div class="flex flex-wrap gap-2">
             <button type="button" data-use="livestock" class="use-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Livestock</button>
             <button type="button" data-use="garden" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Garden / crops</button>
-            <button type="button" data-use="timber" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Timber / woodland</button>
+            <button type="button" data-use="timber" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Timber</button>
             <button type="button" data-use="homestead" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Mixed homestead</button>
           </div>
         </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-semibold mb-2">Terrain</label>
-            <select id="terrain" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm">
-              <option value="open">Open pasture / field</option>
-              <option value="rolling">Rolling / mixed</option>
-              <option value="wooded">Mostly wooded</option>
-              <option value="steep">Steep or broken</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold mb-2">Acres</label>
-            <input id="acres" type="number" min="0.25" max="2000" step="0.25" value="10" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm tabular-nums" />
-          </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 grid sm:grid-cols-2 gap-4">
+          <div><label class="block text-sm font-semibold mb-2">Terrain</label><select id="terrain" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"><option value="open">Open pasture / field</option><option value="rolling">Rolling / mixed</option><option value="wooded">Mostly wooded</option><option value="steep">Steep or broken</option></select></div>
+          <div><label class="block text-sm font-semibold mb-2">Acres</label><input id="acres" type="number" min="0.25" max="2000" step="0.25" value="10" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" /></div>
         </div>
-
-        <div id="zone-card" class="rounded-2xl border p-5 sm:p-6 bg-white border-stone-200">
-          <h3 class="text-sm font-semibold mb-1">Climate snapshot</h3>
-          <p id="zone-status" class="text-sm font-medium mb-2 text-stone-600">Set zone in the header for local weather stats.</p>
-          <p id="zone-detail" class="text-xs text-stone-500 leading-relaxed"></p>
-        </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-start">
-          <div class="media-ph">Parcel<br/>media placeholder</div>
-          <div class="min-w-0 flex-1">
-            <h2 id="use-name" class="text-xl font-bold tracking-tight mb-1">Livestock</h2>
-            <p id="selection-summary" class="text-sm text-emerald-800 font-medium mb-2">10 acres · Open pasture</p>
-            <p id="use-blurb" class="text-stone-600 text-sm leading-relaxed"></p>
-          </div>
-        </div>
-
-        <div class="bg-emerald-900 text-white rounded-2xl p-5 sm:p-6">
-          <h3 class="text-sm font-medium text-emerald-200 uppercase tracking-wide mb-4">Rough capacity</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-            <div><p class="text-emerald-200/80 text-xs mb-1">Growing season</p><p id="tot-season" class="text-lg font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-1">Frost risk</p><p id="tot-frost" class="text-lg font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-1">Use fit</p><p id="tot-fit" class="text-lg font-semibold">—</p></div>
+        <div id="zone-card" class="rounded-2xl border p-4 bg-white border-stone-200"><p id="zone-status" class="text-sm font-medium text-stone-600">Set zone in the header for climate stats.</p><p id="zone-detail" class="text-xs text-stone-500 mt-1"></p></div>
+        <div class="bg-emerald-900 text-white rounded-2xl p-5">
+          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Climate snapshot</h3>
+          <div class="grid grid-cols-3 gap-3 text-sm">
+            <div><p class="text-emerald-200/80 text-xs">Growing season</p><p id="tot-season" class="font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs">Frost risk</p><p id="tot-frost" class="font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs">Use fit</p><p id="tot-fit" class="font-semibold">—</p></div>
           </div>
         </div>
       </div>
-
       <div class="lg:col-span-1">
-        <div class="lg:sticky lg:top-28 space-y-3">
-          <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide">Live stats</h3>
-          <p class="text-xs text-stone-400 mb-2">Climate & parcel intensity</p>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Cold stress</span><span id="s-cold-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-cold" class="stat-fill bg-sky-700" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Heat / drought</span><span id="s-heat-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-heat" class="stat-fill bg-amber-600" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Forage potential</span><span id="s-forage-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-forage" class="stat-fill bg-emerald-600" style="width:50%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Garden viability</span><span id="s-garden-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-garden" class="stat-fill bg-lime-600" style="width:50%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Build difficulty</span><span id="s-build-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-build" class="stat-fill bg-stone-600" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Access / workability</span><span id="s-access-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-access" class="stat-fill bg-violet-600" style="width:55%"></div></div></div>
+        <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
+          <div class="media-ph">Parcel media</div>
+          <div><h2 id="use-name" class="text-lg font-bold text-white">Livestock</h2><p id="selection-summary" class="text-sm text-emerald-300">10 acres · Open</p><p id="use-blurb" class="text-xs text-emerald-100/80 mt-2"></p></div>
+          <div class="border-t border-emerald-800 pt-3 space-y-3">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Live stats</p>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Cold stress</span><span id="s-cold-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-cold" class="stat-fill bg-sky-400" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Heat / drought</span><span id="s-heat-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-heat" class="stat-fill bg-amber-400" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Forage potential</span><span id="s-forage-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-forage" class="stat-fill bg-lime-400" style="width:50%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Garden viability</span><span id="s-garden-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-garden" class="stat-fill bg-emerald-400" style="width:50%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Build difficulty</span><span id="s-build-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-build" class="stat-fill bg-stone-300" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Access</span><span id="s-access-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-access" class="stat-fill bg-violet-400" style="width:55%"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
-
-  <footer class="border-t border-stone-200 py-10">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center text-sm text-stone-500">
-      <a href="/" class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div><span>Tractform</span></a>
-      <p>&copy; 2026 Tractform</p>
-    </div>
-  </footer>
-
+  <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
   <script src="/site.js"></script>
   <script>
-    const uses = {
-      livestock: { name: 'Livestock', blurb: 'Prioritize open forage, water access, fencing lines, and handling areas.' },
-      garden: { name: 'Garden / crops', blurb: 'Prioritize sun, workable soil near water, and frost window length.' },
-      timber: { name: 'Timber / woodland', blurb: 'Prioritize access for equipment, stand health, and long-cycle returns.' },
-      homestead: { name: 'Mixed homestead', blurb: 'Balance pasture, garden ground, building sites, and daily chore routes.' }
-    };
-    const terrainStats = {
-      open: { build: 30, access: 75, forage: 70, label: 'Open pasture / field' },
-      rolling: { build: 45, access: 60, forage: 55, label: 'Rolling / mixed' },
-      wooded: { build: 55, access: 40, forage: 25, label: 'Mostly wooded' },
-      steep: { build: 80, access: 25, forage: 30, label: 'Steep or broken' }
-    };
-
-    let use = 'livestock';
-
-    function setBar(id, pct, label) {
-      document.getElementById(id).style.width = pct + '%';
-      document.getElementById(id + '-l').textContent = label;
-    }
-
-    function zoneClimate() {
-      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
-      const n = loc.zone ? window.TractformLocation.zoneNumber(loc.zone) : null;
-      if (n == null) {
-        return { cold: 40, heat: 40, season: '—', frost: '—', garden: 50, coldL: '—', heatL: '—', gardenL: '—' };
-      }
-      // Rough placeholders by zone number
-      const cold = Math.max(5, Math.min(95, (8 - n) * 12 + 20));
-      const heat = Math.max(5, Math.min(95, (n - 4) * 12 + 15));
-      const garden = Math.max(20, Math.min(90, 100 - Math.abs(n - 7) * 10));
-      const season = n <= 4 ? '~90–130 days' : n <= 6 ? '~140–180 days' : n <= 8 ? '~180–230 days' : '~230–300+ days';
-      const frost = n <= 4 ? 'High / late' : n <= 6 ? 'Moderate' : n <= 8 ? 'Mild' : 'Low';
-      return {
-        cold, heat, garden, season, frost,
-        coldL: cold > 60 ? 'High' : cold > 35 ? 'Moderate' : 'Low',
-        heatL: heat > 60 ? 'High' : heat > 35 ? 'Moderate' : 'Low',
-        gardenL: garden > 65 ? 'Strong' : garden > 40 ? 'Fair' : 'Short season'
-      };
-    }
-
-    function refresh() {
-      const t = document.getElementById('terrain').value;
-      const acres = parseFloat(document.getElementById('acres').value) || 1;
-      const u = uses[use];
-      const ts = terrainStats[t];
-      const c = zoneClimate();
-      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
-
-      document.querySelectorAll('.use-btn').forEach(b => {
-        const on = b.dataset.use === use;
-        b.classList.toggle('bg-emerald-800', on);
-        b.classList.toggle('text-white', on);
-        b.classList.toggle('border-emerald-800', on);
-        b.classList.toggle('bg-white', !on);
-        b.classList.toggle('text-stone-700', !on);
-        b.classList.toggle('border-stone-300', !on);
-      });
-
-      document.getElementById('use-name').textContent = u.name;
-      document.getElementById('use-blurb').textContent = u.blurb;
-      document.getElementById('selection-summary').textContent = acres + ' acres · ' + ts.label;
-
-      setBar('s-cold', c.cold, c.coldL);
-      setBar('s-heat', c.heat, c.heatL);
-      setBar('s-forage', use === 'timber' ? ts.forage * 0.4 : ts.forage, ts.forage > 55 ? 'Good' : ts.forage > 35 ? 'Fair' : 'Limited');
-      setBar('s-garden', use === 'garden' ? Math.min(95, c.garden + 10) : c.garden, c.gardenL);
-      setBar('s-build', ts.build, ts.build > 60 ? 'Hard' : ts.build > 40 ? 'Moderate' : 'Easier');
-      setBar('s-access', ts.access, ts.access > 60 ? 'Good' : ts.access > 40 ? 'Fair' : 'Limited');
-
-      document.getElementById('tot-season').textContent = c.season;
-      document.getElementById('tot-frost').textContent = c.frost;
-      document.getElementById('tot-fit').textContent = u.name.split(' ')[0];
-
-      const card = document.getElementById('zone-card');
-      const st = document.getElementById('zone-status');
-      const det = document.getElementById('zone-detail');
-      if (!loc.zone) {
-        card.className = 'rounded-2xl border p-5 sm:p-6 bg-white border-stone-200';
-        st.className = 'text-sm font-medium mb-2 text-stone-600';
-        st.textContent = 'Set zone in the header for local weather stats.';
-        det.textContent = 'Cold stress, heat, and growing season will calibrate to your USDA zone.';
-      } else {
-        card.className = 'rounded-2xl border p-5 sm:p-6 bg-emerald-50 border-emerald-200';
-        st.className = 'text-sm font-medium mb-2 text-emerald-800';
-        st.textContent = 'Zone ' + loc.zone + (loc.place ? ' · ' + loc.place : '');
-        det.textContent = 'Placeholder climate model: growing season ' + c.season + ', frost pressure ' + c.frost.toLowerCase() + '. Replace with station data later.';
-      }
-    }
-
-    document.querySelectorAll('.use-btn').forEach(b => b.addEventListener('click', () => { use = b.dataset.use; refresh(); }));
-    document.getElementById('terrain').addEventListener('change', refresh);
-    document.getElementById('acres').addEventListener('input', refresh);
-    if (window.TractformLocation) window.TractformLocation.onChange(refresh);
-    refresh();
+    const uses = { livestock:{name:'Livestock',blurb:'Prioritize forage, water, fencing, and handling areas.'}, garden:{name:'Garden / crops',blurb:'Prioritize sun, soil near water, and frost window.'}, timber:{name:'Timber',blurb:'Prioritize equipment access and long-cycle stands.'}, homestead:{name:'Mixed homestead',blurb:'Balance pasture, garden, building sites, and chore routes.'} };
+    const terrainStats = { open:{build:30,access:75,forage:70,label:'Open pasture'}, rolling:{build:45,access:60,forage:55,label:'Rolling / mixed'}, wooded:{build:55,access:40,forage:25,label:'Mostly wooded'}, steep:{build:80,access:25,forage:30,label:'Steep or broken'} };
+    let use='livestock';
+    function setBar(id,pct,label){document.getElementById(id).style.width=pct+'%';document.getElementById(id+'-l').textContent=label;}
+    function zoneClimate(){const loc=window.TractformLocation?window.TractformLocation.get():{};const n=loc.zone&&window.TractformLocation?window.TractformLocation.zoneNumber(loc.zone):null;if(n==null)return{cold:40,heat:40,season:'—',frost:'—',garden:50,coldL:'—',heatL:'—',gardenL:'—'};const cold=Math.max(5,Math.min(95,(8-n)*12+20));const heat=Math.max(5,Math.min(95,(n-4)*12+15));const garden=Math.max(20,Math.min(90,100-Math.abs(n-7)*10));return{cold,heat,garden,season:n<=4?'~90–130 days':n<=6?'~140–180 days':n<=8?'~180–230 days':'~230–300+ days',frost:n<=4?'High / late':n<=6?'Moderate':n<=8?'Mild':'Low',coldL:cold>60?'High':cold>35?'Moderate':'Low',heatL:heat>60?'High':heat>35?'Moderate':'Low',gardenL:garden>65?'Strong':garden>40?'Fair':'Short season'};}
+    function refresh(){const t=document.getElementById('terrain').value;const acres=parseFloat(document.getElementById('acres').value)||1;const u=uses[use];const ts=terrainStats[t];const c=zoneClimate();const loc=window.TractformLocation?window.TractformLocation.get():{};
+      document.querySelectorAll('.use-btn').forEach(b=>{const on=b.dataset.use===use;b.classList.toggle('bg-emerald-800',on);b.classList.toggle('text-white',on);b.classList.toggle('border-emerald-800',on);b.classList.toggle('bg-white',!on);b.classList.toggle('text-stone-700',!on);b.classList.toggle('border-stone-300',!on);});
+      document.getElementById('use-name').textContent=u.name;document.getElementById('use-blurb').textContent=u.blurb;document.getElementById('selection-summary').textContent=acres+' acres · '+ts.label;
+      setBar('s-cold',c.cold,c.coldL);setBar('s-heat',c.heat,c.heatL);setBar('s-forage',use==='timber'?ts.forage*0.4:ts.forage,ts.forage>55?'Good':ts.forage>35?'Fair':'Limited');
+      setBar('s-garden',use==='garden'?Math.min(95,c.garden+10):c.garden,c.gardenL);setBar('s-build',ts.build,ts.build>60?'Hard':ts.build>40?'Moderate':'Easier');setBar('s-access',ts.access,ts.access>60?'Good':ts.access>40?'Fair':'Limited');
+      document.getElementById('tot-season').textContent=c.season;document.getElementById('tot-frost').textContent=c.frost;document.getElementById('tot-fit').textContent=u.name.split(' ')[0];
+      const card=document.getElementById('zone-card'),st=document.getElementById('zone-status'),det=document.getElementById('zone-detail');
+      if(!loc.zone){card.className='rounded-2xl border p-4 bg-white border-stone-200';st.className='text-sm font-medium text-stone-600';st.textContent='Set zone in the header for climate stats.';det.textContent='Cold, heat, and season will calibrate to your USDA zone.';}
+      else{card.className='rounded-2xl border p-4 bg-emerald-50 border-emerald-200';st.className='text-sm font-medium text-emerald-800';st.textContent='Zone '+loc.zone+(loc.place?' · '+loc.place:'');det.textContent='Growing season '+c.season+', frost '+c.frost.toLowerCase()+'.';}}
+    document.querySelectorAll('.use-btn').forEach(b=>b.addEventListener('click',()=>{use=b.dataset.use;refresh();}));
+    document.getElementById('terrain').addEventListener('change',refresh);document.getElementById('acres').addEventListener('input',refresh);
+    if(window.TractformLocation)window.TractformLocation.onChange(refresh);refresh();
   </script>
 </body>
 </html>
