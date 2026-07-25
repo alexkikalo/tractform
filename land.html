@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Land — Tractform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif}
+    .stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}
+    .media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}
+  </style>
 </head>
 <body class="bg-stone-100 text-stone-900 antialiased">
   <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
     <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div><span class="font-semibold tracking-tight">Tractform</span></a>
+      <a href="/" class="flex items-center gap-2 shrink-0">
+        <div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div>
+        <span class="font-semibold tracking-tight">Tractform</span>
+      </a>
       <nav class="hidden sm:flex gap-5 text-sm font-medium text-emerald-100/90">
         <a href="/land.html" class="text-white font-semibold">Land</a>
         <a href="/utilities.html" class="hover:text-white">Utilities</a>
@@ -21,135 +29,242 @@
       </nav>
     </div>
   </header>
-  <section class="max-w-6xl mx-auto px-6 pt-8 pb-3"><h1 class="text-2xl font-bold tracking-tight">Land</h1></section>
+
+  <section class="max-w-6xl mx-auto px-6 pt-8 pb-3">
+    <h1 class="text-2xl font-bold tracking-tight">Land</h1>
+    <p class="text-sm text-stone-500 mt-1">Select the activities you want. See recommended acreage, terrain, and approximate cost for your area.</p>
+  </section>
+
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
+      <!-- Left: inputs -->
       <div class="lg:col-span-2 space-y-4">
         <div class="bg-white border border-stone-200 rounded-2xl p-5">
-          <label class="block text-sm font-semibold mb-3">Primary use</label>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" data-use="livestock" class="use-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Livestock</button>
-            <button type="button" data-use="garden" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Garden / crops</button>
-            <button type="button" data-use="timber" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Timber</button>
-            <button type="button" data-use="homestead" class="use-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Mixed homestead</button>
+          <label class="block text-sm font-semibold mb-3">Activities <span class="font-normal text-stone-500">(select all that apply)</span></label>
+          <div class="flex flex-wrap gap-2" id="activity-controls"></div>
+        </div>
+
+        <div id="breakdown" class="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+          <div class="px-5 py-3 border-b border-stone-100">
+            <h3 class="text-sm font-semibold">Land use breakdown</h3>
           </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-stone-50 text-stone-500 text-xs uppercase tracking-wide">
+                <tr>
+                  <th class="text-left px-5 py-2.5 font-medium">Activity</th>
+                  <th class="text-left px-3 py-2.5 font-medium">Typical acres</th>
+                  <th class="text-left px-3 py-2.5 font-medium">Range</th>
+                  <th class="text-left px-3 py-2.5 font-medium">Optimal terrain</th>
+                </tr>
+              </thead>
+              <tbody id="breakdown-body" class="divide-y divide-stone-100"></tbody>
+            </table>
+          </div>
+          <p id="breakdown-note" class="px-5 py-3 text-xs text-stone-500 border-t border-stone-100"></p>
         </div>
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 grid sm:grid-cols-2 gap-4">
-          <div><label class="block text-sm font-semibold mb-2">Terrain</label><select id="terrain" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"><option value="open">Open pasture / field</option><option value="rolling">Rolling / mixed</option><option value="wooded">Mostly wooded</option><option value="steep">Steep or broken</option></select></div>
-          <div><label class="block text-sm font-semibold mb-2">Acres</label><input id="acres" type="number" min="0.25" max="2000" step="0.25" value="10" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" /></div>
-        </div>
-        <div id="zone-card" class="rounded-2xl border p-4 bg-white border-stone-200"><p id="zone-status" class="text-sm font-medium text-stone-600">Set zone in the header for climate stats.</p><p id="zone-detail" class="text-xs text-stone-500 mt-1"></p></div>
+
         <div class="bg-emerald-900 text-white rounded-2xl p-5">
-          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Climate snapshot</h3>
+          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Recommended lot size</h3>
           <div class="grid grid-cols-3 gap-3 text-sm">
-            <div><p class="text-emerald-200/80 text-xs">Growing season</p><p id="tot-season" class="font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs">Frost risk</p><p id="tot-frost" class="font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs">Use fit</p><p id="tot-fit" class="font-semibold">—</p></div>
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-0.5">Typical</p>
+              <p id="tot-typical" class="font-semibold text-lg tabular-nums">—</p>
+            </div>
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-0.5">Lean range</p>
+              <p id="tot-min" class="font-semibold tabular-nums">—</p>
+            </div>
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-0.5">Comfortable</p>
+              <p id="tot-max" class="font-semibold tabular-nums">—</p>
+            </div>
           </div>
+          <p id="tot-note" class="text-xs text-emerald-200/70 mt-3"></p>
+        </div>
+
+        <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200">
+          <h3 class="text-sm font-semibold mb-2">Approximate land cost</h3>
+          <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header to see approximate land cost.</p>
+          <p id="cost-detail" class="text-xs text-stone-500 mt-2"></p>
         </div>
       </div>
+
+      <!-- Right: summary card -->
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Parcel media</div>
-          <div><h2 id="use-name" class="text-lg font-bold text-white">Livestock</h2><p id="selection-summary" class="text-sm text-emerald-300">10 acres · Open</p><p id="use-blurb" class="text-xs text-emerald-100/80 mt-2"></p></div>
-          <div class="border-t border-emerald-800 pt-3 space-y-3">
-            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Live stats</p>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Cold stress</span><span id="s-cold-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-cold" class="stat-fill bg-sky-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Heat / drought</span><span id="s-heat-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-heat" class="stat-fill bg-amber-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Forage potential</span><span id="s-forage-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-forage" class="stat-fill bg-lime-400" style="width:50%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Garden viability</span><span id="s-garden-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-garden" class="stat-fill bg-emerald-400" style="width:50%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Build difficulty</span><span id="s-build-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-build" class="stat-fill bg-stone-300" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Access</span><span id="s-access-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-access" class="stat-fill bg-violet-400" style="width:55%"></div></div></div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Your land plan</h2>
+            <p id="selection-summary" class="text-sm text-emerald-300 mt-1">Select activities</p>
+            <p id="plan-blurb" class="text-xs text-emerald-100/80 mt-2 leading-relaxed"></p>
           </div>
+          <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-emerald-300/80">Activities</span><span id="sum-count" class="font-medium">0</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Typical size</span><span id="sum-acres" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Frost risk</span><span id="sum-frost" class="font-medium">—</span></div>
+            <div class="flex justify-between pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost</span><span id="sum-cost" class="font-medium">—</span></div>
+          </div>
+          <p id="sum-cost-note" class="text-[11px] text-emerald-400/70 leading-relaxed"></p>
         </div>
       </div>
     </div>
   </section>
-  <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
+
+  <footer class="border-t border-stone-200 bg-white py-8">
+    <div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500">
+      <a href="/" class="font-medium text-emerald-900">Tractform</a>
+      <p>&copy; 2026 Tractform</p>
+    </div>
+  </footer>
+
   <script src="/site.js"></script>
   <script src="/data/land.js"></script>
   <script>
-    let use = 'livestock';
+    let selected = new Set(['homesite', 'garden']);
+    let resolvedState = null;
 
-    function setBar(id, pct, label) {
-      document.getElementById(id).style.width = pct + '%';
-      document.getElementById(id + '-l').textContent = label;
+    function buildControls() {
+      const wrap = document.getElementById('activity-controls');
+      const acts = window.TractformLand.ACTIVITIES;
+      wrap.innerHTML = Object.values(acts).map(a => {
+        const on = selected.has(a.id);
+        return `<button type="button" data-id="${a.id}"
+          class="act-btn px-3 py-2 rounded-lg border text-sm font-medium transition
+          ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
+          ${a.short}
+        </button>`;
+      }).join('');
+
+      wrap.querySelectorAll('.act-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          if (selected.has(id)) {
+            if (selected.size > 1) selected.delete(id);
+          } else {
+            selected.add(id);
+          }
+          buildControls();
+          refresh();
+        });
+      });
     }
 
-    function getState() {
-      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
-      return {
-        use,
-        terrain: document.getElementById('terrain').value,
-        acres: document.getElementById('acres').value,
-        zone: loc.zone || null,
-        place: loc.place || null
-      };
+    function money(n) {
+      if (n == null) return '—';
+      return '$' + Math.round(n).toLocaleString();
     }
 
     function render(r) {
-      if (!r) return;
+      // Breakdown table
+      const body = document.getElementById('breakdown-body');
+      body.innerHTML = r.rows.map(row => `
+        <tr>
+          <td class="px-5 py-3">
+            <div class="font-medium text-stone-900">${row.name}</div>
+            <div class="text-xs text-stone-500 mt-0.5">${row.note}</div>
+          </td>
+          <td class="px-3 py-3 tabular-nums font-medium">${row.acresTypical}</td>
+          <td class="px-3 py-3 tabular-nums text-stone-500">${row.acresMin}–${row.acresMax}</td>
+          <td class="px-3 py-3 text-stone-600">${row.terrainLabel}</td>
+        </tr>
+      `).join('');
 
-      document.querySelectorAll('.use-btn').forEach(b => {
-        const on = b.dataset.use === use;
-        b.classList.toggle('bg-emerald-800', on);
-        b.classList.toggle('text-white', on);
-        b.classList.toggle('border-emerald-800', on);
-        b.classList.toggle('bg-white', !on);
-        b.classList.toggle('text-stone-700', !on);
-        b.classList.toggle('border-stone-300', !on);
-      });
+      document.getElementById('breakdown-note').textContent = r.hasBuffer
+        ? 'Includes buffer/access activity in the total.'
+        : 'A small buffer (~10%) is added for lanes, setbacks, and flexibility.';
 
-      document.getElementById('use-name').textContent = r.useName;
-      document.getElementById('use-blurb').textContent = r.blurb;
-      document.getElementById('selection-summary').textContent =
-        r.acres + ' acres · ' + r.terrainLabel;
+      // Totals
+      document.getElementById('tot-typical').textContent = r.totalTypical + ' acres';
+      document.getElementById('tot-min').textContent = r.totalMin + ' ac';
+      document.getElementById('tot-max').textContent = r.totalMax + ' ac';
+      document.getElementById('tot-note').textContent =
+        'Typical is a practical starting point for the activities you selected. Adjust up or down for your climate, management intensity, and goals.';
 
-      const b = r.bars;
-      setBar('s-cold', b.cold.pct, b.cold.label);
-      setBar('s-heat', b.heat.pct, b.heat.label);
-      setBar('s-forage', b.forage.pct, b.forage.label);
-      setBar('s-garden', b.garden.pct, b.garden.label);
-      setBar('s-build', b.build.pct, b.build.label);
-      setBar('s-access', b.access.pct, b.access.label);
+      // Cost card
+      const costCard = document.getElementById('cost-card');
+      const costMain = document.getElementById('cost-main');
+      const costDetail = document.getElementById('cost-detail');
 
-      document.getElementById('tot-season').textContent = r.seasonLabel;
-      document.getElementById('tot-frost').textContent = r.frostLabel;
-      document.getElementById('tot-fit').textContent = r.fitLabel;
-
-      const card = document.getElementById('zone-card');
-      const st = document.getElementById('zone-status');
-      const det = document.getElementById('zone-detail');
-
-      if (r.zoneStatus.hasZone) {
-        card.className = 'rounded-2xl border p-4 bg-emerald-50 border-emerald-200';
-        st.className = 'text-sm font-medium text-emerald-800';
+      if (!r.cost.hasLocation) {
+        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200';
+        costMain.className = 'text-sm text-stone-600';
+        costMain.textContent = r.cost.message;
+        costDetail.textContent = 'We use USDA statewide farm real estate averages. City-level prices are not freely available in real time.';
       } else {
-        card.className = 'rounded-2xl border p-4 bg-white border-stone-200';
-        st.className = 'text-sm font-medium text-stone-600';
+        costCard.className = 'rounded-2xl border p-5 bg-emerald-50 border-emerald-200';
+        costMain.className = 'text-sm text-emerald-900 font-medium';
+        costMain.textContent =
+          `About ${money(r.cost.perAcre)}/acre in ${r.cost.stateName} · ` +
+          `typical lot ~${money(r.cost.totalTypical)} ` +
+          `(range ${money(r.cost.totalLow)}–${money(r.cost.totalHigh)})`;
+        costDetail.textContent = r.cost.source +
+          ' Near towns, water rights, and improved parcels often cost substantially more.';
       }
-      st.textContent = r.zoneStatus.label;
-      det.textContent = r.zoneStatus.detail;
+
+      // Right summary
+      const names = r.rows.map(x => x.short).join(', ');
+      document.getElementById('selection-summary').textContent =
+        r.rows.length ? names : 'Select activities';
+      document.getElementById('plan-blurb').textContent =
+        r.rows.length
+          ? `Plan for roughly ${r.totalTypical} acres across ${r.rows.length} activity area${r.rows.length > 1 ? 's' : ''}.`
+          : 'Pick the uses you want on the left.';
+      document.getElementById('sum-count').textContent = r.rows.length;
+      document.getElementById('sum-acres').textContent = r.totalTypical + ' ac';
+      document.getElementById('sum-season').textContent = r.season;
+      document.getElementById('sum-frost').textContent = r.frost;
+      document.getElementById('sum-cost').textContent =
+        r.cost.hasLocation ? money(r.cost.totalTypical) : '—';
+      document.getElementById('sum-cost-note').textContent =
+        r.cost.hasLocation
+          ? `Based on ${r.cost.stateName} USDA average. Not a listing price.`
+          : 'Set location in the header for cost range.';
     }
 
-    function refresh() {
-      const results = window.TractformLand.calculate(getState());
-      render(results);
-    }
+    async function refresh() {
+      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
+      const state = {
+        activities: Array.from(selected),
+        place: loc.place || '',
+        zone: loc.zone || null,
+        stateCode: resolvedState
+      };
 
-    document.querySelectorAll('.use-btn').forEach(b => {
-      b.addEventListener('click', () => {
-        use = b.dataset.use;
-        refresh();
-      });
-    });
-    document.getElementById('terrain').addEventListener('change', refresh);
-    document.getElementById('acres').addEventListener('input', refresh);
+      let r = window.TractformLand.calculate(state);
+
+      // If we have a ZIP but no state yet, try to resolve it
+      if (r._pendingZip && !resolvedState) {
+        const st = await window.TractformLand.stateFromZip(r._pendingZip);
+        if (st) {
+          resolvedState = st;
+          state.stateCode = st;
+          r = window.TractformLand.calculate(state);
+        }
+      }
+
+      // Also try parsing state from place string
+      if (!r.cost.hasLocation && loc.place) {
+        const st = window.TractformLand.parseStateFromPlace(loc.place);
+        if (st) {
+          resolvedState = st;
+          state.stateCode = st;
+          r = window.TractformLand.calculate(state);
+        }
+      }
+
+      render(r);
+    }
 
     if (window.TractformLocation) {
-      window.TractformLocation.onChange(refresh);
+      window.TractformLocation.onChange(() => {
+        resolvedState = null; // re-resolve when location changes
+        refresh();
+      });
     }
 
+    buildControls();
     refresh();
   </script>
 </body>
