@@ -49,9 +49,12 @@
   <section class="max-w-5xl mx-auto px-6 pb-20" id="content">
 
     <div data-panel="sheep" class="animal-panel space-y-8">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8">
-        <h2 class="text-xl font-semibold mb-2">Sheep</h2>
-        <p class="text-emerald-100 text-sm max-w-2xl">Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.</p>
+      <div class="flex flex-col sm:flex-row gap-6 items-start">
+        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Sheep.mp4" autoplay muted loop playsinline></video>
+        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
+          <h2 class="text-xl font-semibold mb-2">Sheep</h2>
+          <p class="text-emerald-100 text-sm max-w-2xl">Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.</p>
+        </div>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land</h3><p class="text-sm text-stone-600">Roughly 3–5 sheep per acre on decent pasture (less on poor forage). Rotate paddocks to protect ground and reduce parasites.</p></div>
@@ -82,9 +85,12 @@
     </div>
 
     <div data-panel="goats" class="animal-panel space-y-8 hidden">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8">
-        <h2 class="text-xl font-semibold mb-2">Goats</h2>
-        <p class="text-emerald-100 text-sm max-w-2xl">Milk, meat, or brush clearing. Excellent escape artists — fencing quality matters as much as feed.</p>
+      <div class="flex flex-col sm:flex-row gap-6 items-start">
+        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Goat.mp4" autoplay muted loop playsinline></video>
+        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
+          <h2 class="text-xl font-semibold mb-2">Goats</h2>
+          <p class="text-emerald-100 text-sm max-w-2xl">Milk, meat, or brush clearing. Excellent escape artists — fencing quality matters as much as feed.</p>
+        </div>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land</h3><p class="text-sm text-stone-600">Often 4–6 goats per acre depending on browse. Prefer browse and brush over pure grass. Rotate to protect plants and soil.</p></div>
@@ -171,6 +177,8 @@
         playVisibleVideos(panel);
       });
     });
+    // Play sheep video on initial load
+    playVisibleVideos(document.querySelector('[data-panel="sheep"]'));
   </script>
 </body>
 </html>
