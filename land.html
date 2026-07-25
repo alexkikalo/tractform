@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body{font-family:'Inter',system-ui,sans-serif}
-    .stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}
     .media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}
   </style>
 </head>
@@ -32,19 +31,31 @@
 
   <section class="max-w-6xl mx-auto px-6 pt-8 pb-3">
     <h1 class="text-2xl font-bold tracking-tight">Land</h1>
-    <p class="text-sm text-stone-500 mt-1">Select the activities you want. See recommended acreage, terrain, and approximate cost for your area.</p>
+    <p class="text-sm text-stone-500 mt-1">Pick activities and scale. See acreage, terrain, and a cost range for your area.</p>
   </section>
 
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
-      <!-- Left: inputs -->
       <div class="lg:col-span-2 space-y-4">
+
+        <!-- Activities -->
         <div class="bg-white border border-stone-200 rounded-2xl p-5">
           <label class="block text-sm font-semibold mb-3">Activities <span class="font-normal text-stone-500">(select all that apply)</span></label>
           <div class="flex flex-wrap gap-2" id="activity-controls"></div>
         </div>
 
-        <div id="breakdown" class="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+        <!-- Scale per selected activity -->
+        <div id="scale-panel" class="bg-white border border-stone-200 rounded-2xl p-5 space-y-4"></div>
+
+        <!-- Location setting for cost -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-5">
+          <label class="block text-sm font-semibold mb-2">Land setting <span class="font-normal text-stone-500">(affects cost range)</span></label>
+          <div class="flex flex-wrap gap-2" id="setting-controls"></div>
+          <p id="setting-hint" class="text-xs text-stone-500 mt-2"></p>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden">
           <div class="px-5 py-3 border-b border-stone-100">
             <h3 class="text-sm font-semibold">Land use breakdown</h3>
           </div>
@@ -53,8 +64,8 @@
               <thead class="bg-stone-50 text-stone-500 text-xs uppercase tracking-wide">
                 <tr>
                   <th class="text-left px-5 py-2.5 font-medium">Activity</th>
-                  <th class="text-left px-3 py-2.5 font-medium">Typical acres</th>
-                  <th class="text-left px-3 py-2.5 font-medium">Range</th>
+                  <th class="text-left px-3 py-2.5 font-medium">Scale</th>
+                  <th class="text-left px-3 py-2.5 font-medium">Acres</th>
                   <th class="text-left px-3 py-2.5 font-medium">Optimal terrain</th>
                 </tr>
               </thead>
@@ -64,25 +75,14 @@
           <p id="breakdown-note" class="px-5 py-3 text-xs text-stone-500 border-t border-stone-100"></p>
         </div>
 
+        <!-- Totals -->
         <div class="bg-emerald-900 text-white rounded-2xl p-5">
           <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Recommended lot size</h3>
-          <div class="grid grid-cols-3 gap-3 text-sm">
-            <div>
-              <p class="text-emerald-200/80 text-xs mb-0.5">Typical</p>
-              <p id="tot-typical" class="font-semibold text-lg tabular-nums">—</p>
-            </div>
-            <div>
-              <p class="text-emerald-200/80 text-xs mb-0.5">Lean range</p>
-              <p id="tot-min" class="font-semibold tabular-nums">—</p>
-            </div>
-            <div>
-              <p class="text-emerald-200/80 text-xs mb-0.5">Comfortable</p>
-              <p id="tot-max" class="font-semibold tabular-nums">—</p>
-            </div>
-          </div>
-          <p id="tot-note" class="text-xs text-emerald-200/70 mt-3"></p>
+          <p id="tot-typical" class="font-semibold text-2xl tabular-nums">—</p>
+          <p id="tot-note" class="text-xs text-emerald-200/70 mt-2"></p>
         </div>
 
+        <!-- Cost -->
         <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200">
           <h3 class="text-sm font-semibold mb-2">Approximate land cost</h3>
           <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header to see approximate land cost.</p>
@@ -90,7 +90,7 @@
         </div>
       </div>
 
-      <!-- Right: summary card -->
+      <!-- Right summary -->
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Parcel media</div>
@@ -101,10 +101,10 @@
           </div>
           <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
             <div class="flex justify-between"><span class="text-emerald-300/80">Activities</span><span id="sum-count" class="font-medium">0</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Typical size</span><span id="sum-acres" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Lot size</span><span id="sum-acres" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between"><span class="text-emerald-300/80">Setting</span><span id="sum-setting" class="font-medium">—</span></div>
             <div class="flex justify-between"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium">—</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Frost risk</span><span id="sum-frost" class="font-medium">—</span></div>
-            <div class="flex justify-between pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost</span><span id="sum-cost" class="font-medium">—</span></div>
+            <div class="flex justify-between pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost range</span><span id="sum-cost" class="font-medium text-right">—</span></div>
           </div>
           <p id="sum-cost-note" class="text-[11px] text-emerald-400/70 leading-relaxed"></p>
         </div>
@@ -122,10 +122,22 @@
   <script src="/site.js"></script>
   <script src="/data/land.js"></script>
   <script>
-    let selected = new Set(['homesite', 'garden']);
+    // selected: Map of activityId -> scaleKey
+    const selected = new Map([
+      ['homesite', 'medium'],
+      ['garden', 'medium']
+    ]);
+    let setting = 'rural';
     let resolvedState = null;
+    let lookingUp = false;
 
-    function buildControls() {
+    function money(n) {
+      if (n == null) return '—';
+      if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+      return '$' + Math.round(n).toLocaleString();
+    }
+
+    function buildActivityControls() {
       const wrap = document.getElementById('activity-controls');
       const acts = window.TractformLand.ACTIVITIES;
       wrap.innerHTML = Object.values(acts).map(a => {
@@ -143,90 +155,157 @@
           if (selected.has(id)) {
             if (selected.size > 1) selected.delete(id);
           } else {
-            selected.add(id);
+            selected.set(id, 'medium');
           }
-          buildControls();
+          buildActivityControls();
+          buildScalePanel();
           refresh();
         });
       });
     }
 
-    function money(n) {
-      if (n == null) return '—';
-      return '$' + Math.round(n).toLocaleString();
+    function buildScalePanel() {
+      const panel = document.getElementById('scale-panel');
+      const acts = window.TractformLand.ACTIVITIES;
+      if (selected.size === 0) {
+        panel.innerHTML = '<p class="text-sm text-stone-500">Select at least one activity.</p>';
+        return;
+      }
+
+      panel.innerHTML = '<p class="text-sm font-semibold mb-1">Scale for each activity</p>' +
+        Array.from(selected.entries()).map(([id, scaleKey]) => {
+          const a = acts[id];
+          if (!a) return '';
+          const buttons = Object.entries(a.scales).map(([k, sc]) => {
+            const on = k === scaleKey;
+            return `<button type="button" data-id="${id}" data-scale="${k}"
+              class="scale-btn px-2.5 py-1.5 rounded-md border text-xs font-medium
+              ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
+              ${sc.label}
+            </button>`;
+          }).join('');
+          const current = a.scales[scaleKey];
+          return `<div class="border border-stone-100 rounded-xl p-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="text-sm font-medium">${a.name}</span>
+              <div class="flex gap-1.5">${buttons}</div>
+            </div>
+            <p class="text-xs text-stone-500">${current.desc} · <span class="tabular-nums font-medium text-stone-700">${current.acres} ac</span></p>
+          </div>`;
+        }).join('');
+
+      panel.querySelectorAll('.scale-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selected.set(btn.dataset.id, btn.dataset.scale);
+          buildScalePanel();
+          refresh();
+        });
+      });
+    }
+
+    function buildSettingControls() {
+      const wrap = document.getElementById('setting-controls');
+      const settings = window.TractformLand.SETTINGS;
+      wrap.innerHTML = Object.values(settings).map(s => {
+        const on = s.id === setting;
+        return `<button type="button" data-id="${s.id}"
+          class="set-btn px-3 py-2 rounded-lg border text-sm font-medium transition
+          ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
+          ${s.label}
+        </button>`;
+      }).join('');
+
+      wrap.querySelectorAll('.set-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setting = btn.dataset.id;
+          buildSettingControls();
+          document.getElementById('setting-hint').textContent =
+            window.TractformLand.SETTINGS[setting].hint;
+          refresh();
+        });
+      });
+
+      document.getElementById('setting-hint').textContent =
+        window.TractformLand.SETTINGS[setting].hint;
     }
 
     function render(r) {
-      // Breakdown table
+      // Breakdown
       const body = document.getElementById('breakdown-body');
       body.innerHTML = r.rows.map(row => `
         <tr>
           <td class="px-5 py-3">
             <div class="font-medium text-stone-900">${row.name}</div>
-            <div class="text-xs text-stone-500 mt-0.5">${row.note}</div>
+            <div class="text-xs text-stone-500 mt-0.5">${row.scaleDesc}</div>
           </td>
-          <td class="px-3 py-3 tabular-nums font-medium">${row.acresTypical}</td>
-          <td class="px-3 py-3 tabular-nums text-stone-500">${row.acresMin}–${row.acresMax}</td>
+          <td class="px-3 py-3">${row.scaleLabel}</td>
+          <td class="px-3 py-3 tabular-nums font-medium">${row.acres}</td>
           <td class="px-3 py-3 text-stone-600">${row.terrainLabel}</td>
         </tr>
       `).join('');
 
       document.getElementById('breakdown-note').textContent = r.hasBuffer
-        ? 'Includes buffer/access activity in the total.'
-        : 'A small buffer (~10%) is added for lanes, setbacks, and flexibility.';
+        ? 'Includes buffer/access in the total.'
+        : `A small buffer (~${r.buffer} ac) is added for lanes, setbacks, and flexibility.`;
 
-      // Totals
-      document.getElementById('tot-typical').textContent = r.totalTypical + ' acres';
-      document.getElementById('tot-min').textContent = r.totalMin + ' ac';
-      document.getElementById('tot-max').textContent = r.totalMax + ' ac';
+      document.getElementById('tot-typical').textContent = r.totalAcres + ' acres';
       document.getElementById('tot-note').textContent =
-        'Typical is a practical starting point for the activities you selected. Adjust up or down for your climate, management intensity, and goals.';
+        'Based on the scales you chose. Adjust scales or activities to refine.';
 
-      // Cost card
+      // Cost
       const costCard = document.getElementById('cost-card');
       const costMain = document.getElementById('cost-main');
       const costDetail = document.getElementById('cost-detail');
 
-      if (!r.cost.hasLocation) {
+      if (lookingUp) {
+        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200';
+        costMain.className = 'text-sm text-stone-600';
+        costMain.textContent = 'Looking up location…';
+        costDetail.textContent = '';
+      } else if (!r.cost.hasLocation) {
         costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200';
         costMain.className = 'text-sm text-stone-600';
         costMain.textContent = r.cost.message;
-        costDetail.textContent = 'We use USDA statewide farm real estate averages. City-level prices are not freely available in real time.';
+        costDetail.textContent =
+          'Tip: enter a ZIP or "City, ST" (e.g. Decatur, TX). Then pick Remote / Rural / Mixed / Near metro to tighten the range.';
       } else {
         costCard.className = 'rounded-2xl border p-5 bg-emerald-50 border-emerald-200';
         costMain.className = 'text-sm text-emerald-900 font-medium';
         costMain.textContent =
-          `About ${money(r.cost.perAcre)}/acre in ${r.cost.stateName} · ` +
-          `typical lot ~${money(r.cost.totalTypical)} ` +
-          `(range ${money(r.cost.totalLow)}–${money(r.cost.totalHigh)})`;
-        costDetail.textContent = r.cost.source +
-          ' Near towns, water rights, and improved parcels often cost substantially more.';
+          `${money(r.cost.perAcreLow)}–${money(r.cost.perAcreHigh)}/acre in ${r.cost.stateName} (${r.cost.settingLabel}) · ` +
+          `lot ~${money(r.cost.totalLow)}–${money(r.cost.totalHigh)}`;
+        costDetail.textContent = r.cost.source;
       }
 
-      // Right summary
+      // Summary card
       const names = r.rows.map(x => x.short).join(', ');
       document.getElementById('selection-summary').textContent =
         r.rows.length ? names : 'Select activities';
       document.getElementById('plan-blurb').textContent =
         r.rows.length
-          ? `Plan for roughly ${r.totalTypical} acres across ${r.rows.length} activity area${r.rows.length > 1 ? 's' : ''}.`
-          : 'Pick the uses you want on the left.';
+          ? `About ${r.totalAcres} acres across ${r.rows.length} activity area${r.rows.length > 1 ? 's' : ''}.`
+          : 'Pick activities on the left.';
       document.getElementById('sum-count').textContent = r.rows.length;
-      document.getElementById('sum-acres').textContent = r.totalTypical + ' ac';
+      document.getElementById('sum-acres').textContent = r.totalAcres + ' ac';
+      document.getElementById('sum-setting').textContent = r.setting.label;
       document.getElementById('sum-season').textContent = r.season;
-      document.getElementById('sum-frost').textContent = r.frost;
       document.getElementById('sum-cost').textContent =
-        r.cost.hasLocation ? money(r.cost.totalTypical) : '—';
+        r.cost.hasLocation
+          ? money(r.cost.totalLow) + '–' + money(r.cost.totalHigh)
+          : '—';
       document.getElementById('sum-cost-note').textContent =
         r.cost.hasLocation
-          ? `Based on ${r.cost.stateName} USDA average. Not a listing price.`
+          ? `${r.cost.stateName} · ${r.cost.settingLabel}. Planning range only.`
           : 'Set location in the header for cost range.';
     }
 
     async function refresh() {
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
+      const activityList = Array.from(selected.entries()).map(([id, scale]) => ({ id, scale }));
+
       const state = {
-        activities: Array.from(selected),
+        activities: activityList,
+        setting,
         place: loc.place || '',
         zone: loc.zone || null,
         stateCode: resolvedState
@@ -234,9 +313,9 @@
 
       let r = window.TractformLand.calculate(state);
 
-      // If we have a ZIP but no state yet, try to resolve it
-      if (r._pendingZip && !resolvedState) {
-        const st = await window.TractformLand.stateFromZip(r._pendingZip);
+      // Immediate parse from "City, ST"
+      if (!r.cost.hasLocation && loc.place) {
+        const st = window.TractformLand.parseStateFromPlace(loc.place);
         if (st) {
           resolvedState = st;
           state.stateCode = st;
@@ -244,9 +323,12 @@
         }
       }
 
-      // Also try parsing state from place string
-      if (!r.cost.hasLocation && loc.place) {
-        const st = window.TractformLand.parseStateFromPlace(loc.place);
+      // Async ZIP lookup if needed
+      if (r._pendingZip && !resolvedState) {
+        lookingUp = true;
+        render(r);
+        const st = await window.TractformLand.stateFromZip(r._pendingZip);
+        lookingUp = false;
         if (st) {
           resolvedState = st;
           state.stateCode = st;
@@ -257,14 +339,21 @@
       render(r);
     }
 
+    // Live updates when location chip changes
     if (window.TractformLocation) {
       window.TractformLocation.onChange(() => {
-        resolvedState = null; // re-resolve when location changes
+        resolvedState = null;
+        lookingUp = false;
         refresh();
       });
     }
 
-    buildControls();
+    // Also poll localStorage briefly after focus in case chip updated without event
+    window.addEventListener('focus', () => refresh());
+
+    buildActivityControls();
+    buildScalePanel();
+    buildSettingControls();
     refresh();
   </script>
 </body>
