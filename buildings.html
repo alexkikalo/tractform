@@ -4,19 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buildings — Tractform</title>
-  <meta name="description" content="Foundations, barns, coops, sheds — construction guidance and sizing." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',system-ui,sans-serif}</style>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;max-width:220px;aspect-ratio:1;border-radius:.75rem;background:#f5f5f4;border:1px dashed #d6d3d1;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.75rem;text-align:center;padding:1rem}</style>
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
   <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div>
-        <span class="font-semibold text-lg tracking-tight">Tractform</span>
-      </a>
-      <nav class="hidden sm:flex gap-6 text-sm font-medium text-stone-600">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div><span class="font-semibold text-lg tracking-tight">Tractform</span></a>
+      <nav class="hidden sm:flex gap-5 text-sm font-medium text-stone-600">
         <a href="/land.html" class="hover:text-stone-900">Land</a>
         <a href="/infrastructure.html" class="hover:text-stone-900">Water & Power</a>
         <a href="/buildings.html" class="text-emerald-800 font-semibold">Buildings</a>
@@ -27,84 +23,158 @@
     </div>
   </header>
 
-  <section class="max-w-5xl mx-auto px-6 pt-12 pb-8">
+  <section class="max-w-6xl mx-auto px-6 pt-10 pb-4">
     <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Buildings</p>
-    <h1 class="text-3xl font-bold tracking-tight mb-3">Structures & how they’re built</h1>
-    <p class="text-stone-600 max-w-xl">Select a topic to see sizing, foundation options, and practical construction notes.</p>
+    <h1 class="text-3xl font-bold tracking-tight mb-2">Configure a structure</h1>
+    <p class="text-stone-600 text-sm max-w-2xl">Pick type and style. Frost depth and wind notes follow your zone.</p>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-8">
-    <div class="flex flex-wrap gap-2">
-      <button data-topic="foundations" class="topic-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Foundations</button>
-      <button data-topic="coop" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Chicken coop</button>
-      <button data-topic="barn" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Barn / shed</button>
-      <button data-topic="access" class="topic-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Roads & access</button>
+  <section class="max-w-6xl mx-auto px-6 pb-16">
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6">
+          <label class="block text-sm font-semibold mb-3">Structure</label>
+          <div class="flex flex-wrap gap-2" id="type-controls">
+            <button type="button" data-type="house" class="t-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">House / cabin</button>
+            <button type="button" data-type="barn" class="t-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Barn / shop</button>
+            <button type="button" data-type="coop" class="t-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Chicken coop</button>
+            <button type="button" data-type="shed" class="t-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Shed / lean-to</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Style / system</label>
+            <select id="style" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"></select>
+            <p id="style-note" class="text-xs text-stone-500 mt-2"></p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-2">Footprint (sq ft)</label>
+            <input id="sqft" type="number" min="40" max="10000" value="1200" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" />
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-start">
+          <div class="media-ph">Building<br/>media placeholder</div>
+          <div class="flex-1">
+            <h2 id="type-name" class="text-xl font-bold mb-1">House / cabin</h2>
+            <p id="sel-sum" class="text-sm text-emerald-800 font-medium mb-2"></p>
+            <p id="type-blurb" class="text-sm text-stone-600"></p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-900 text-white rounded-2xl p-5 sm:p-6">
+          <h3 class="text-sm font-medium text-emerald-200 uppercase tracking-wide mb-4">Code & climate (placeholder)</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+            <div><p class="text-emerald-200/80 text-xs mb-1">Frost depth (typ.)</p><p id="t-frost" class="text-lg font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs mb-1">Foundation bias</p><p id="t-found" class="text-lg font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs mb-1">Wind / snow</p><p id="t-wind" class="text-lg font-semibold">—</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-1">
+        <div class="lg:sticky lg:top-28 space-y-3">
+          <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide">Live stats</h3>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Foundation demand</span><span id="s-f-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-f" class="stat-fill bg-stone-600" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Material intensity</span><span id="s-m-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-m" class="stat-fill bg-amber-700" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Labor / skill</span><span id="s-l-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-l" class="stat-fill bg-violet-600" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Code complexity</span><span id="s-c-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-c" class="stat-fill bg-rose-600" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Climate hardening</span><span id="s-h-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-h" class="stat-fill bg-sky-700" style="width:40%"></div></div></div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Speed to usable</span><span id="s-s-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-s" class="stat-fill bg-emerald-600" style="width:50%"></div></div></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-20">
-    <div data-panel="foundations" class="topic-panel space-y-6">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Foundations</h2><p class="text-emerald-100 text-sm">Match foundation type to soil, frost, and structure weight — not to what looks cheapest on paper.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Slab on grade</h3><p class="text-sm text-stone-600">Common for shops and some houses where frost heave is managed. Needs good drainage and proper prep under the concrete.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Pier / post</h3><p class="text-sm text-stone-600">Suited to pole barns, small cabins, and uneven ground. Posts below frost line; bracing and soil bearing matter.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Stem wall / crawl</h3><p class="text-sm text-stone-600">Raises the floor, allows access to plumbing. More material and forming work; good in wet or sloping sites.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">What to decide first</h3><p class="text-sm text-stone-600">Frost depth, soil type, structure load, and whether you need a workshop floor or animal bedding area. Local code may dictate minimums.</p></div>
-      </div>
-    </div>
-    <div data-panel="coop" class="topic-panel space-y-6 hidden">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Chicken coop</h2><p class="text-emerald-100 text-sm">Predator-proof, dry, ventilated — size to the flock you actually keep.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Space</h3><p class="text-sm text-stone-600">About 4 sq ft inside per bird; 8–10+ sq ft in the run. Overcrowding drives stress and disease.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Structure</h3><p class="text-sm text-stone-600">Hardware cloth (not chicken wire) on openings. Secure latches. Roosts and nest boxes sized to the flock.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Floor & bedding</h3><p class="text-sm text-stone-600">Solid floor easier to clean; deep litter works if managed. Keep bedding dry.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Placement</h3><p class="text-sm text-stone-600">Morning sun, drainage, and easy access for daily chores. Away from low wet spots.</p></div>
-      </div>
-    </div>
-    <div data-panel="barn" class="topic-panel space-y-6 hidden">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Barn / shed</h2><p class="text-emerald-100 text-sm">Pole barn and simple sheds cover most homestead needs when sized and sited well.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Pole barn</h3><p class="text-sm text-stone-600">Fast, economical clear span. Posts in ground or on piers; metal or wood skin. Plan door height for equipment.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Sizing</h3><p class="text-sm text-stone-600">Start from what you store and shelter — tractor, hay, livestock, shop — not from a round number of square feet.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Orientation</h3><p class="text-sm text-stone-600">Open side away from prevailing winter wind when possible. Roof runoff managed so it doesn’t create mud at doors.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Sequence</h3><p class="text-sm text-stone-600">Often worth building a modest shed first for tools and feed, then a larger barn when the pattern of use is clear.</p></div>
-      </div>
-    </div>
-    <div data-panel="access" class="topic-panel space-y-6 hidden">
-      <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8"><h2 class="text-xl font-semibold mb-2">Roads & access</h2><p class="text-emerald-100 text-sm">Year-round access for truck, tractor, and emergency vehicles shapes everything else.</p></div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Driveway</h3><p class="text-sm text-stone-600">Width, grade, and base material. Steep or soft ground fails in mud season without proper build-up.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Internal paths</h3><p class="text-sm text-stone-600">Routes between house, barn, coops, and garden that stay walkable and workable in wet weather.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Gates & turnarounds</h3><p class="text-sm text-stone-600">Space to turn a trailer without destroying pasture. Gate placement that matches daily chore flow.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Drainage</h3><p class="text-sm text-stone-600">Crown, ditches, or culverts so the road doesn’t become a creek. Water management is road longevity.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="border-t border-stone-200 py-10">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
-      <a href="/" class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div>
-        <span>Tractform</span>
-      </a>
-      <p>&copy; 2026 Tractform</p>
-    </div>
-  </footer>
+  <footer class="border-t border-stone-200 py-10"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div><span>Tractform</span></a><p>&copy; 2026 Tractform</p></div></footer>
   <script src="/site.js"></script>
   <script>
-    document.querySelectorAll('.topic-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.topic;
-        document.querySelectorAll('.topic-btn').forEach(b => {
-          b.classList.remove('bg-emerald-800','text-white','border-emerald-800');
-          b.classList.add('bg-white','text-stone-700','border-stone-300');
-        });
-        btn.classList.add('bg-emerald-800','text-white','border-emerald-800');
-        btn.classList.remove('bg-white','text-stone-700','border-stone-300');
-        document.querySelectorAll('.topic-panel').forEach(p => p.classList.add('hidden'));
-        document.querySelector(`[data-panel="${id}"]`).classList.remove('hidden');
+    const types = {
+      house: {
+        name: 'House / cabin', blurb: 'Living space — foundation, envelope, and code path dominate cost and time.',
+        styles: [
+          { id: 'stick', name: 'Stick-frame', note: 'Standard residential. Flexible interiors.', f: 70, m: 65, l: 70, c: 80, s: 35 },
+          { id: 'cabin', name: 'Simple cabin', note: 'Smaller envelope, often simpler systems.', f: 55, m: 50, l: 55, c: 55, s: 55 },
+          { id: 'barndominium', name: 'Barndominium', note: 'Metal shell + living fit-out.', f: 60, m: 55, l: 60, c: 65, s: 50 }
+        ], defaultSq: 1200
+      },
+      barn: {
+        name: 'Barn / shop', blurb: 'Clear span, door height, and floor type follow equipment and livestock.',
+        styles: [
+          { id: 'pole', name: 'Pole barn', note: 'Fast, economical clear span.', f: 40, m: 45, l: 40, c: 35, s: 75 },
+          { id: 'rigid', name: 'Rigid-frame metal', note: 'Engineered frames, larger spans.', f: 50, m: 55, l: 45, c: 45, s: 65 },
+          { id: 'postbeam', name: 'Post-and-beam', note: 'Heavier timber aesthetic and labor.', f: 55, m: 60, l: 70, c: 40, s: 40 }
+        ], defaultSq: 2000
+      },
+      coop: {
+        name: 'Chicken coop', blurb: 'Predator-proof, dry, ventilated — size to the flock.',
+        styles: [
+          { id: 'static', name: 'Fixed coop + run', note: 'Permanent pad or skids.', f: 25, m: 30, l: 35, c: 15, s: 80 },
+          { id: 'tractor', name: 'Chicken tractor', note: 'Mobile; limited flock size.', f: 10, m: 25, l: 40, c: 10, s: 90 },
+          { id: 'tractor-barn', name: 'Mini barn coop', note: 'Walk-in, more birds.', f: 30, m: 40, l: 40, c: 20, s: 70 }
+        ], defaultSq: 80
+      },
+      shed: {
+        name: 'Shed / lean-to', blurb: 'Tool and feed storage — speed and dry ground matter most.',
+        styles: [
+          { id: 'skid', name: 'Skid shed', note: 'Movable, minimal foundation.', f: 15, m: 30, l: 30, c: 15, s: 90 },
+          { id: 'leanto', name: 'Lean-to', note: 'Attached or freestanding open side.', f: 20, m: 25, l: 25, c: 15, s: 85 },
+          { id: 'slab', name: 'Slab shed', note: 'Permanent floor for shop tools.', f: 40, m: 40, l: 35, c: 25, s: 60 }
+        ], defaultSq: 200
+      }
+    };
+    let cur = 'house';
+    const styleSel = document.getElementById('style');
+    const sqft = document.getElementById('sqft');
+
+    function bar(id, pct, label) {
+      document.getElementById(id).style.width = pct + '%';
+      document.getElementById(id + '-l').textContent = label;
+    }
+    function lbl(p) { return p > 70 ? 'High' : p > 40 ? 'Moderate' : 'Low'; }
+
+    function fillStyles() {
+      const t = types[cur];
+      styleSel.innerHTML = t.styles.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+      sqft.value = t.defaultSq;
+    }
+
+    function refresh() {
+      const t = types[cur];
+      const st = t.styles.find(s => s.id === styleSel.value) || t.styles[0];
+      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
+      const zn = loc.zone && window.TractformLocation ? window.TractformLocation.zoneNumber(loc.zone) : 7;
+
+      document.querySelectorAll('.t-btn').forEach(b => {
+        const on = b.dataset.type === cur;
+        b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
+        b.classList.toggle('bg-white', !on); b.classList.toggle('text-stone-700', !on); b.classList.toggle('border-stone-300', !on);
       });
-    });
+
+      document.getElementById('type-name').textContent = t.name;
+      document.getElementById('type-blurb').textContent = t.blurb;
+      document.getElementById('style-note').textContent = st.note;
+      document.getElementById('sel-sum').textContent = st.name + ' · ' + sqft.value + ' sq ft';
+
+      const climateHard = Math.min(95, Math.abs(zn - 7) * 12 + 30);
+      bar('s-f', st.f, lbl(st.f));
+      bar('s-m', st.m, lbl(st.m));
+      bar('s-l', st.l, lbl(st.l));
+      bar('s-c', st.c, lbl(st.c));
+      bar('s-h', climateHard, lbl(climateHard));
+      bar('s-s', st.s, st.s > 70 ? 'Fast' : st.s > 45 ? 'Medium' : 'Slow');
+
+      document.getElementById('t-frost').textContent = zn <= 4 ? '48–60"+' : zn <= 6 ? '36–48"' : zn <= 8 ? '12–24"' : '0–12"';
+      document.getElementById('t-found').textContent = st.f > 55 ? 'Engineered / frost' : st.f > 30 ? 'Pier or thickened edge' : 'Skids / light';
+      document.getElementById('t-wind').textContent = zn <= 5 ? 'Snow + wind' : zn >= 9 ? 'Wind / heat' : 'Moderate';
+    }
+
+    document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => { cur = b.dataset.type; fillStyles(); refresh(); }));
+    styleSel.addEventListener('change', refresh);
+    sqft.addEventListener('input', refresh);
+    if (window.TractformLocation) window.TractformLocation.onChange(refresh);
+    fillStyles(); refresh();
   </script>
 </body>
 </html>
