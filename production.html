@@ -4,28 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Livestock — Tractform</title>
-  <meta name="description" content="Compare land, water, labor, and yield across livestock — interactive guidance." />
+  <meta name="description" content="Pick animal, breed, and quantity — see land, water, labor, and yield stats update live." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
     .animal-video {
       width: 100%;
-      max-width: 280px;
+      max-width: 220px;
       height: auto;
-      border-radius: 1rem;
+      border-radius: 0.75rem;
       background: #f5f5f4;
     }
     .stat-fill {
       height: 100%;
       border-radius: 9999px;
-      transition: width 0.45s ease, background-color 0.3s ease;
+      transition: width 0.4s ease;
     }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
   <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div>
         <span class="font-semibold text-lg tracking-tight">Tractform</span>
@@ -41,132 +41,177 @@
     </div>
   </header>
 
-  <section class="max-w-5xl mx-auto px-6 pt-12 pb-6">
+  <section class="max-w-6xl mx-auto px-6 pt-10 pb-4">
     <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Livestock</p>
-    <h1 class="text-3xl font-bold tracking-tight mb-3">Choose an animal</h1>
-    <p class="text-stone-600 max-w-xl">Stats stay fixed. Switch animals and the bars shift — land, water, labor, yield, and more.</p>
+    <h1 class="text-3xl font-bold tracking-tight mb-2">Configure your stock</h1>
+    <p class="text-stone-600 text-sm max-w-2xl">Choose animal, breed, and quantity. Stats on the right update as you change inputs.</p>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-6">
-    <div class="flex flex-wrap gap-2" id="animal-controls">
-      <button data-animal="sheep" class="animal-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Sheep</button>
-      <button data-animal="chickens" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Chickens</button>
-      <button data-animal="goats" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Goats</button>
-      <button data-animal="cattle" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Cattle</button>
-      <button data-animal="pigs" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Pigs</button>
-    </div>
-  </section>
+  <section class="max-w-6xl mx-auto px-6 pb-16">
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
 
-  <!-- Hero: video + identity -->
-  <section class="max-w-5xl mx-auto px-6 pb-10">
-    <div class="flex flex-col sm:flex-row gap-6 items-start bg-white border border-stone-200 rounded-2xl p-6">
-      <video id="animal-video" class="animal-video shadow-sm border border-stone-100" src="/videos/Sheep.mp4" autoplay muted loop playsinline></video>
-      <div class="flex-1 min-w-0">
-        <h2 id="animal-name" class="text-2xl font-bold tracking-tight mb-2">Sheep</h2>
-        <p id="animal-blurb" class="text-stone-600 text-sm leading-relaxed mb-4">Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.</p>
-        <p id="animal-note" class="text-xs text-stone-500 leading-relaxed"></p>
-      </div>
-    </div>
-  </section>
+      <!-- LEFT: 2/3 inputs -->
+      <div class="lg:col-span-2 space-y-6">
 
-  <!-- Fixed stat rows -->
-  <section class="max-w-5xl mx-auto px-6 pb-20">
-    <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide mb-4">Requirements & characteristics</h3>
-    <div class="space-y-4" id="stats">
+        <!-- Animal type -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6">
+          <label class="block text-sm font-semibold mb-3">Animal</label>
+          <div class="flex flex-wrap gap-2" id="animal-controls">
+            <button type="button" data-animal="sheep" class="animal-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Sheep</button>
+            <button type="button" data-animal="chickens" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Chickens</button>
+            <button type="button" data-animal="goats" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Goats</button>
+            <button type="button" data-animal="cattle" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Cattle</button>
+            <button type="button" data-animal="pigs" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Pigs</button>
+          </div>
+        </div>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Land intensity</span>
-          <span id="stat-land-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        <!-- Breed + quantity -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-5">
+          <div>
+            <label for="breed" class="block text-sm font-semibold mb-2">Breed / type</label>
+            <select id="breed" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/30 focus:border-emerald-700"></select>
+            <p id="breed-note" class="text-xs text-stone-500 mt-2"></p>
+          </div>
+          <div>
+            <label for="qty" class="block text-sm font-semibold mb-2">Quantity</label>
+            <div class="flex items-center gap-3">
+              <input id="qty" type="number" min="1" max="500" value="6" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm tabular-nums focus:outline-none focus:ring-2 focus:ring-emerald-700/30 focus:border-emerald-700" />
+              <span id="qty-unit" class="text-sm text-stone-500 whitespace-nowrap">head</span>
+            </div>
+            <p class="text-xs text-stone-500 mt-2">Totals below scale with quantity where it matters (water, land estimate).</p>
+          </div>
         </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-land" class="stat-fill bg-emerald-700" style="width:40%"></div>
-        </div>
-        <p id="stat-land-detail" class="text-xs text-stone-500 mt-2"></p>
-      </div>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Water demand</span>
-          <span id="stat-water-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        <!-- Preview card -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-start">
+          <video id="animal-video" class="animal-video shadow-sm border border-stone-100" src="/videos/Sheep.mp4" autoplay muted loop playsinline></video>
+          <div class="min-w-0 flex-1">
+            <h2 id="animal-name" class="text-xl font-bold tracking-tight mb-1">Sheep</h2>
+            <p id="selection-summary" class="text-sm text-emerald-800 font-medium mb-2">6 × Katahdin</p>
+            <p id="animal-blurb" class="text-stone-600 text-sm leading-relaxed"></p>
+          </div>
         </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-water" class="stat-fill bg-sky-600" style="width:30%"></div>
-        </div>
-        <p id="stat-water-detail" class="text-xs text-stone-500 mt-2"></p>
-      </div>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Feed / forage load</span>
-          <span id="stat-feed-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        <!-- Scaled totals -->
+        <div class="bg-emerald-900 text-white rounded-2xl p-5 sm:p-6">
+          <h3 class="text-sm font-medium text-emerald-200 uppercase tracking-wide mb-4">Estimated for your selection</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-1">Land (rough)</p>
+              <p id="total-land" class="text-lg font-semibold tabular-nums">—</p>
+            </div>
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-1">Water / day</p>
+              <p id="total-water" class="text-lg font-semibold tabular-nums">—</p>
+            </div>
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-1">Daily chore time</p>
+              <p id="total-labor" class="text-lg font-semibold tabular-nums">—</p>
+            </div>
+            <div>
+              <p class="text-emerald-200/80 text-xs mb-1">Primary uses</p>
+              <p id="total-uses" class="text-lg font-semibold">—</p>
+            </div>
+          </div>
         </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-feed" class="stat-fill bg-amber-600" style="width:45%"></div>
-        </div>
-        <p id="stat-feed-detail" class="text-xs text-stone-500 mt-2"></p>
-      </div>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Shelter needs</span>
-          <span id="stat-shelter-label" class="text-sm text-stone-500 tabular-nums">—</span>
-        </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-shelter" class="stat-fill bg-stone-600" style="width:35%"></div>
-        </div>
-        <p id="stat-shelter-detail" class="text-xs text-stone-500 mt-2"></p>
-      </div>
-
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Daily labor</span>
-          <span id="stat-labor-label" class="text-sm text-stone-500 tabular-nums">—</span>
-        </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-labor" class="stat-fill bg-violet-600" style="width:40%"></div>
-        </div>
-        <p id="stat-labor-detail" class="text-xs text-stone-500 mt-2"></p>
       </div>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Startup barrier</span>
-          <span id="stat-barrier-label" class="text-sm text-stone-500 tabular-nums">—</span>
-        </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-barrier" class="stat-fill bg-rose-600" style="width:35%"></div>
-        </div>
-        <p id="stat-barrier-detail" class="text-xs text-stone-500 mt-2"></p>
-      </div>
+      <!-- RIGHT: 1/3 stats (sticky) -->
+      <div class="lg:col-span-1">
+        <div class="lg:sticky lg:top-24 space-y-3">
+          <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide mb-1">Live stats</h3>
+          <p class="text-xs text-stone-400 mb-3">Relative intensity for this animal & breed</p>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Yield / return potential</span>
-          <span id="stat-yield-label" class="text-sm text-stone-500 tabular-nums">—</span>
-        </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-yield" class="stat-fill bg-emerald-500" style="width:50%"></div>
-        </div>
-        <p id="stat-yield-detail" class="text-xs text-stone-500 mt-2"></p>
-      </div>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Land intensity</span>
+              <span id="stat-land-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-land" class="stat-fill bg-emerald-700" style="width:40%"></div>
+            </div>
+          </div>
 
-      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
-        <div class="flex justify-between items-baseline mb-2">
-          <span class="font-semibold text-sm">Lifespan / cycle</span>
-          <span id="stat-life-label" class="text-sm text-stone-500 tabular-nums">—</span>
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Water demand</span>
+              <span id="stat-water-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-water" class="stat-fill bg-sky-600" style="width:30%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Feed load</span>
+              <span id="stat-feed-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-feed" class="stat-fill bg-amber-600" style="width:45%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Shelter needs</span>
+              <span id="stat-shelter-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-shelter" class="stat-fill bg-stone-600" style="width:35%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Daily labor</span>
+              <span id="stat-labor-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-labor" class="stat-fill bg-violet-600" style="width:40%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Startup barrier</span>
+              <span id="stat-barrier-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-barrier" class="stat-fill bg-rose-600" style="width:35%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Yield potential</span>
+              <span id="stat-yield-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-yield" class="stat-fill bg-emerald-500" style="width:50%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white border border-stone-200 rounded-xl p-3.5">
+            <div class="flex justify-between items-baseline mb-1.5">
+              <span class="text-xs font-semibold">Lifespan / cycle</span>
+              <span id="stat-life-label" class="text-xs text-stone-500">—</span>
+            </div>
+            <div class="h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div id="stat-life" class="stat-fill bg-teal-600" style="width:55%"></div>
+            </div>
+          </div>
+
+          <p id="stat-detail" class="text-xs text-stone-500 leading-relaxed pt-2"></p>
         </div>
-        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
-          <div id="stat-life" class="stat-fill bg-teal-600" style="width:55%"></div>
-        </div>
-        <p id="stat-life-detail" class="text-xs text-stone-500 mt-2"></p>
       </div>
 
     </div>
   </section>
 
   <footer class="border-t border-stone-200 py-10">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-stone-500">
       <a href="/" class="flex items-center gap-2">
         <div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div>
         <span>Tractform</span>
@@ -176,130 +221,167 @@
   </footer>
 
   <script>
-    const animals = {
+    const data = {
       sheep: {
         name: 'Sheep',
         video: '/videos/Sheep.mp4',
+        unit: 'head',
         blurb: 'Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.',
-        note: 'Start with a small flock. Guardian animals or solid fencing matter as much as forage.',
-        land: { pct: 40, label: 'Moderate', detail: 'Roughly 3–5 per acre on decent pasture; less on poor forage. Rotate paddocks.' },
-        water: { pct: 25, label: 'Low–moderate', detail: 'About 1–2 gallons per head per day; more in heat or for lactating ewes.' },
-        feed: { pct: 45, label: 'Pasture-first', detail: 'Pasture primary. Hay in winter. Sheep-specific minerals (avoid high-copper cattle mixes).' },
-        shelter: { pct: 30, label: 'Light', detail: 'Windbreak or three-sided shed often enough. Dry ground beats a fancy barn.' },
-        labor: { pct: 40, label: 'Moderate', detail: 'Daily check and water. Seasonal hoof work, shearing, parasite management.' },
-        barrier: { pct: 35, label: 'Approachable', detail: 'Lower capital than cattle; fencing and predators are the real hurdles.' },
-        yield: { pct: 55, label: 'Solid', detail: 'Meat, wool, milk (some breeds), brush control, manure. Multiple product streams.' },
-        life: { pct: 60, label: '10–12 years', detail: 'Ewes productive ~5–7 years. Lambs finish in months depending on breed and feed.' }
+        breeds: [
+          { id: 'katahdin', name: 'Katahdin', note: 'Hair sheep — no shearing. Easy care, good meat.', landPer: 0.25, waterGal: 1.5, laborMin: 2, uses: 'Meat' },
+          { id: 'dorper', name: 'Dorper', note: 'Hair sheep, hardy, fast growth.', landPer: 0.25, waterGal: 1.5, laborMin: 2, uses: 'Meat' },
+          { id: 'suffolk', name: 'Suffolk', note: 'Wool + meat. Needs shearing.', landPer: 0.3, waterGal: 2, laborMin: 3, uses: 'Meat, wool' },
+          { id: 'east-friesian', name: 'East Friesian', note: 'Dairy-oriented. Higher feed and labor.', landPer: 0.35, waterGal: 2.5, laborMin: 8, uses: 'Milk, meat' }
+        ],
+        stats: { land: 40, water: 25, feed: 45, shelter: 30, labor: 40, barrier: 35, yield: 55, life: 60,
+          labels: { land: 'Moderate', water: 'Low–mod', feed: 'Pasture-first', shelter: 'Light', labor: 'Moderate', barrier: 'Approachable', yield: 'Solid', life: '10–12 yr' } }
       },
       chickens: {
         name: 'Chickens',
         video: '/videos/Chicken.mp4',
-        blurb: 'Eggs, meat, or both. Lowest barrier to entry for most households; still need solid predator protection and daily care.',
-        note: 'Best first animal for many households — if the coop is predator-proof.',
-        land: { pct: 15, label: 'Very low', detail: '~4 sq ft inside coop per bird; 8–10+ sq ft run. Free-range needs secure fencing.' },
-        water: { pct: 15, label: 'Low', detail: 'About 1 pint per bird per day; more in heat. Keep waterers clean and unfrozen.' },
-        feed: { pct: 35, label: 'Bag-based', detail: 'Layer or grower ration as the base. Scratch and scraps are supplements only.' },
-        shelter: { pct: 50, label: 'Critical', detail: 'Predator-proof coop with roosts and nest boxes. Ventilation without drafts.' },
-        labor: { pct: 45, label: 'Daily rhythm', detail: 'Feed, water, eggs, quick health check every day. Bedding on a weekly rhythm.' },
-        barrier: { pct: 20, label: 'Lowest', detail: 'Small space, modest cost, fast feedback — if you solve predators.' },
-        yield: { pct: 50, label: 'Steady', detail: 'Eggs year-round (with light/management); meat birds on a short cycle.' },
-        life: { pct: 25, label: '2–4 yr layers', detail: 'Layers peak early; meat birds weeks to a few months. Plan replacements.' }
+        unit: 'birds',
+        blurb: 'Eggs, meat, or both. Lowest barrier for most households if the coop is predator-proof.',
+        breeds: [
+          { id: 'barred-rock', name: 'Barred Plymouth Rock', note: 'Dual-purpose classic. Steady layers, calm.', landPer: 0.02, waterGal: 0.15, laborMin: 0.5, uses: 'Eggs, meat' },
+          { id: 'rir', name: 'Rhode Island Red', note: 'Hardy layer, good forage.', landPer: 0.02, waterGal: 0.15, laborMin: 0.5, uses: 'Eggs, meat' },
+          { id: 'leghorn', name: 'Leghorn', note: 'High egg output, lighter body.', landPer: 0.015, waterGal: 0.12, laborMin: 0.4, uses: 'Eggs' },
+          { id: 'orpington', name: 'Orpington', note: 'Broody, gentle, dual-purpose.', landPer: 0.025, waterGal: 0.18, laborMin: 0.5, uses: 'Eggs, meat' },
+          { id: 'cornish', name: 'Cornish Cross', note: 'Meat bird — short cycle, high feed.', landPer: 0.02, waterGal: 0.2, laborMin: 0.6, uses: 'Meat' }
+        ],
+        stats: { land: 15, water: 15, feed: 35, shelter: 50, labor: 45, barrier: 20, yield: 50, life: 25,
+          labels: { land: 'Very low', water: 'Low', feed: 'Bag-based', shelter: 'Critical', labor: 'Daily', barrier: 'Lowest', yield: 'Steady', life: '2–4 yr layers' } }
       },
       goats: {
         name: 'Goats',
         video: '/videos/Goat.mp4',
-        blurb: 'Milk, meat, or brush clearing. Excellent escape artists — fencing quality matters as much as feed.',
-        note: 'Plan for at least two. Fencing is not optional.',
-        land: { pct: 35, label: 'Moderate', detail: 'Often 4–6 per acre depending on browse. Prefer brush over pure grass; rotate.' },
-        water: { pct: 35, label: 'Moderate', detail: '1–3 gallons per day by size, heat, and lactation. They can be picky about water.' },
-        feed: { pct: 50, label: 'Browse + hay', detail: 'Browse, hay, minerals. Dairy does need higher-quality forage and often grain.' },
-        shelter: { pct: 40, label: 'Dry & draft-free', detail: 'They dislike rain more than cold. Strong woven or electric fencing essential.' },
-        labor: { pct: 50, label: 'Moderate–high', detail: 'Daily feed and check. Hooves, parasites; dairy means a fixed milking schedule.' },
-        barrier: { pct: 45, label: 'Medium', detail: 'Escape risk and fencing cost raise the bar versus chickens or sheep.' },
-        yield: { pct: 60, label: 'High optionality', detail: 'Milk, meat, brush control. Dairy is high-output if labor is there.' },
-        life: { pct: 65, label: '10–15 years', detail: 'Does productive for several years of kidding. Meat kids finish in months.' }
+        unit: 'head',
+        blurb: 'Milk, meat, or brush. Escape artists — fencing quality is half the system.',
+        breeds: [
+          { id: 'boer', name: 'Boer', note: 'Meat focus. Strong and fast-growing.', landPer: 0.2, waterGal: 2, laborMin: 3, uses: 'Meat, brush' },
+          { id: 'nubian', name: 'Nubian', note: 'Dairy. Rich milk, vocal.', landPer: 0.22, waterGal: 2.5, laborMin: 12, uses: 'Milk, meat' },
+          { id: 'nigerian', name: 'Nigerian Dwarf', note: 'Small dairy. Less space, still daily milk work.', landPer: 0.1, waterGal: 1, laborMin: 10, uses: 'Milk' },
+          { id: 'kiko', name: 'Kiko', note: 'Hardy meat / brush. Low-input.', landPer: 0.2, waterGal: 2, laborMin: 2.5, uses: 'Meat, brush' }
+        ],
+        stats: { land: 35, water: 35, feed: 50, shelter: 40, labor: 50, barrier: 45, yield: 60, life: 65,
+          labels: { land: 'Moderate', water: 'Moderate', feed: 'Browse + hay', shelter: 'Dry shelter', labor: 'Mod–high', barrier: 'Medium', yield: 'High options', life: '10–15 yr' } }
       },
       cattle: {
         name: 'Cattle',
         video: '/videos/Cow.mp4',
-        blurb: 'Beef or dairy. Higher land and capital needs than small stock; stocking rate and winter feed dominate the plan.',
-        note: 'Land and winter hay usually decide whether the numbers work.',
-        land: { pct: 85, label: 'High', detail: 'Often 1–2 acres per animal on good pasture; more in dry regions. Winter feed multiplies need.' },
-        water: { pct: 90, label: 'Very high', detail: '10–20+ gallons per head per day. Reliable source and trough capacity year-round.' },
-        feed: { pct: 80, label: 'Heavy', detail: 'Pasture in season; hay and possible supplement in winter. Minerals matched to region.' },
-        shelter: { pct: 45, label: 'Moderate', detail: 'Windbreaks and dry lying areas often enough. Working pens required for safe handling.' },
-        labor: { pct: 55, label: 'Scales fast', detail: 'Daily checks. Handling facilities matter. Dairy is a multi-year daily commitment.' },
-        barrier: { pct: 80, label: 'High', detail: 'Capital, land, fencing, and facilities. Not a casual first livestock choice.' },
-        yield: { pct: 70, label: 'High volume', detail: 'Beef or dairy at scale. Returns depend on feed cost and market access.' },
-        life: { pct: 70, label: 'Multi-year', detail: 'Beef finish 18–30 months. Breeding cows productive several years; dairy longer commitment.' }
+        unit: 'head',
+        blurb: 'Beef or dairy. Land and winter feed usually decide whether the plan works.',
+        breeds: [
+          { id: 'angus', name: 'Angus', note: 'Beef. Common, market-friendly.', landPer: 1.5, waterGal: 15, laborMin: 8, uses: 'Beef' },
+          { id: 'hereford', name: 'Hereford', note: 'Beef. Hardy, good mothers.', landPer: 1.5, waterGal: 15, laborMin: 8, uses: 'Beef' },
+          { id: 'jersey', name: 'Jersey', note: 'Dairy. High butterfat, daily milking.', landPer: 1.2, waterGal: 20, laborMin: 45, uses: 'Milk' },
+          { id: 'highland', name: 'Highland', note: 'Hardy beef, thrives on rough forage.', landPer: 1.8, waterGal: 12, laborMin: 7, uses: 'Beef' }
+        ],
+        stats: { land: 85, water: 90, feed: 80, shelter: 45, labor: 55, barrier: 80, yield: 70, life: 70,
+          labels: { land: 'High', water: 'Very high', feed: 'Heavy', shelter: 'Moderate', labor: 'Scales up', barrier: 'High', yield: 'High volume', life: 'Multi-year' } }
       },
       pigs: {
         name: 'Pigs',
         video: '/videos/Pig.mp4',
-        blurb: 'Efficient meat on small acreage. Strong fencing, wallows or shade, and a clear finishing plan are essential.',
-        note: 'Plan processing before you need it. Respect their strength when handling.',
-        land: { pct: 30, label: 'Low–moderate', detail: 'Pastured systems need rotation to avoid mud and root damage. Strong perimeter fencing.' },
-        water: { pct: 55, label: 'Moderate–high', detail: 'Several gallons per day plus cooling water in heat. Design for tipped waterers.' },
-        feed: { pct: 70, label: 'High', detail: 'Commercial ration or balanced farm mix. Kitchen waste is a supplement, not the diet.' },
-        shelter: { pct: 40, label: 'Simple but solid', detail: 'Shade and dry sleep area. A-frames work. Mud management is the real design problem.' },
-        labor: { pct: 45, label: 'Moderate', detail: 'Daily feed and check. Fencing inspections. Move paddocks if rotational.' },
-        barrier: { pct: 40, label: 'Medium', detail: 'Fencing and feed cost matter; cycle is short so mistakes show up fast.' },
-        yield: { pct: 75, label: 'Fast meat', detail: 'Efficient conversion. Finish in 5–8 months with a clear processing plan.' },
-        life: { pct: 20, label: '5–8 mo finish', detail: 'Meat pigs short cycle. Breeding stock kept longer. Timing to processor is key.' }
+        unit: 'head',
+        blurb: 'Efficient meat on small acreage. Strong fencing and a finishing plan are essential.',
+        breeds: [
+          { id: 'berkshire', name: 'Berkshire', note: 'Quality meat. Pasture-capable.', landPer: 0.15, waterGal: 4, laborMin: 4, uses: 'Meat' },
+          { id: 'yorkshire', name: 'Yorkshire', note: 'Lean, efficient growth.', landPer: 0.12, waterGal: 4, laborMin: 4, uses: 'Meat' },
+          { id: 'kunekune', name: 'Kunekune', note: 'Smaller, grazing-focused, friendly.', landPer: 0.2, waterGal: 3, laborMin: 3, uses: 'Meat, grazers' },
+          { id: 'duroc', name: 'Duroc', note: 'Fast growth, good feed conversion.', landPer: 0.12, waterGal: 4, laborMin: 4, uses: 'Meat' }
+        ],
+        stats: { land: 30, water: 55, feed: 70, shelter: 40, labor: 45, barrier: 40, yield: 75, life: 20,
+          labels: { land: 'Low–mod', water: 'Mod–high', feed: 'High', shelter: 'Simple solid', labor: 'Moderate', barrier: 'Medium', yield: 'Fast meat', life: '5–8 mo finish' } }
       }
     };
 
-    const videoEl = document.getElementById('animal-video');
-    const nameEl = document.getElementById('animal-name');
-    const blurbEl = document.getElementById('animal-blurb');
-    const noteEl = document.getElementById('animal-note');
+    let current = 'sheep';
 
-    function setStat(key, data) {
-      const bar = document.getElementById('stat-' + key);
-      const label = document.getElementById('stat-' + key + '-label');
-      const detail = document.getElementById('stat-' + key + '-detail');
-      bar.style.width = data.pct + '%';
-      label.textContent = data.label;
-      detail.textContent = data.detail;
+    const breedSel = document.getElementById('breed');
+    const qtyInput = document.getElementById('qty');
+    const videoEl = document.getElementById('animal-video');
+
+    function setStat(key, pct, label) {
+      document.getElementById('stat-' + key).style.width = pct + '%';
+      document.getElementById('stat-' + key + '-label').textContent = label;
     }
 
-    function selectAnimal(id) {
-      const a = animals[id];
-      if (!a) return;
+    function currentBreed() {
+      const a = data[current];
+      return a.breeds.find(b => b.id === breedSel.value) || a.breeds[0];
+    }
+
+    function refreshBreeds() {
+      const a = data[current];
+      breedSel.innerHTML = a.breeds.map(b =>
+        `<option value="${b.id}">${b.name}</option>`
+      ).join('');
+      document.getElementById('qty-unit').textContent = a.unit;
+    }
+
+    function refreshAll() {
+      const a = data[current];
+      const breed = currentBreed();
+      const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
 
       document.querySelectorAll('.animal-btn').forEach(b => {
-        const active = b.dataset.animal === id;
-        b.classList.toggle('bg-emerald-800', active);
-        b.classList.toggle('text-white', active);
-        b.classList.toggle('border-emerald-800', active);
-        b.classList.toggle('bg-white', !active);
-        b.classList.toggle('text-stone-700', !active);
-        b.classList.toggle('border-stone-300', !active);
+        const on = b.dataset.animal === current;
+        b.classList.toggle('bg-emerald-800', on);
+        b.classList.toggle('text-white', on);
+        b.classList.toggle('border-emerald-800', on);
+        b.classList.toggle('bg-white', !on);
+        b.classList.toggle('text-stone-700', !on);
+        b.classList.toggle('border-stone-300', !on);
       });
 
-      videoEl.pause();
-      videoEl.src = a.video;
-      videoEl.play().catch(() => {});
+      if (videoEl.getAttribute('src') !== a.video) {
+        videoEl.src = a.video;
+        videoEl.play().catch(() => {});
+      }
 
-      nameEl.textContent = a.name;
-      blurbEl.textContent = a.blurb;
-      noteEl.textContent = a.note;
+      document.getElementById('animal-name').textContent = a.name;
+      document.getElementById('selection-summary').textContent = `${qty} × ${breed.name}`;
+      document.getElementById('animal-blurb').textContent = a.blurb;
+      document.getElementById('breed-note').textContent = breed.note;
 
-      setStat('land', a.land);
-      setStat('water', a.water);
-      setStat('feed', a.feed);
-      setStat('shelter', a.shelter);
-      setStat('labor', a.labor);
-      setStat('barrier', a.barrier);
-      setStat('yield', a.yield);
-      setStat('life', a.life);
+      const s = a.stats;
+      setStat('land', s.land, s.labels.land);
+      setStat('water', s.water, s.labels.water);
+      setStat('feed', s.feed, s.labels.feed);
+      setStat('shelter', s.shelter, s.labels.shelter);
+      setStat('labor', s.labor, s.labels.labor);
+      setStat('barrier', s.barrier, s.labels.barrier);
+      setStat('yield', s.yield, s.labels.yield);
+      setStat('life', s.life, s.labels.life);
+      document.getElementById('stat-detail').textContent = breed.note;
+
+      const acres = (breed.landPer * qty);
+      const water = (breed.waterGal * qty);
+      const labor = (breed.laborMin * qty);
+      document.getElementById('total-land').textContent =
+        acres < 1 ? `~${(acres * 43560 / 1000).toFixed(1)}k sq ft` : `~${acres.toFixed(1)} acres`;
+      if (current === 'chickens') {
+        document.getElementById('total-land').textContent = `~${Math.ceil(qty * 4)} sq ft coop + run`;
+      }
+      document.getElementById('total-water').textContent =
+        water < 10 ? `~${water.toFixed(1)} gal` : `~${Math.round(water)} gal`;
+      document.getElementById('total-labor').textContent =
+        labor < 60 ? `~${Math.round(labor)} min` : `~${(labor / 60).toFixed(1)} hr`;
+      document.getElementById('total-uses').textContent = breed.uses;
     }
 
     document.querySelectorAll('.animal-btn').forEach(btn => {
-      btn.addEventListener('click', () => selectAnimal(btn.dataset.animal));
+      btn.addEventListener('click', () => {
+        current = btn.dataset.animal;
+        refreshBreeds();
+        refreshAll();
+      });
     });
+    breedSel.addEventListener('change', refreshAll);
+    qtyInput.addEventListener('input', refreshAll);
 
-    selectAnimal('sheep');
+    refreshBreeds();
+    refreshAll();
   </script>
 </body>
 </html>
