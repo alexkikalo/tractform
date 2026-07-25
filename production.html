@@ -9,7 +9,6 @@
   <style>
     body{font-family:'Inter',system-ui,sans-serif}
     .animal-video{width:100%;max-width:100%;height:auto;border-radius:.75rem;background:#064e3b}
-    .stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}
   </style>
 </head>
 <body class="bg-stone-100 text-stone-900 antialiased">
@@ -65,15 +64,6 @@
           <p id="zone-status" class="text-sm font-medium text-stone-600">Set zone in the header for climate fit.</p>
           <p id="zone-detail" class="text-xs text-stone-500 mt-1"></p>
         </div>
-        <div class="bg-emerald-900 text-white rounded-2xl p-5">
-          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Estimated for your selection</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <div><p class="text-emerald-200/80 text-xs mb-0.5">Land</p><p id="total-land" class="font-semibold tabular-nums">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-0.5">Water / day</p><p id="total-water" class="font-semibold tabular-nums">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-0.5">Chore time</p><p id="total-labor" class="font-semibold tabular-nums">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-0.5">Uses</p><p id="total-uses" class="font-semibold">—</p></div>
-          </div>
-        </div>
       </div>
 
       <div class="lg:col-span-1">
@@ -84,16 +74,15 @@
             <p id="selection-summary" class="text-sm text-emerald-300 font-medium">6 × Katahdin</p>
             <p id="animal-blurb" class="text-xs text-emerald-100/80 mt-2 leading-relaxed"></p>
           </div>
-          <div class="border-t border-emerald-800 pt-3 space-y-3">
-            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Live stats</p>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Land intensity</span><span id="stat-land-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-land" class="stat-fill bg-emerald-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Water demand</span><span id="stat-water-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-water" class="stat-fill bg-sky-400" style="width:30%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Feed load</span><span id="stat-feed-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-feed" class="stat-fill bg-amber-400" style="width:45%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Shelter needs</span><span id="stat-shelter-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-shelter" class="stat-fill bg-stone-300" style="width:35%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Daily labor</span><span id="stat-labor-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-labor" class="stat-fill bg-violet-400" style="width:40%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Startup barrier</span><span id="stat-barrier-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-barrier" class="stat-fill bg-rose-400" style="width:35%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Yield potential</span><span id="stat-yield-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-yield" class="stat-fill bg-lime-400" style="width:50%"></div></div></div>
-            <div><div class="flex justify-between mb-1"><span class="text-xs font-medium text-emerald-100">Lifespan / cycle</span><span id="stat-life-label" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="stat-life" class="stat-fill bg-teal-400" style="width:55%"></div></div></div>
+          <div class="border-t border-emerald-800 pt-3 space-y-2.5 text-sm">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">For your selection</p>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Land</span><span id="s-land" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Water / day</span><span id="s-water" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Chore time</span><span id="s-labor" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Uses</span><span id="s-uses" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between gap-2 pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Shelter</span><span id="s-shelter" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Feed load</span><span id="s-feed" class="font-medium text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Lifespan / cycle</span><span id="s-life" class="font-medium text-right">—</span></div>
             <p id="stat-detail" class="text-xs text-emerald-300/70 leading-relaxed pt-1"></p>
           </div>
         </div>
@@ -116,11 +105,6 @@
     const qtyInput = document.getElementById('qty');
     const videoEl = document.getElementById('animal-video');
 
-    function setStat(key, pct, label) {
-      document.getElementById('stat-' + key).style.width = pct + '%';
-      document.getElementById('stat-' + key + '-label').textContent = label;
-    }
-
     function getState() {
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       return {
@@ -137,14 +121,12 @@
       breedSel.innerHTML = breeds.map(b =>
         `<option value="${b.id}">${b.name}</option>`
       ).join('');
-      const unit = window.TractformLivestock.ANIMALS[current].unit;
-      document.getElementById('qty-unit').textContent = unit;
+      document.getElementById('qty-unit').textContent = window.TractformLivestock.ANIMALS[current].unit;
     }
 
     function render(results) {
       if (!results) return;
 
-      // Animal buttons
       document.querySelectorAll('.animal-btn').forEach(b => {
         const on = b.dataset.animal === current;
         b.classList.toggle('bg-emerald-800', on);
@@ -155,7 +137,6 @@
         b.classList.toggle('border-stone-300', !on);
       });
 
-      // Video + summary
       if (videoEl.getAttribute('src') !== results.video) {
         videoEl.src = results.video;
         videoEl.play().catch(() => {});
@@ -166,25 +147,18 @@
       document.getElementById('animal-blurb').textContent = results.blurb;
       document.getElementById('breed-note').textContent = results.breedNote;
 
-      // Bars
-      const b = results.bars;
-      setStat('land', b.land.pct, b.land.label);
-      setStat('water', b.water.pct, b.water.label);
-      setStat('feed', b.feed.pct, b.feed.label);
-      setStat('shelter', b.shelter.pct, b.shelter.label);
-      setStat('labor', b.labor.pct, b.labor.label);
-      setStat('barrier', b.barrier.pct, b.barrier.label);
-      setStat('yield', b.yield.pct, b.yield.label);
-      setStat('life', b.life.pct, b.life.label);
-      document.getElementById('stat-detail').textContent = results.breedNote;
+      // Real numbers in the stats column (not Low/High bars)
+      document.getElementById('s-land').textContent = results.landLabel;
+      document.getElementById('s-water').textContent = results.waterLabel;
+      document.getElementById('s-labor').textContent = results.laborLabel;
+      document.getElementById('s-uses').textContent = results.uses;
 
-      // Totals strip
-      document.getElementById('total-land').textContent = results.landLabel;
-      document.getElementById('total-water').textContent = results.waterLabel;
-      document.getElementById('total-labor').textContent = results.laborLabel;
-      document.getElementById('total-uses').textContent = results.uses;
+      const b = results.bars || {};
+      document.getElementById('s-shelter').textContent = (b.shelter && b.shelter.label) || '—';
+      document.getElementById('s-feed').textContent = (b.feed && b.feed.label) || '—';
+      document.getElementById('s-life').textContent = (b.life && b.life.label) || '—';
+      document.getElementById('stat-detail').textContent = results.breedNote || '';
 
-      // Zone card
       const card = document.getElementById('zone-card');
       const st = document.getElementById('zone-status');
       const det = document.getElementById('zone-detail');
@@ -205,8 +179,7 @@
     }
 
     function refreshAll() {
-      const results = window.TractformLivestock.calculate(getState());
-      render(results);
+      render(window.TractformLivestock.calculate(getState()));
     }
 
     document.querySelectorAll('.animal-btn').forEach(btn => {
@@ -218,10 +191,7 @@
     });
     breedSel.addEventListener('change', refreshAll);
     qtyInput.addEventListener('input', refreshAll);
-
-    if (window.TractformLocation) {
-      window.TractformLocation.onChange(() => refreshAll());
-    }
+    if (window.TractformLocation) window.TractformLocation.onChange(() => refreshAll());
 
     refreshBreeds();
     refreshAll();

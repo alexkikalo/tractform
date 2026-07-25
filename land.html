@@ -78,12 +78,6 @@
           <p id="breakdown-note" class="px-5 py-3 text-xs text-stone-500 border-t border-stone-100"></p>
         </div>
 
-        <div class="bg-emerald-900 text-white rounded-2xl p-5">
-          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Recommended lot size</h3>
-          <p id="tot-typical" class="font-semibold text-2xl tabular-nums">—</p>
-          <p id="tot-note" class="text-xs text-emerald-200/70 mt-2"></p>
-        </div>
-
         <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200 space-y-3">
           <h3 class="text-sm font-semibold">Land cost</h3>
           <p id="cost-main" class="text-sm text-stone-600">Select a state in the header location control.</p>
@@ -104,12 +98,13 @@
             <p id="selection-summary" class="text-sm text-emerald-300 mt-1">Select activities</p>
             <p id="plan-blurb" class="text-xs text-emerald-100/80 mt-2 leading-relaxed"></p>
           </div>
-          <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
-            <div class="flex justify-between"><span class="text-emerald-300/80">Activities</span><span id="sum-count" class="font-medium">0</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Lot size</span><span id="sum-acres" class="font-medium tabular-nums">—</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Market data</span><span id="sum-market-src" class="font-medium text-right text-xs">—</span></div>
-            <div class="flex justify-between"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium">—</span></div>
-            <div class="flex justify-between pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost range</span><span id="sum-cost" class="font-medium text-right">—</span></div>
+          <div class="border-t border-emerald-800 pt-3 space-y-2.5 text-sm">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">Summary</p>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Activities</span><span id="sum-count" class="font-medium text-right">0</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Recommended lot</span><span id="sum-acres" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium tabular-nums text-right">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Market data</span><span id="sum-market-src" class="font-medium text-right text-xs">—</span></div>
+            <div class="flex justify-between gap-2 pt-1 border-t border-emerald-800/60"><span class="text-emerald-300/80">Est. cost range</span><span id="sum-cost" class="font-medium text-right">—</span></div>
           </div>
           <p id="sum-cost-note" class="text-[11px] text-emerald-400/70 leading-relaxed"></p>
         </div>
@@ -261,10 +256,6 @@
       document.getElementById('breakdown-note').textContent = r.hasBuffer
         ? 'Includes buffer/access in the total.'
         : `A small buffer (~${r.buffer} ac) is added for lanes, setbacks, and flexibility.`;
-
-      document.getElementById('tot-typical').textContent = r.totalAcres + ' acres';
-      document.getElementById('tot-note').textContent =
-        'Based on the scales you chose. Adjust scales or activities to refine.';
 
       const costCard = document.getElementById('cost-card');
       const costMain = document.getElementById('cost-main');
