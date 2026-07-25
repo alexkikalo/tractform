@@ -4,12 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Livestock — Tractform</title>
-  <meta name="description" content="Select an animal and see land, water, feed, shelter, and care requirements." />
+  <meta name="description" content="Compare land, water, labor, and yield across livestock — interactive guidance." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:'Inter',system-ui,sans-serif}
-    .animal-video{width:100%;max-width:320px;height:auto;border-radius:1rem;background:#f5f5f4}
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .animal-video {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      border-radius: 1rem;
+      background: #f5f5f4;
+    }
+    .stat-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.45s ease, background-color 0.3s ease;
+    }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-900 antialiased">
@@ -30,13 +41,13 @@
     </div>
   </header>
 
-  <section class="max-w-5xl mx-auto px-6 pt-12 pb-8">
+  <section class="max-w-5xl mx-auto px-6 pt-12 pb-6">
     <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Livestock</p>
     <h1 class="text-3xl font-bold tracking-tight mb-3">Choose an animal</h1>
-    <p class="text-stone-600 max-w-xl">Select a type to see land, water, feed, shelter, lifespan, and care requirements.</p>
+    <p class="text-stone-600 max-w-xl">Stats stay fixed. Switch animals and the bars shift — land, water, labor, yield, and more.</p>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-8">
+  <section class="max-w-5xl mx-auto px-6 pb-6">
     <div class="flex flex-wrap gap-2" id="animal-controls">
       <button data-animal="sheep" class="animal-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">Sheep</button>
       <button data-animal="chickens" class="animal-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium hover:border-stone-400">Chickens</button>
@@ -46,96 +57,111 @@
     </div>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 pb-20" id="content">
-
-    <div data-panel="sheep" class="animal-panel space-y-8">
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Sheep.mp4" autoplay muted loop playsinline></video>
-        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
-          <h2 class="text-xl font-semibold mb-2">Sheep</h2>
-          <p class="text-emerald-100 text-sm max-w-2xl">Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.</p>
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land</h3><p class="text-sm text-stone-600">Roughly 3–5 sheep per acre on decent pasture (less on poor forage). Rotate paddocks to protect ground and reduce parasites.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Water</h3><p class="text-sm text-stone-600">About 1–2 gallons per sheep per day; more in heat or for lactating ewes. Clean, reliable access is non-negotiable.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Feed</h3><p class="text-sm text-stone-600">Pasture first. Hay in winter or drought. Mineral mix formulated for sheep (avoid cattle mixes high in copper).</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Shelter</h3><p class="text-sm text-stone-600">Windbreak or simple three-sided shed is often enough. Dry ground and protection from driving rain matter more than a full barn.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Lifespan & cycle</h3><p class="text-sm text-stone-600">Typically 10–12 years. Breeding ewes productive ~5–7 years. Lambs reach market weight in months depending on breed and feed.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Care rhythm</h3><p class="text-sm text-stone-600">Daily check and water. Hoof trimming, shearing (wool breeds), and parasite management on a seasonal schedule. Guardian animals or solid fencing for predators.</p></div>
+  <!-- Hero: video + identity -->
+  <section class="max-w-5xl mx-auto px-6 pb-10">
+    <div class="flex flex-col sm:flex-row gap-6 items-start bg-white border border-stone-200 rounded-2xl p-6">
+      <video id="animal-video" class="animal-video shadow-sm border border-stone-100" src="/videos/Sheep.mp4" autoplay muted loop playsinline></video>
+      <div class="flex-1 min-w-0">
+        <h2 id="animal-name" class="text-2xl font-bold tracking-tight mb-2">Sheep</h2>
+        <p id="animal-blurb" class="text-stone-600 text-sm leading-relaxed mb-4">Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.</p>
+        <p id="animal-note" class="text-xs text-stone-500 leading-relaxed"></p>
       </div>
     </div>
+  </section>
 
-    <div data-panel="chickens" class="animal-panel space-y-8 hidden">
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Chicken.mp4" autoplay muted loop playsinline></video>
-        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
-          <h2 class="text-xl font-semibold mb-2">Chickens</h2>
-          <p class="text-emerald-100 text-sm max-w-2xl">Eggs, meat, or both. Lowest barrier to entry for most households; still need solid predator protection and daily care.</p>
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land / space</h3><p class="text-sm text-stone-600">Minimum ~4 sq ft inside coop per bird, 8–10+ sq ft run. Free-range needs secure fencing or supervision.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Water</h3><p class="text-sm text-stone-600">About 1 pint per bird per day; more in heat. Waterers must stay clean and unfrozen.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Feed</h3><p class="text-sm text-stone-600">Layer or grower ration as appropriate. Scratch and kitchen scraps as supplement, not the base. Grit if not on open ground.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Shelter</h3><p class="text-sm text-stone-600">Predator-proof coop with roosts and nest boxes. Ventilation without drafts. Secure run or mobile tractor.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Lifespan & cycle</h3><p class="text-sm text-stone-600">Layers productive ~2–4 years; lifespan longer. Meat birds processed at weeks to a few months depending on type.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Care rhythm</h3><p class="text-sm text-stone-600">Daily feed, water, egg collection, quick health check. Bedding changes and deep cleans on a weekly/seasonal rhythm.</p></div>
-      </div>
-    </div>
+  <!-- Fixed stat rows -->
+  <section class="max-w-5xl mx-auto px-6 pb-20">
+    <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide mb-4">Requirements & characteristics</h3>
+    <div class="space-y-4" id="stats">
 
-    <div data-panel="goats" class="animal-panel space-y-8 hidden">
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Goat.mp4" autoplay muted loop playsinline></video>
-        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
-          <h2 class="text-xl font-semibold mb-2">Goats</h2>
-          <p class="text-emerald-100 text-sm max-w-2xl">Milk, meat, or brush clearing. Excellent escape artists — fencing quality matters as much as feed.</p>
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Land intensity</span>
+          <span id="stat-land-label" class="text-sm text-stone-500 tabular-nums">—</span>
         </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-land" class="stat-fill bg-emerald-700" style="width:40%"></div>
+        </div>
+        <p id="stat-land-detail" class="text-xs text-stone-500 mt-2"></p>
       </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land</h3><p class="text-sm text-stone-600">Often 4–6 goats per acre depending on browse. Prefer browse and brush over pure grass. Rotate to protect plants and soil.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Water</h3><p class="text-sm text-stone-600">1–3 gallons per day depending on size, heat, and lactation. Fresh water preferred; they can be picky.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Feed</h3><p class="text-sm text-stone-600">Browse, hay, and minerals. Dairy animals need higher-quality forage and often grain. Copper needs differ from sheep.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Shelter</h3><p class="text-sm text-stone-600">Dry, draft-free shelter. They dislike rain more than cold. Strong fencing (woven wire, electric) is essential.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Lifespan & cycle</h3><p class="text-sm text-stone-600">Often 10–15 years. Does productive for several years of kidding. Meat kids finished in months.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Care rhythm</h3><p class="text-sm text-stone-600">Daily feed and check. Hooves, parasites, and (for dairy) consistent milking schedule. Social animals — plan for at least two.</p></div>
-      </div>
-    </div>
 
-    <div data-panel="cattle" class="animal-panel space-y-8 hidden">
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Cow.mp4" autoplay muted loop playsinline></video>
-        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
-          <h2 class="text-xl font-semibold mb-2">Cattle</h2>
-          <p class="text-emerald-100 text-sm max-w-2xl">Beef or dairy. Higher land and capital needs than small stock; stocking rate and winter feed dominate the plan.</p>
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Water demand</span>
+          <span id="stat-water-label" class="text-sm text-stone-500 tabular-nums">—</span>
         </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-water" class="stat-fill bg-sky-600" style="width:30%"></div>
+        </div>
+        <p id="stat-water-detail" class="text-xs text-stone-500 mt-2"></p>
       </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land</h3><p class="text-sm text-stone-600">Often 1–2 acres per animal on good pasture (varies widely by rainfall and forage). Winter feed may require more land or purchased hay.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Water</h3><p class="text-sm text-stone-600">10–20+ gallons per day per animal. Reliable source and tank or trough capacity matter year-round.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Feed</h3><p class="text-sm text-stone-600">Pasture in season; hay and possibly supplement in winter. Mineral program matched to region and forage tests.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Shelter</h3><p class="text-sm text-stone-600">Windbreaks and dry lying areas often enough in mild climates. Working pens and solid fencing required for handling.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Lifespan & cycle</h3><p class="text-sm text-stone-600">Beef finished in 18–30 months depending on system. Breeding cows productive for several years. Dairy is a daily commitment for years.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Care rhythm</h3><p class="text-sm text-stone-600">Daily checks. Handling facilities for safe work. Veterinary and breeding calendar. Labor scales quickly with herd size.</p></div>
-      </div>
-    </div>
 
-    <div data-panel="pigs" class="animal-panel space-y-8 hidden">
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <video class="animal-video shadow-sm border border-stone-200" src="/videos/Pig.mp4" autoplay muted loop playsinline></video>
-        <div class="bg-emerald-900 text-white rounded-2xl p-6 sm:p-8 flex-1">
-          <h2 class="text-xl font-semibold mb-2">Pigs</h2>
-          <p class="text-emerald-100 text-sm max-w-2xl">Efficient meat on small acreage. Strong fencing, wallows or shade, and a clear finishing plan are essential.</p>
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Feed / forage load</span>
+          <span id="stat-feed-label" class="text-sm text-stone-500 tabular-nums">—</span>
         </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-feed" class="stat-fill bg-amber-600" style="width:45%"></div>
+        </div>
+        <p id="stat-feed-detail" class="text-xs text-stone-500 mt-2"></p>
       </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Land / space</h3><p class="text-sm text-stone-600">Pastured systems need rotation to avoid mud and root damage. Lots or paddocks with strong perimeter fencing.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Water</h3><p class="text-sm text-stone-600">Several gallons per day plus water for cooling in heat. They will tip weak waterers — design for it.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Feed</h3><p class="text-sm text-stone-600">Commercial ration or carefully balanced farm mix. Kitchen and garden waste only as a supplement, not the whole diet.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Shelter</h3><p class="text-sm text-stone-600">Shade and a dry sleeping area. Simple A-frames or huts work. Mud management in wet climates is a real design problem.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Lifespan & cycle</h3><p class="text-sm text-stone-600">Meat pigs typically finished in 5–8 months. Breeding stock kept longer. Plan processing before you need it.</p></div>
-        <div class="border border-stone-200 rounded-xl p-5 bg-white"><h3 class="font-semibold mb-2">Care rhythm</h3><p class="text-sm text-stone-600">Daily feed and check. Fencing inspections. Move paddocks if rotational. Respect their strength and intelligence when handling.</p></div>
+
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Shelter needs</span>
+          <span id="stat-shelter-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-shelter" class="stat-fill bg-stone-600" style="width:35%"></div>
+        </div>
+        <p id="stat-shelter-detail" class="text-xs text-stone-500 mt-2"></p>
       </div>
+
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Daily labor</span>
+          <span id="stat-labor-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-labor" class="stat-fill bg-violet-600" style="width:40%"></div>
+        </div>
+        <p id="stat-labor-detail" class="text-xs text-stone-500 mt-2"></p>
+      </div>
+
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Startup barrier</span>
+          <span id="stat-barrier-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-barrier" class="stat-fill bg-rose-600" style="width:35%"></div>
+        </div>
+        <p id="stat-barrier-detail" class="text-xs text-stone-500 mt-2"></p>
+      </div>
+
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Yield / return potential</span>
+          <span id="stat-yield-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-yield" class="stat-fill bg-emerald-500" style="width:50%"></div>
+        </div>
+        <p id="stat-yield-detail" class="text-xs text-stone-500 mt-2"></p>
+      </div>
+
+      <div class="bg-white border border-stone-200 rounded-xl p-4 sm:p-5">
+        <div class="flex justify-between items-baseline mb-2">
+          <span class="font-semibold text-sm">Lifespan / cycle</span>
+          <span id="stat-life-label" class="text-sm text-stone-500 tabular-nums">—</span>
+        </div>
+        <div class="h-3 bg-stone-100 rounded-full overflow-hidden">
+          <div id="stat-life" class="stat-fill bg-teal-600" style="width:55%"></div>
+        </div>
+        <p id="stat-life-detail" class="text-xs text-stone-500 mt-2"></p>
+      </div>
+
     </div>
   </section>
 
@@ -150,35 +176,130 @@
   </footer>
 
   <script>
-    const buttons = document.querySelectorAll('.animal-btn');
-    const panels = document.querySelectorAll('.animal-panel');
-    function pauseAllVideos() {
-      document.querySelectorAll('video').forEach(v => { v.pause(); });
+    const animals = {
+      sheep: {
+        name: 'Sheep',
+        video: '/videos/Sheep.mp4',
+        blurb: 'Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.',
+        note: 'Start with a small flock. Guardian animals or solid fencing matter as much as forage.',
+        land: { pct: 40, label: 'Moderate', detail: 'Roughly 3–5 per acre on decent pasture; less on poor forage. Rotate paddocks.' },
+        water: { pct: 25, label: 'Low–moderate', detail: 'About 1–2 gallons per head per day; more in heat or for lactating ewes.' },
+        feed: { pct: 45, label: 'Pasture-first', detail: 'Pasture primary. Hay in winter. Sheep-specific minerals (avoid high-copper cattle mixes).' },
+        shelter: { pct: 30, label: 'Light', detail: 'Windbreak or three-sided shed often enough. Dry ground beats a fancy barn.' },
+        labor: { pct: 40, label: 'Moderate', detail: 'Daily check and water. Seasonal hoof work, shearing, parasite management.' },
+        barrier: { pct: 35, label: 'Approachable', detail: 'Lower capital than cattle; fencing and predators are the real hurdles.' },
+        yield: { pct: 55, label: 'Solid', detail: 'Meat, wool, milk (some breeds), brush control, manure. Multiple product streams.' },
+        life: { pct: 60, label: '10–12 years', detail: 'Ewes productive ~5–7 years. Lambs finish in months depending on breed and feed.' }
+      },
+      chickens: {
+        name: 'Chickens',
+        video: '/videos/Chicken.mp4',
+        blurb: 'Eggs, meat, or both. Lowest barrier to entry for most households; still need solid predator protection and daily care.',
+        note: 'Best first animal for many households — if the coop is predator-proof.',
+        land: { pct: 15, label: 'Very low', detail: '~4 sq ft inside coop per bird; 8–10+ sq ft run. Free-range needs secure fencing.' },
+        water: { pct: 15, label: 'Low', detail: 'About 1 pint per bird per day; more in heat. Keep waterers clean and unfrozen.' },
+        feed: { pct: 35, label: 'Bag-based', detail: 'Layer or grower ration as the base. Scratch and scraps are supplements only.' },
+        shelter: { pct: 50, label: 'Critical', detail: 'Predator-proof coop with roosts and nest boxes. Ventilation without drafts.' },
+        labor: { pct: 45, label: 'Daily rhythm', detail: 'Feed, water, eggs, quick health check every day. Bedding on a weekly rhythm.' },
+        barrier: { pct: 20, label: 'Lowest', detail: 'Small space, modest cost, fast feedback — if you solve predators.' },
+        yield: { pct: 50, label: 'Steady', detail: 'Eggs year-round (with light/management); meat birds on a short cycle.' },
+        life: { pct: 25, label: '2–4 yr layers', detail: 'Layers peak early; meat birds weeks to a few months. Plan replacements.' }
+      },
+      goats: {
+        name: 'Goats',
+        video: '/videos/Goat.mp4',
+        blurb: 'Milk, meat, or brush clearing. Excellent escape artists — fencing quality matters as much as feed.',
+        note: 'Plan for at least two. Fencing is not optional.',
+        land: { pct: 35, label: 'Moderate', detail: 'Often 4–6 per acre depending on browse. Prefer brush over pure grass; rotate.' },
+        water: { pct: 35, label: 'Moderate', detail: '1–3 gallons per day by size, heat, and lactation. They can be picky about water.' },
+        feed: { pct: 50, label: 'Browse + hay', detail: 'Browse, hay, minerals. Dairy does need higher-quality forage and often grain.' },
+        shelter: { pct: 40, label: 'Dry & draft-free', detail: 'They dislike rain more than cold. Strong woven or electric fencing essential.' },
+        labor: { pct: 50, label: 'Moderate–high', detail: 'Daily feed and check. Hooves, parasites; dairy means a fixed milking schedule.' },
+        barrier: { pct: 45, label: 'Medium', detail: 'Escape risk and fencing cost raise the bar versus chickens or sheep.' },
+        yield: { pct: 60, label: 'High optionality', detail: 'Milk, meat, brush control. Dairy is high-output if labor is there.' },
+        life: { pct: 65, label: '10–15 years', detail: 'Does productive for several years of kidding. Meat kids finish in months.' }
+      },
+      cattle: {
+        name: 'Cattle',
+        video: '/videos/Cow.mp4',
+        blurb: 'Beef or dairy. Higher land and capital needs than small stock; stocking rate and winter feed dominate the plan.',
+        note: 'Land and winter hay usually decide whether the numbers work.',
+        land: { pct: 85, label: 'High', detail: 'Often 1–2 acres per animal on good pasture; more in dry regions. Winter feed multiplies need.' },
+        water: { pct: 90, label: 'Very high', detail: '10–20+ gallons per head per day. Reliable source and trough capacity year-round.' },
+        feed: { pct: 80, label: 'Heavy', detail: 'Pasture in season; hay and possible supplement in winter. Minerals matched to region.' },
+        shelter: { pct: 45, label: 'Moderate', detail: 'Windbreaks and dry lying areas often enough. Working pens required for safe handling.' },
+        labor: { pct: 55, label: 'Scales fast', detail: 'Daily checks. Handling facilities matter. Dairy is a multi-year daily commitment.' },
+        barrier: { pct: 80, label: 'High', detail: 'Capital, land, fencing, and facilities. Not a casual first livestock choice.' },
+        yield: { pct: 70, label: 'High volume', detail: 'Beef or dairy at scale. Returns depend on feed cost and market access.' },
+        life: { pct: 70, label: 'Multi-year', detail: 'Beef finish 18–30 months. Breeding cows productive several years; dairy longer commitment.' }
+      },
+      pigs: {
+        name: 'Pigs',
+        video: '/videos/Pig.mp4',
+        blurb: 'Efficient meat on small acreage. Strong fencing, wallows or shade, and a clear finishing plan are essential.',
+        note: 'Plan processing before you need it. Respect their strength when handling.',
+        land: { pct: 30, label: 'Low–moderate', detail: 'Pastured systems need rotation to avoid mud and root damage. Strong perimeter fencing.' },
+        water: { pct: 55, label: 'Moderate–high', detail: 'Several gallons per day plus cooling water in heat. Design for tipped waterers.' },
+        feed: { pct: 70, label: 'High', detail: 'Commercial ration or balanced farm mix. Kitchen waste is a supplement, not the diet.' },
+        shelter: { pct: 40, label: 'Simple but solid', detail: 'Shade and dry sleep area. A-frames work. Mud management is the real design problem.' },
+        labor: { pct: 45, label: 'Moderate', detail: 'Daily feed and check. Fencing inspections. Move paddocks if rotational.' },
+        barrier: { pct: 40, label: 'Medium', detail: 'Fencing and feed cost matter; cycle is short so mistakes show up fast.' },
+        yield: { pct: 75, label: 'Fast meat', detail: 'Efficient conversion. Finish in 5–8 months with a clear processing plan.' },
+        life: { pct: 20, label: '5–8 mo finish', detail: 'Meat pigs short cycle. Breeding stock kept longer. Timing to processor is key.' }
+      }
+    };
+
+    const videoEl = document.getElementById('animal-video');
+    const nameEl = document.getElementById('animal-name');
+    const blurbEl = document.getElementById('animal-blurb');
+    const noteEl = document.getElementById('animal-note');
+
+    function setStat(key, data) {
+      const bar = document.getElementById('stat-' + key);
+      const label = document.getElementById('stat-' + key + '-label');
+      const detail = document.getElementById('stat-' + key + '-detail');
+      bar.style.width = data.pct + '%';
+      label.textContent = data.label;
+      detail.textContent = data.detail;
     }
-    function playVisibleVideos(panel) {
-      panel.querySelectorAll('video').forEach(v => {
-        v.currentTime = 0;
-        v.play().catch(() => {});
+
+    function selectAnimal(id) {
+      const a = animals[id];
+      if (!a) return;
+
+      document.querySelectorAll('.animal-btn').forEach(b => {
+        const active = b.dataset.animal === id;
+        b.classList.toggle('bg-emerald-800', active);
+        b.classList.toggle('text-white', active);
+        b.classList.toggle('border-emerald-800', active);
+        b.classList.toggle('bg-white', !active);
+        b.classList.toggle('text-stone-700', !active);
+        b.classList.toggle('border-stone-300', !active);
       });
+
+      videoEl.pause();
+      videoEl.src = a.video;
+      videoEl.play().catch(() => {});
+
+      nameEl.textContent = a.name;
+      blurbEl.textContent = a.blurb;
+      noteEl.textContent = a.note;
+
+      setStat('land', a.land);
+      setStat('water', a.water);
+      setStat('feed', a.feed);
+      setStat('shelter', a.shelter);
+      setStat('labor', a.labor);
+      setStat('barrier', a.barrier);
+      setStat('yield', a.yield);
+      setStat('life', a.life);
     }
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.animal;
-        buttons.forEach(b => {
-          b.classList.remove('bg-emerald-800', 'text-white', 'border-emerald-800');
-          b.classList.add('bg-white', 'text-stone-700', 'border-stone-300');
-        });
-        btn.classList.add('bg-emerald-800', 'text-white', 'border-emerald-800');
-        btn.classList.remove('bg-white', 'text-stone-700', 'border-stone-300');
-        pauseAllVideos();
-        panels.forEach(p => p.classList.add('hidden'));
-        const panel = document.querySelector(`[data-panel="${id}"]`);
-        panel.classList.remove('hidden');
-        playVisibleVideos(panel);
-      });
+
+    document.querySelectorAll('.animal-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectAnimal(btn.dataset.animal));
     });
-    // Play sheep video on initial load
-    playVisibleVideos(document.querySelector('[data-panel="sheep"]'));
+
+    selectAnimal('sheep');
   </script>
 </body>
 </html>
