@@ -1,5 +1,10 @@
-/* Tractform — compact location control in header
-   City + State (required) + optional ZIP for zone lookup.
+/* Tractform — location control
+
+   Two mutually exclusive modes:
+   1) By place — city + state (and/or ZIP) drive zone. Zone is locked to lookup.
+   2) Zone only — pick a hardiness zone; place fields cleared.
+
+   Flow for place: city+state → ZIP → zone, or ZIP → state + zone.
 */
 (function () {
   const STORAGE_KEY = 'tractform_location';
@@ -36,7 +41,6 @@
 
   function getLocation() {
     const d = load();
-    // Normalize legacy shape { place: "City, ST" } into city/state if possible
     if (d.place && !d.state) {
       const m = String(d.place).match(/,\s*([A-Za-z]{2})\s*$/);
       if (m) {
@@ -45,6 +49,9 @@
       } else {
         d.city = d.place;
       }
+    }
+    if (!d.mode) {
+      d.mode = (d.city || d.state || d.zip) ? 'place' : (d.zone ? 'zone' : 'place');
     }
     return d;
   }
@@ -86,15 +93,42 @@
     }
   }
 
-  async function stateFromZip(zip) {
+  /** ZIP → { state, city } via Zippopotam */
+  async function placeFromZip(zip) {
     const clean = String(zip).replace(/\D/g, '').slice(0, 5);
     if (clean.length !== 5) return null;
     try {
-      const res = await fetch('https://usps-zip-codes.deno.dev/' + clean, { mode: 'cors' });
+      const res = await fetch('https://api.zippopotam.us/us/' + clean, { mode: 'cors' });
       if (!res.ok) return null;
       const data = await res.json();
-      const st = (data.state || data.State || '').toUpperCase();
-      return STATES.some(([c]) => c === st) ? st : null;
+      const st = (data['state abbreviation'] || '').toUpperCase();
+      const places = data.places || [];
+      const city = places[0] ? places[0]['place name'] : '';
+      return {
+        state: STATES.some(([c]) => c === st) ? st : null,
+        city: city || ''
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /** city + state → preferred ZIP via Zippopotam */
+  async function zipFromCityState(city, state) {
+    const c = String(city || '').trim().toLowerCase();
+    const st = String(state || '').trim().toLowerCase();
+    if (!c || !st || st.length !== 2) return null;
+    try {
+      const res = await fetch(
+        'https://api.zippopotam.us/us/' + encodeURIComponent(st) + '/' + encodeURIComponent(c),
+        { mode: 'cors' }
+      );
+      if (!res.ok) return null;
+      const data = await res.json();
+      const places = data.places || [];
+      if (!places.length) return null;
+      // Prefer first post code; cities can span multiple ZIPs
+      return String(places[0]['post code'] || '').replace(/\D/g, '').slice(0, 5) || null;
     } catch {
       return null;
     }
@@ -114,10 +148,17 @@
     const loc = getLocation();
     const label = document.getElementById('tf-tab-label');
     if (!label) return;
-    if (loc.zone && loc.state) label.textContent = loc.state + ' · Zone ' + loc.zone;
-    else if (loc.zone) label.textContent = 'Zone ' + loc.zone;
-    else if (loc.state) label.textContent = loc.state;
-    else label.textContent = 'Location';
+    if (loc.mode === 'zone' && loc.zone) {
+      label.textContent = 'Zone ' + loc.zone;
+    } else if (loc.zone && loc.state) {
+      label.textContent = loc.state + ' · Zone ' + loc.zone;
+    } else if (loc.state) {
+      label.textContent = loc.state;
+    } else if (loc.zone) {
+      label.textContent = 'Zone ' + loc.zone;
+    } else {
+      label.textContent = 'Location';
+    }
   }
 
   function mount() {
@@ -126,10 +167,10 @@
 
     const loc = getLocation();
     const zoneOptions = ZONES.map(z =>
-      '<option value="' + z + '"' + (loc.zone === z ? ' selected' : '') + '>' + z + '</option>'
+      '<option value="' + z + '">' + z + '</option>'
     ).join('');
     const stateOptions = STATES.map(([code, name]) =>
-      '<option value="' + code + '"' + (loc.state === code ? ' selected' : '') + '>' + code + ' — ' + name + '</option>'
+      '<option value="' + code + '">' + code + ' — ' + name + '</option>'
     ).join('');
 
     const wrap = document.createElement('div');
@@ -146,29 +187,35 @@
         '</svg>' +
       '</button>' +
       '<div id="tf-loc-panel" class="hidden absolute right-0 top-full mt-2 w-80 rounded-xl border border-stone-200 bg-white shadow-lg p-4 z-50 text-stone-900">' +
-        '<p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-3">Your place</p>' +
-        '<div class="grid grid-cols-3 gap-2 mb-3">' +
-          '<div class="col-span-2">' +
-            '<label class="block text-xs text-stone-500 mb-1">City</label>' +
-            '<input id="tf-city" type="text" placeholder="" ' +
-              'class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700" />' +
-          '</div>' +
-          '<div>' +
-            '<label class="block text-xs text-stone-500 mb-1">State</label>' +
-            '<select id="tf-state" class="w-full rounded-lg border border-stone-300 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700">' +
-              '<option value="">—</option>' + stateOptions +
-            '</select>' +
-          '</div>' +
+        '<p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-2">Location</p>' +
+        '<div class="flex rounded-lg border border-stone-200 p-0.5 mb-3 text-xs font-medium">' +
+          '<button type="button" id="tf-mode-place" class="flex-1 rounded-md px-2 py-1.5 transition">By place</button>' +
+          '<button type="button" id="tf-mode-zone" class="flex-1 rounded-md px-2 py-1.5 transition">Zone only</button>' +
         '</div>' +
-        '<label class="block text-xs text-stone-500 mb-1">ZIP <span class="font-normal">(optional — fills zone)</span></label>' +
-        '<input id="tf-zip" type="text" inputmode="numeric" maxlength="10" placeholder="" ' +
-          'class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700" />' +
-        '<p id="tf-lookup-status" class="text-xs text-stone-400 mb-3 min-h-[1rem]"></p>' +
+        '<div id="tf-place-fields">' +
+          '<div class="grid grid-cols-3 gap-2 mb-2">' +
+            '<div class="col-span-2">' +
+              '<label class="block text-xs text-stone-500 mb-1">City</label>' +
+              '<input id="tf-city" type="text" autocomplete="address-level2" ' +
+                'class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700" />' +
+            '</div>' +
+            '<div>' +
+              '<label class="block text-xs text-stone-500 mb-1">State</label>' +
+              '<select id="tf-state" class="w-full rounded-lg border border-stone-300 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700">' +
+                '<option value="">—</option>' + stateOptions +
+              '</select>' +
+            '</div>' +
+          '</div>' +
+          '<label class="block text-xs text-stone-500 mb-1">ZIP</label>' +
+          '<input id="tf-zip" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" ' +
+            'class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700" />' +
+        '</div>' +
         '<label class="block text-xs text-stone-500 mb-1">USDA hardiness zone</label>' +
         '<select id="tf-zone" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-700/25 focus:border-emerald-700">' +
-          '<option value="">Select…</option>' + zoneOptions +
+          '<option value="">—</option>' + zoneOptions +
         '</select>' +
-        '<p class="text-xs text-stone-400 mt-2">State is required for cost estimates. ZIP can fill zone (and state) when available.</p>' +
+        '<p id="tf-lookup-status" class="text-xs text-stone-400 mt-2 min-h-[1rem]"></p>' +
+        '<p id="tf-mode-hint" class="text-xs text-stone-400 mt-1"></p>' +
       '</div>';
 
     headerInner.classList.add('gap-4');
@@ -181,12 +228,77 @@
     const zipInput = document.getElementById('tf-zip');
     const zoneSelect = document.getElementById('tf-zone');
     const statusEl = document.getElementById('tf-lookup-status');
+    const hintEl = document.getElementById('tf-mode-hint');
+    const modePlaceBtn = document.getElementById('tf-mode-place');
+    const modeZoneBtn = document.getElementById('tf-mode-zone');
+    const placeFields = document.getElementById('tf-place-fields');
+
+    let mode = loc.mode === 'zone' ? 'zone' : 'place';
+    let lookupSeq = 0;
 
     cityInput.value = loc.city || '';
     if (loc.state) stateSelect.value = loc.state;
     zipInput.value = loc.zip || '';
     if (loc.zone) zoneSelect.value = loc.zone;
-    updateTabLabel();
+
+    function setModeUI() {
+      const placeOn = mode === 'place';
+      modePlaceBtn.className = placeOn
+        ? 'flex-1 rounded-md px-2 py-1.5 transition bg-emerald-800 text-white'
+        : 'flex-1 rounded-md px-2 py-1.5 transition text-stone-600 hover:bg-stone-50';
+      modeZoneBtn.className = !placeOn
+        ? 'flex-1 rounded-md px-2 py-1.5 transition bg-emerald-800 text-white'
+        : 'flex-1 rounded-md px-2 py-1.5 transition text-stone-600 hover:bg-stone-50';
+
+      placeFields.style.opacity = placeOn ? '1' : '0.45';
+      cityInput.disabled = !placeOn;
+      stateSelect.disabled = !placeOn;
+      zipInput.disabled = !placeOn;
+
+      // Zone is locked in place mode (driven by ZIP); editable only in zone-only mode
+      zoneSelect.disabled = placeOn;
+      zoneSelect.classList.toggle('bg-stone-50', placeOn);
+      zoneSelect.classList.toggle('text-stone-500', placeOn);
+
+      hintEl.textContent = placeOn
+        ? 'Zone is set from ZIP for this place — not chosen separately.'
+        : 'Place fields are cleared. Pick a zone only.';
+    }
+
+    function persist() {
+      if (mode === 'zone') {
+        const zone = zoneSelect.value || '';
+        save({ mode: 'zone', city: '', state: '', zip: '', zone, place: '' });
+        return;
+      }
+      const city = (cityInput.value || '').trim();
+      const state = (stateSelect.value || '').trim().toUpperCase();
+      const zip = (zipInput.value || '').replace(/\D/g, '').slice(0, 5);
+      const zone = zoneSelect.value || '';
+      const place = city && state ? (city + ', ' + state) : (city || state || '');
+      save({ mode: 'place', city, state, zip, zone, place });
+    }
+
+    function switchMode(next) {
+      if (next === mode) return;
+      mode = next;
+      if (mode === 'zone') {
+        // Keep current zone if any; clear place
+        cityInput.value = '';
+        stateSelect.value = '';
+        zipInput.value = '';
+        statusEl.textContent = '';
+      } else {
+        // Entering place mode: zone will be filled by lookup; clear manual-only zone if no ZIP yet
+        if (!zipInput.value) zoneSelect.value = '';
+        statusEl.textContent = '';
+      }
+      setModeUI();
+      persist();
+    }
+
+    modePlaceBtn.addEventListener('click', () => switchMode('place'));
+    modeZoneBtn.addEventListener('click', () => switchMode('zone'));
 
     function toggle(open) {
       const show = open === undefined ? panel.classList.contains('hidden') : open;
@@ -196,58 +308,82 @@
     tab.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
     document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) toggle(false); });
 
-    function persist() {
-      const city = (cityInput.value || '').trim();
-      const state = (stateSelect.value || '').trim().toUpperCase();
-      const zip = (zipInput.value || '').replace(/\D/g, '').slice(0, 5);
-      const zone = zoneSelect.value || '';
-      const place = city && state ? (city + ', ' + state) : (city || state || '');
-      save({ city, state, zip, zone, place });
+    async function applyZip(zip) {
+      const clean = String(zip || '').replace(/\D/g, '').slice(0, 5);
+      if (clean.length !== 5) return;
+      const seq = ++lookupSeq;
+      statusEl.textContent = 'Looking up ZIP…';
+      const [z, place] = await Promise.all([zoneFromZip(clean), placeFromZip(clean)]);
+      if (seq !== lookupSeq) return;
+
+      zipInput.value = clean;
+      if (place && place.state) stateSelect.value = place.state;
+      if (place && place.city && !cityInput.value.trim()) cityInput.value = place.city;
+      if (z) zoneSelect.value = z;
+
+      const parts = [];
+      if (place && place.state) parts.push(place.state);
+      if (z) parts.push('Zone ' + z);
+      statusEl.textContent = parts.length ? parts.join(' · ') + ' from ZIP' : 'ZIP found; zone lookup failed';
+      persist();
     }
 
-    cityInput.addEventListener('change', persist);
-    cityInput.addEventListener('blur', persist);
-    stateSelect.addEventListener('change', () => {
-      statusEl.textContent = stateSelect.value ? '' : 'Select a state for cost estimates';
-      persist();
-    });
-    zoneSelect.addEventListener('change', () => {
-      if (zoneSelect.value) statusEl.textContent = 'Zone set manually';
-      persist();
-    });
-
-    let lookupTimer;
-    async function tryZipLookup() {
-      const zip = (zipInput.value || '').replace(/\D/g, '').slice(0, 5);
-      if (zip.length !== 5) {
+    async function applyCityState() {
+      if (mode !== 'place') return;
+      const city = (cityInput.value || '').trim();
+      const state = (stateSelect.value || '').trim();
+      if (!city || !state) {
         persist();
         return;
       }
-      statusEl.textContent = 'Looking up ZIP…';
-      const [z, st] = await Promise.all([zoneFromZip(zip), stateFromZip(zip)]);
-      const parts = [];
-      if (st) {
-        stateSelect.value = st;
-        parts.push(st);
+      const seq = ++lookupSeq;
+      statusEl.textContent = 'Looking up place…';
+      const zip = await zipFromCityState(city, state);
+      if (seq !== lookupSeq) return;
+
+      if (!zip) {
+        statusEl.textContent = 'Couldn’t find a ZIP for that city — enter ZIP to set zone';
+        zoneSelect.value = '';
+        persist();
+        return;
       }
-      if (z) {
-        zoneSelect.value = z;
-        parts.push('Zone ' + z);
-      }
-      statusEl.textContent = parts.length
-        ? parts.join(' · ') + ' from ZIP'
-        : 'Couldn’t auto-detect — set state and zone';
-      persist();
+      zipInput.value = zip;
+      await applyZip(zip);
     }
 
+    let cityTimer;
+    let zipTimer;
+
+    cityInput.addEventListener('input', () => {
+      clearTimeout(cityTimer);
+      cityTimer = setTimeout(applyCityState, 550);
+    });
+    cityInput.addEventListener('change', applyCityState);
+    stateSelect.addEventListener('change', applyCityState);
+
     zipInput.addEventListener('input', () => {
-      clearTimeout(lookupTimer);
-      lookupTimer = setTimeout(tryZipLookup, 450);
+      clearTimeout(zipTimer);
+      const z = (zipInput.value || '').replace(/\D/g, '').slice(0, 5);
+      if (z.length === 5) zipTimer = setTimeout(() => applyZip(z), 400);
+      else persist();
     });
-    zipInput.addEventListener('change', tryZipLookup);
-    zipInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); tryZipLookup(); }
+    zipInput.addEventListener('change', () => {
+      const z = (zipInput.value || '').replace(/\D/g, '').slice(0, 5);
+      if (z.length === 5) applyZip(z);
+      else persist();
     });
+
+    zoneSelect.addEventListener('change', () => {
+      if (mode === 'zone') persist();
+    });
+
+    setModeUI();
+    updateTabLabel();
+
+    // If loaded in place mode with ZIP but missing zone, refresh zone
+    if (mode === 'place' && loc.zip && loc.zip.length === 5 && !loc.zone) {
+      applyZip(loc.zip);
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
