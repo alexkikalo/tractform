@@ -86,7 +86,7 @@
 
         <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200 space-y-3">
           <h3 class="text-sm font-semibold">Land cost</h3>
-          <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header.</p>
+          <p id="cost-main" class="text-sm text-stone-600">Select a state in the header location control.</p>
           <p id="cost-note" class="text-xs text-stone-500"></p>
           <p id="cost-detail" class="text-xs text-stone-500"></p>
           <div id="listing-links" class="hidden flex flex-wrap gap-2 pt-1"></div>
@@ -133,8 +133,6 @@
     ]);
     let setting = 'mixed';
     let market = 'homestead';
-    let resolvedState = null;
-    let lookingUp = false;
 
     function money(n) {
       if (n == null) return '—';
@@ -275,19 +273,11 @@
       const listingLinks = document.getElementById('listing-links');
       const costDisclaimer = document.getElementById('cost-disclaimer');
 
-      if (lookingUp) {
-        costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
-        costMain.className = 'text-sm text-stone-600';
-        costMain.textContent = 'Looking up location…';
-        costNote.textContent = '';
-        costDetail.textContent = '';
-        listingLinks.className = 'hidden';
-        costDisclaimer.className = 'text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80';
-      } else if (!r.cost.hasLocation) {
+      if (!r.cost.hasLocation) {
         costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
         costMain.className = 'text-sm text-stone-600';
         costMain.textContent = r.cost.message;
-        costNote.textContent = '';
+        costNote.textContent = 'Open Location in the header, choose a state (required), and optionally city + ZIP.';
         costDetail.textContent = '';
         listingLinks.className = 'hidden';
         costDisclaimer.className = 'text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80';
@@ -343,63 +333,29 @@
       document.getElementById('sum-cost-note').textContent =
         r.cost.hasLocation
           ? 'Verify with current local listings.'
-          : 'Set location in the header.';
+          : 'Set state in the header location control.';
     }
 
-    async function refresh() {
+    function refresh() {
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       const activityList = Array.from(selected.entries()).map(([id, scale]) => ({ id, scale }));
 
-      const state = {
+      const r = window.TractformLand.calculate({
         activities: activityList,
         setting,
         market,
-        place: loc.place || '',
-        zone: loc.zone || null,
-        stateCode: resolvedState
-      };
-
-      let r = window.TractformLand.calculate(state);
-
-      if (!r.cost.hasLocation && loc.place) {
-        const st = window.TractformLand.parseStateFromPlace(loc.place);
-        if (st) {
-          resolvedState = st;
-          state.stateCode = st;
-          r = window.TractformLand.calculate(state);
-        }
-      }
-
-      if (!r.cost.hasLocation && loc.place) {
-        const local = window.TractformLand.findLocalMarket(loc.place, resolvedState);
-        if (local) {
-          resolvedState = local.state;
-          state.stateCode = local.state;
-          r = window.TractformLand.calculate(state);
-        }
-      }
-
-      if (r._pendingZip && !resolvedState) {
-        lookingUp = true;
-        render(r);
-        const st = await window.TractformLand.stateFromZip(r._pendingZip);
-        lookingUp = false;
-        if (st) {
-          resolvedState = st;
-          state.stateCode = st;
-          r = window.TractformLand.calculate(state);
-        }
-      }
+        city: loc.city || '',
+        stateCode: loc.state || null,
+        zip: loc.zip || '',
+        place: loc.place || (window.TractformLocation && window.TractformLocation.displayPlace(loc)) || '',
+        zone: loc.zone || null
+      });
 
       render(r);
     }
 
     if (window.TractformLocation) {
-      window.TractformLocation.onChange(() => {
-        resolvedState = null;
-        lookingUp = false;
-        refresh();
-      });
+      window.TractformLocation.onChange(() => refresh());
     }
 
     window.addEventListener('focus', () => refresh());
