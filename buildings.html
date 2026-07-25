@@ -1,180 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buildings — Tractform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;max-width:220px;aspect-ratio:1;border-radius:.75rem;background:#f5f5f4;border:1px dashed #d6d3d1;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.75rem;text-align:center;padding:1rem}</style>
+  <style>body{font-family:'Inter',system-ui,sans-serif}.stat-fill{height:100%;border-radius:9999px;transition:width .4s ease}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
 </head>
-<body class="bg-stone-50 text-stone-900 antialiased">
-  <header class="border-b border-stone-200 bg-white/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-8 h-8 rounded-md bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-sm">T</span></div><span class="font-semibold text-lg tracking-tight">Tractform</span></a>
-      <nav class="hidden sm:flex gap-5 text-sm font-medium text-stone-600">
-        <a href="/land.html" class="hover:text-stone-900">Land</a>
-        <a href="/infrastructure.html" class="hover:text-stone-900">Water & Power</a>
-        <a href="/buildings.html" class="text-emerald-800 font-semibold">Buildings</a>
-        <a href="/production.html" class="hover:text-stone-900">Livestock</a>
-        <a href="/gardens.html" class="hover:text-stone-900">Gardens</a>
-        <a href="/family.html" class="hover:text-stone-900">Household</a>
+<body class="bg-stone-100 text-stone-900 antialiased">
+  <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div><span class="font-semibold tracking-tight">Tractform</span></a>
+      <nav class="hidden sm:flex gap-5 text-sm font-medium text-emerald-100/90">
+        <a href="/land.html" class="hover:text-white">Land</a>
+        <a href="/utilities.html" class="hover:text-white">Utilities</a>
+        <a href="/buildings.html" class="text-white font-semibold">Buildings</a>
+        <a href="/production.html" class="hover:text-white">Livestock</a>
+        <a href="/gardens.html" class="hover:text-white">Gardens</a>
+        <a href="/family.html" class="hover:text-white">Household</a>
       </nav>
     </div>
   </header>
-
-  <section class="max-w-6xl mx-auto px-6 pt-10 pb-4">
-    <p class="text-emerald-800 font-medium text-sm tracking-wide uppercase mb-2">Buildings</p>
-    <h1 class="text-3xl font-bold tracking-tight mb-2">Configure a structure</h1>
-    <p class="text-stone-600 text-sm max-w-2xl">Pick type and style. Frost depth and wind notes follow your zone.</p>
-  </section>
-
+  <section class="max-w-6xl mx-auto px-6 pt-8 pb-3"><h1 class="text-2xl font-bold tracking-tight">Buildings</h1></section>
   <section class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="grid lg:grid-cols-3 gap-8 items-start">
-      <div class="lg:col-span-2 space-y-6">
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6">
+    <div class="grid lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white border border-stone-200 rounded-2xl p-5">
           <label class="block text-sm font-semibold mb-3">Structure</label>
-          <div class="flex flex-wrap gap-2" id="type-controls">
+          <div class="flex flex-wrap gap-2">
             <button type="button" data-type="house" class="t-btn px-4 py-2 rounded-lg border border-emerald-800 bg-emerald-800 text-white text-sm font-medium">House / cabin</button>
             <button type="button" data-type="barn" class="t-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Barn / shop</button>
             <button type="button" data-type="coop" class="t-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Chicken coop</button>
             <button type="button" data-type="shed" class="t-btn px-4 py-2 rounded-lg border border-stone-300 bg-white text-stone-700 text-sm font-medium">Shed / lean-to</button>
           </div>
         </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 grid sm:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-semibold mb-2">Style / system</label>
-            <select id="style" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"></select>
-            <p id="style-note" class="text-xs text-stone-500 mt-2"></p>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold mb-2">Footprint (sq ft)</label>
-            <input id="sqft" type="number" min="40" max="10000" value="1200" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" />
-          </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-5 grid sm:grid-cols-2 gap-4">
+          <div><label class="block text-sm font-semibold mb-2">Style</label><select id="style" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"></select><p id="style-note" class="text-xs text-stone-500 mt-2"></p></div>
+          <div><label class="block text-sm font-semibold mb-2">Footprint (sq ft)</label><input id="sqft" type="number" min="40" max="10000" value="1200" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" /></div>
         </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-start">
-          <div class="media-ph">Building<br/>media placeholder</div>
-          <div class="flex-1">
-            <h2 id="type-name" class="text-xl font-bold mb-1">House / cabin</h2>
-            <p id="sel-sum" class="text-sm text-emerald-800 font-medium mb-2"></p>
-            <p id="type-blurb" class="text-sm text-stone-600"></p>
-          </div>
-        </div>
-
-        <div class="bg-emerald-900 text-white rounded-2xl p-5 sm:p-6">
-          <h3 class="text-sm font-medium text-emerald-200 uppercase tracking-wide mb-4">Code & climate (placeholder)</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-            <div><p class="text-emerald-200/80 text-xs mb-1">Frost depth (typ.)</p><p id="t-frost" class="text-lg font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-1">Foundation bias</p><p id="t-found" class="text-lg font-semibold">—</p></div>
-            <div><p class="text-emerald-200/80 text-xs mb-1">Wind / snow</p><p id="t-wind" class="text-lg font-semibold">—</p></div>
+        <div class="bg-emerald-900 text-white rounded-2xl p-5">
+          <h3 class="text-xs font-medium text-emerald-200 uppercase tracking-wide mb-3">Code & climate</h3>
+          <div class="grid grid-cols-3 gap-3 text-sm">
+            <div><p class="text-emerald-200/80 text-xs">Frost depth</p><p id="t-frost" class="font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs">Foundation</p><p id="t-found" class="font-semibold">—</p></div>
+            <div><p class="text-emerald-200/80 text-xs">Wind / snow</p><p id="t-wind" class="font-semibold">—</p></div>
           </div>
         </div>
       </div>
-
       <div class="lg:col-span-1">
-        <div class="lg:sticky lg:top-28 space-y-3">
-          <h3 class="text-sm font-medium text-stone-500 uppercase tracking-wide">Live stats</h3>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Foundation demand</span><span id="s-f-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-f" class="stat-fill bg-stone-600" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Material intensity</span><span id="s-m-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-m" class="stat-fill bg-amber-700" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Labor / skill</span><span id="s-l-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-l" class="stat-fill bg-violet-600" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Code complexity</span><span id="s-c-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-c" class="stat-fill bg-rose-600" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Climate hardening</span><span id="s-h-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-h" class="stat-fill bg-sky-700" style="width:40%"></div></div></div>
-          <div class="bg-white border border-stone-200 rounded-xl p-3.5"><div class="flex justify-between mb-1.5"><span class="text-xs font-semibold">Speed to usable</span><span id="s-s-l" class="text-xs text-stone-500">—</span></div><div class="h-2 bg-stone-100 rounded-full overflow-hidden"><div id="s-s" class="stat-fill bg-emerald-600" style="width:50%"></div></div></div>
+        <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
+          <div class="media-ph">Building media</div>
+          <div><h2 id="type-name" class="text-lg font-bold text-white">House / cabin</h2><p id="sel-sum" class="text-sm text-emerald-300"></p><p id="type-blurb" class="text-xs text-emerald-100/80 mt-2"></p></div>
+          <div class="border-t border-emerald-800 pt-3 space-y-3">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Live stats</p>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Foundation</span><span id="s-f-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-f" class="stat-fill bg-stone-300" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Materials</span><span id="s-m-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-m" class="stat-fill bg-amber-400" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Labor / skill</span><span id="s-l-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-l" class="stat-fill bg-violet-400" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Code complexity</span><span id="s-c-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-c" class="stat-fill bg-rose-400" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Climate hardening</span><span id="s-h-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-h" class="stat-fill bg-sky-400" style="width:40%"></div></div></div>
+            <div><div class="flex justify-between mb-1"><span class="text-xs text-emerald-100">Speed to usable</span><span id="s-s-l" class="text-xs text-emerald-400">—</span></div><div class="h-2 bg-emerald-900 rounded-full overflow-hidden"><div id="s-s" class="stat-fill bg-lime-400" style="width:50%"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
-
-  <footer class="border-t border-stone-200 py-10"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-800 flex items-center justify-center"><span class="text-white font-bold text-xs">T</span></div><span>Tractform</span></a><p>&copy; 2026 Tractform</p></div></footer>
+  <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
   <script src="/site.js"></script>
   <script>
-    const types = {
-      house: {
-        name: 'House / cabin', blurb: 'Living space — foundation, envelope, and code path dominate cost and time.',
-        styles: [
-          { id: 'stick', name: 'Stick-frame', note: 'Standard residential. Flexible interiors.', f: 70, m: 65, l: 70, c: 80, s: 35 },
-          { id: 'cabin', name: 'Simple cabin', note: 'Smaller envelope, often simpler systems.', f: 55, m: 50, l: 55, c: 55, s: 55 },
-          { id: 'barndominium', name: 'Barndominium', note: 'Metal shell + living fit-out.', f: 60, m: 55, l: 60, c: 65, s: 50 }
-        ], defaultSq: 1200
-      },
-      barn: {
-        name: 'Barn / shop', blurb: 'Clear span, door height, and floor type follow equipment and livestock.',
-        styles: [
-          { id: 'pole', name: 'Pole barn', note: 'Fast, economical clear span.', f: 40, m: 45, l: 40, c: 35, s: 75 },
-          { id: 'rigid', name: 'Rigid-frame metal', note: 'Engineered frames, larger spans.', f: 50, m: 55, l: 45, c: 45, s: 65 },
-          { id: 'postbeam', name: 'Post-and-beam', note: 'Heavier timber aesthetic and labor.', f: 55, m: 60, l: 70, c: 40, s: 40 }
-        ], defaultSq: 2000
-      },
-      coop: {
-        name: 'Chicken coop', blurb: 'Predator-proof, dry, ventilated — size to the flock.',
-        styles: [
-          { id: 'static', name: 'Fixed coop + run', note: 'Permanent pad or skids.', f: 25, m: 30, l: 35, c: 15, s: 80 },
-          { id: 'tractor', name: 'Chicken tractor', note: 'Mobile; limited flock size.', f: 10, m: 25, l: 40, c: 10, s: 90 },
-          { id: 'tractor-barn', name: 'Mini barn coop', note: 'Walk-in, more birds.', f: 30, m: 40, l: 40, c: 20, s: 70 }
-        ], defaultSq: 80
-      },
-      shed: {
-        name: 'Shed / lean-to', blurb: 'Tool and feed storage — speed and dry ground matter most.',
-        styles: [
-          { id: 'skid', name: 'Skid shed', note: 'Movable, minimal foundation.', f: 15, m: 30, l: 30, c: 15, s: 90 },
-          { id: 'leanto', name: 'Lean-to', note: 'Attached or freestanding open side.', f: 20, m: 25, l: 25, c: 15, s: 85 },
-          { id: 'slab', name: 'Slab shed', note: 'Permanent floor for shop tools.', f: 40, m: 40, l: 35, c: 25, s: 60 }
-        ], defaultSq: 200
-      }
-    };
-    let cur = 'house';
-    const styleSel = document.getElementById('style');
-    const sqft = document.getElementById('sqft');
-
-    function bar(id, pct, label) {
-      document.getElementById(id).style.width = pct + '%';
-      document.getElementById(id + '-l').textContent = label;
-    }
-    function lbl(p) { return p > 70 ? 'High' : p > 40 ? 'Moderate' : 'Low'; }
-
-    function fillStyles() {
-      const t = types[cur];
-      styleSel.innerHTML = t.styles.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-      sqft.value = t.defaultSq;
-    }
-
-    function refresh() {
-      const t = types[cur];
-      const st = t.styles.find(s => s.id === styleSel.value) || t.styles[0];
-      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
-      const zn = loc.zone && window.TractformLocation ? window.TractformLocation.zoneNumber(loc.zone) : 7;
-
-      document.querySelectorAll('.t-btn').forEach(b => {
-        const on = b.dataset.type === cur;
-        b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
-        b.classList.toggle('bg-white', !on); b.classList.toggle('text-stone-700', !on); b.classList.toggle('border-stone-300', !on);
-      });
-
-      document.getElementById('type-name').textContent = t.name;
-      document.getElementById('type-blurb').textContent = t.blurb;
-      document.getElementById('style-note').textContent = st.note;
-      document.getElementById('sel-sum').textContent = st.name + ' · ' + sqft.value + ' sq ft';
-
-      const climateHard = Math.min(95, Math.abs(zn - 7) * 12 + 30);
-      bar('s-f', st.f, lbl(st.f));
-      bar('s-m', st.m, lbl(st.m));
-      bar('s-l', st.l, lbl(st.l));
-      bar('s-c', st.c, lbl(st.c));
-      bar('s-h', climateHard, lbl(climateHard));
-      bar('s-s', st.s, st.s > 70 ? 'Fast' : st.s > 45 ? 'Medium' : 'Slow');
-
-      document.getElementById('t-frost').textContent = zn <= 4 ? '48–60"+' : zn <= 6 ? '36–48"' : zn <= 8 ? '12–24"' : '0–12"';
-      document.getElementById('t-found').textContent = st.f > 55 ? 'Engineered / frost' : st.f > 30 ? 'Pier or thickened edge' : 'Skids / light';
-      document.getElementById('t-wind').textContent = zn <= 5 ? 'Snow + wind' : zn >= 9 ? 'Wind / heat' : 'Moderate';
-    }
-
-    document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => { cur = b.dataset.type; fillStyles(); refresh(); }));
-    styleSel.addEventListener('change', refresh);
-    sqft.addEventListener('input', refresh);
-    if (window.TractformLocation) window.TractformLocation.onChange(refresh);
-    fillStyles(); refresh();
+    const types={house:{name:'House / cabin',blurb:'Living space — foundation, envelope, and code path dominate.',styles:[{id:'stick',name:'Stick-frame',note:'Standard residential.',f:70,m:65,l:70,c:80,s:35},{id:'cabin',name:'Simple cabin',note:'Smaller envelope.',f:55,m:50,l:55,c:55,s:55},{id:'barndominium',name:'Barndominium',note:'Metal shell + fit-out.',f:60,m:55,l:60,c:65,s:50}],defaultSq:1200},barn:{name:'Barn / shop',blurb:'Clear span and door height follow equipment and stock.',styles:[{id:'pole',name:'Pole barn',note:'Fast clear span.',f:40,m:45,l:40,c:35,s:75},{id:'rigid',name:'Rigid-frame metal',note:'Engineered spans.',f:50,m:55,l:45,c:45,s:65},{id:'postbeam',name:'Post-and-beam',note:'Heavier timber labor.',f:55,m:60,l:70,c:40,s:40}],defaultSq:2000},coop:{name:'Chicken coop',blurb:'Predator-proof, dry, ventilated.',styles:[{id:'static',name:'Fixed coop + run',note:'Permanent or skids.',f:25,m:30,l:35,c:15,s:80},{id:'tractor',name:'Chicken tractor',note:'Mobile, small flock.',f:10,m:25,l:40,c:10,s:90},{id:'tractor-barn',name:'Mini barn coop',note:'Walk-in.',f:30,m:40,l:40,c:20,s:70}],defaultSq:80},shed:{name:'Shed / lean-to',blurb:'Tool and feed storage — speed and dry ground.',styles:[{id:'skid',name:'Skid shed',note:'Movable.',f:15,m:30,l:30,c:15,s:90},{id:'leanto',name:'Lean-to',note:'Open side.',f:20,m:25,l:25,c:15,s:85},{id:'slab',name:'Slab shed',note:'Permanent floor.',f:40,m:40,l:35,c:25,s:60}],defaultSq:200}};
+    let cur='house';const styleSel=document.getElementById('style');const sqft=document.getElementById('sqft');
+    function bar(id,pct,label){document.getElementById(id).style.width=pct+'%';document.getElementById(id+'-l').textContent=label;}function lbl(p){return p>70?'High':p>40?'Moderate':'Low';}
+    function fillStyles(){const t=types[cur];styleSel.innerHTML=t.styles.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');sqft.value=t.defaultSq;}
+    function refresh(){const t=types[cur];const st=t.styles.find(s=>s.id===styleSel.value)||t.styles[0];const loc=window.TractformLocation?window.TractformLocation.get():{};const zn=loc.zone&&window.TractformLocation?window.TractformLocation.zoneNumber(loc.zone):7;
+      document.querySelectorAll('.t-btn').forEach(b=>{const on=b.dataset.type===cur;b.classList.toggle('bg-emerald-800',on);b.classList.toggle('text-white',on);b.classList.toggle('border-emerald-800',on);b.classList.toggle('bg-white',!on);b.classList.toggle('text-stone-700',!on);b.classList.toggle('border-stone-300',!on);});
+      document.getElementById('type-name').textContent=t.name;document.getElementById('type-blurb').textContent=t.blurb;document.getElementById('style-note').textContent=st.note;document.getElementById('sel-sum').textContent=st.name+' · '+sqft.value+' sq ft';
+      const climateHard=Math.min(95,Math.abs(zn-7)*12+30);bar('s-f',st.f,lbl(st.f));bar('s-m',st.m,lbl(st.m));bar('s-l',st.l,lbl(st.l));bar('s-c',st.c,lbl(st.c));bar('s-h',climateHard,lbl(climateHard));bar('s-s',st.s,st.s>70?'Fast':st.s>45?'Medium':'Slow');
+      document.getElementById('t-frost').textContent=zn<=4?'48–60"+':zn<=6?'36–48"':zn<=8?'12–24"':'0–12"';document.getElementById('t-found').textContent=st.f>55?'Engineered / frost':st.f>30?'Pier / edge':'Skids / light';document.getElementById('t-wind').textContent=zn<=5?'Snow + wind':zn>=9?'Wind / heat':'Moderate';}
+    document.querySelectorAll('.t-btn').forEach(b=>b.addEventListener('click',()=>{cur=b.dataset.type;fillStyles();refresh();}));styleSel.addEventListener('change',refresh);sqft.addEventListener('input',refresh);
+    if(window.TractformLocation)window.TractformLocation.onChange(refresh);fillStyles();refresh();
   </script>
 </body>
 </html>
