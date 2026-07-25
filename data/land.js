@@ -1,5 +1,9 @@
 /* Tractform — Land data + pure calculator
-   Multi-activity planning with scale, terrain, and location-banded cost.
+   Multi-activity planning with scale, terrain, and location-aware cost.
+
+   Cost priority:
+   1) Local market band (county/metro) when place matches
+   2) State USDA base × setting × parcel type (fallback only)
 */
 (function () {
   const ACTIVITIES = {
@@ -109,8 +113,7 @@
     }
   };
 
-  // USDA 2025 statewide farm real estate base ($/acre).
-  // Multipliers below convert this into retail-ish homestead bands.
+  // USDA 2025 statewide farm real estate base ($/acre) — fallback only
   const STATE_PRICE = {
     AL: 4200, AK: 2800, AZ: 3800, AR: 4100, CA: 13700,
     CO: 2200, CT: 14400, DE: 9550, FL: 7200, GA: 4800,
@@ -137,63 +140,88 @@
     VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
   };
 
-  /* Setting multipliers calibrated against retail asking prices (2025–26).
-     Example check: Decatur / Wise County TX
-     - Small/medium homestead tracts often list $20k–$55k/acre
-     - Larger ranch tracts often $8k–$25k/acre
-     - Pure remote ag is closer to the raw USDA base
-     With TX base $2,800:
-       mixed + homestead → roughly $20k–$55k/acre
-       rural + working   → roughly $7k–$22k/acre
-  */
-  const SETTINGS = {
-    remote: {
-      id: 'remote',
-      label: 'Remote rural',
-      hint: 'Far from towns, limited services, pure country',
-      low: 1.0,
-      high: 2.5
+  /* Local market bands for homestead-scale parcels (approx. retail asking / recent medians).
+     Prefer these over state×multiplier when the place matches.
+     Expand this table over time — it is the real product improvement. */
+  const LOCAL_MARKETS = [
+    {
+      id: 'tx-wise',
+      state: 'TX',
+      name: 'Wise County, TX (Decatur area)',
+      match: [/\bdecatur\b/i, /\bwise county\b/i, /\bbridgeport\b/i, /\bboyd\b/i, /\brhome\b/i, /\bspringtown\b/i, /\balvord\b/i, /\bchico\b/i, /\bparadise\b/i, /\b76234\b/, /\b76225\b/, /\b76023\b/, /\b76426\b/, /\b76073\b/],
+      homesteadLow: 20000,
+      homesteadHigh: 55000,
+      workingLow: 8000,
+      workingHigh: 25000,
+      note: 'DFW northwest fringe. Small 5–30 ac tracts often list $20k–$55k/acre; larger ranch tracts lower.'
     },
-    rural: {
-      id: 'rural',
-      label: 'Rural',
-      hint: 'Countryside, not on a metro fringe',
-      low: 3.0,
-      high: 8.0
+    {
+      id: 'tx-denton',
+      state: 'TX',
+      name: 'Denton County, TX',
+      match: [/\bdenton\b/i, /\bsanger\b/i, /\bpilot point\b/i, /\bkrum\b/i, /\baubrey\b/i, /\bpilot\b/i, /\b76227\b/, /\b76207\b/, /\b76205\b/, /\b76201\b/, /\b76210\b/],
+      homesteadLow: 30000,
+      homesteadHigh: 80000,
+      workingLow: 25000,
+      workingHigh: 70000,
+      note: 'Closer-in DFW north. Higher pressure than Wise; small acreage often well above $30k/acre.'
     },
-    mixed: {
-      id: 'mixed',
-      label: 'Mixed / edge of town',
-      hint: 'Small-town fringe or popular rural areas (e.g. Decatur-style)',
-      low: 7.0,
-      high: 15.0
+    {
+      id: 'tx-parker',
+      state: 'TX',
+      name: 'Parker County, TX (Weatherford area)',
+      match: [/\bweatherford\b/i, /\bparker county\b/i, /\baledo\b/i, /\bhudson oaks\b/i, /\bspringtown\b/i, /\b76087\b/, /\b76086\b/, /\b76082\b/],
+      homesteadLow: 22000,
+      homesteadHigh: 60000,
+      workingLow: 10000,
+      workingHigh: 30000,
+      note: 'DFW west growth corridor. Similar retail pressure to Wise for small tracts.'
     },
-    metro: {
-      id: 'metro',
-      label: 'Near metro',
-      hint: 'Commuting distance to a larger city / growth corridor',
-      low: 12.0,
-      high: 25.0
+    {
+      id: 'tx-johnson',
+      state: 'TX',
+      name: 'Johnson County, TX (Cleburne / Burleson)',
+      match: [/\bcleburne\b/i, /\bburleson\b/i, /\bjoshua\b/i, /\bkeene\b/i, /\b76031\b/, /\b76028\b/, /\b76033\b/],
+      homesteadLow: 20000,
+      homesteadHigh: 50000,
+      workingLow: 10000,
+      workingHigh: 28000,
+      note: 'DFW south/southwest fringe.'
+    },
+    {
+      id: 'tx-hill-country',
+      state: 'TX',
+      name: 'Texas Hill Country (approx.)',
+      match: [/\bfredericksburg\b/i, /\bkerrville\b/i, /\bboerne\b/i, /\bwimberley\b/i, /\bdripping springs\b/i, /\bblanco\b/i, /\bjohnson city\b/i, /\b78606\b/, /\b78028\b/, /\b78006\b/],
+      homesteadLow: 15000,
+      homesteadHigh: 45000,
+      workingLow: 7000,
+      workingHigh: 25000,
+      note: 'Scenic demand keeps small tracts elevated; varies widely by water and views.'
+    },
+    {
+      id: 'tx-panhandle',
+      state: 'TX',
+      name: 'Texas Panhandle / South Plains',
+      match: [/\bamarillo\b/i, /\blubbock\b/i, /\bcanyon\b/i, /\bplainview\b/i, /\b791\d{2}\b/, /\b794\d{2}\b/],
+      homesteadLow: 3000,
+      homesteadHigh: 12000,
+      workingLow: 1500,
+      workingHigh: 4000,
+      note: 'Much closer to pure ag values; small tracts near towns still carry a premium.'
     }
+  ];
+
+  const SETTINGS = {
+    remote: { id: 'remote', label: 'Remote rural', hint: 'Far from towns, limited services', low: 1.0, high: 2.5 },
+    rural:  { id: 'rural',  label: 'Rural', hint: 'Countryside, not on a metro fringe', low: 3.0, high: 8.0 },
+    mixed:  { id: 'mixed',  label: 'Mixed / edge of town', hint: 'Small-town fringe or popular rural areas', low: 7.0, high: 15.0 },
+    metro:  { id: 'metro',  label: 'Near metro', hint: 'Commuting distance to a larger city', low: 12.0, high: 25.0 }
   };
 
-  // Parcel type shifts the band: working land stays closer to ag value;
-  // homestead/small acreage reflects the retail premium buyers actually pay.
   const MARKETS = {
-    working: {
-      id: 'working',
-      label: 'Working ranch / ag',
-      hint: 'Larger tracts used mainly for grazing or crops',
-      low: 0.85,
-      high: 1.0
-    },
-    homestead: {
-      id: 'homestead',
-      label: 'Homestead / small acreage',
-      hint: 'Residential-oriented 2–30 acre parcels (most common buyer market)',
-      low: 1.0,
-      high: 1.35
-    }
+    working:   { id: 'working',   label: 'Working ranch / ag', hint: 'Larger tracts used mainly for grazing or crops', low: 0.85, high: 1.0 },
+    homestead: { id: 'homestead', label: 'Homestead / small acreage', hint: 'Residential-oriented 2–30 acre parcels', low: 1.0, high: 1.35 }
   };
 
   function parseStateFromPlace(place) {
@@ -203,6 +231,22 @@
     if (m && STATE_PRICE[m[1]]) return m[1];
     for (const [code, name] of Object.entries(STATE_NAMES)) {
       if (s.includes(name.toUpperCase())) return code;
+    }
+    return null;
+  }
+
+  function findLocalMarket(place, stateCode) {
+    if (!place) return null;
+    const text = String(place);
+    for (const m of LOCAL_MARKETS) {
+      if (stateCode && m.state !== stateCode) continue;
+      if (m.match.some(re => re.test(text))) return m;
+    }
+    // If state unknown, still try match (city name may be unique enough)
+    if (!stateCode) {
+      for (const m of LOCAL_MARKETS) {
+        if (m.match.some(re => re.test(text))) return m;
+      }
     }
     return null;
   }
@@ -221,21 +265,23 @@
     }
   }
 
-  /**
-   * state = {
-   *   activities: [{ id, scale }],
-   *   setting: remote|rural|mixed|metro,
-   *   market: working|homestead,
-   *   place, zone, stateCode
-   * }
-   */
+  function listingSearchUrls(place) {
+    const q = encodeURIComponent(String(place || '').trim());
+    if (!q) return null;
+    return {
+      landwatch: 'https://www.landwatch.com/search?key=' + q + '&property_type=land',
+      zillow: 'https://www.zillow.com/' + encodeURIComponent(String(place).trim().replace(/,\s*/g, '-').replace(/\s+/g, '-')) + '/land/',
+      landsearch: 'https://www.landsearch.com/properties/' + q.replace(/%20/g, '-')
+    };
+  }
+
   function calculate(state) {
     const activityList = Array.isArray(state.activities) && state.activities.length
       ? state.activities
       : [{ id: 'homesite', scale: 'medium' }, { id: 'garden', scale: 'medium' }];
 
-    const settingKey = state.setting || 'rural';
-    const setting = SETTINGS[settingKey] || SETTINGS.rural;
+    const settingKey = state.setting || 'mixed';
+    const setting = SETTINGS[settingKey] || SETTINGS.mixed;
     const marketKey = state.market || 'homestead';
     const market = MARKETS[marketKey] || MARKETS.homestead;
 
@@ -264,49 +310,80 @@
     const buffer = hasBuffer ? 0 : Math.max(0.25, +(acresSum * 0.1).toFixed(2));
     const totalAcres = +(acresSum + buffer).toFixed(2);
 
+    const place = state.place || '';
+    const zipMatch = String(place).match(/\b(\d{5})\b/);
+    let stateCode = state.stateCode || parseStateFromPlace(place);
+    const local = findLocalMarket(place, stateCode);
+
     let cost = {
       hasLocation: false,
-      lookingUp: false,
+      sourceType: null, // 'local' | 'state'
       message: 'Enter a city or ZIP in the header to see approximate land cost.',
       perAcreLow: null,
       perAcreHigh: null,
       perAcreMid: null,
       stateCode: null,
       stateName: null,
+      localName: null,
       totalLow: null,
       totalHigh: null,
       totalMid: null,
       settingLabel: setting.label,
       marketLabel: market.label,
-      source: null
+      note: null,
+      source: null,
+      listings: listingSearchUrls(place)
     };
 
-    const place = state.place || '';
-    const zipMatch = String(place).match(/\b(\d{5})\b/);
-    let stateCode = state.stateCode || parseStateFromPlace(place);
-
-    if (stateCode && STATE_PRICE[stateCode]) {
+    if (local) {
+      // Prefer local market band — do not understate high-pressure areas
+      const isHomestead = marketKey === 'homestead';
+      const perLow = isHomestead ? local.homesteadLow : local.workingLow;
+      const perHigh = isHomestead ? local.homesteadHigh : local.workingHigh;
+      const perMid = Math.round((perLow + perHigh) / 2);
+      if (!stateCode) stateCode = local.state;
+      cost = {
+        hasLocation: true,
+        sourceType: 'local',
+        message: null,
+        perAcreLow: perLow,
+        perAcreHigh: perHigh,
+        perAcreMid: perMid,
+        stateCode,
+        stateName: STATE_NAMES[stateCode] || stateCode,
+        localName: local.name,
+        totalLow: Math.round(perLow * totalAcres),
+        totalHigh: Math.round(perHigh * totalAcres),
+        totalMid: Math.round(perMid * totalAcres),
+        settingLabel: setting.label,
+        marketLabel: market.label,
+        note: local.note,
+        source: 'Local market band for ' + local.name + ' based on recent listing/sale ranges for similar parcel types. Always verify with current listings.',
+        listings: listingSearchUrls(place)
+      };
+    } else if (stateCode && STATE_PRICE[stateCode]) {
       const base = STATE_PRICE[stateCode];
       const perLow = Math.round(base * setting.low * market.low);
       const perHigh = Math.round(base * setting.high * market.high);
       const perMid = Math.round((perLow + perHigh) / 2);
       cost = {
         hasLocation: true,
-        lookingUp: false,
+        sourceType: 'state',
         message: null,
         perAcreLow: perLow,
         perAcreHigh: perHigh,
         perAcreMid: perMid,
         stateCode,
         stateName: STATE_NAMES[stateCode],
+        localName: null,
         totalLow: Math.round(perLow * totalAcres),
         totalHigh: Math.round(perHigh * totalAcres),
         totalMid: Math.round(perMid * totalAcres),
         settingLabel: setting.label,
         marketLabel: market.label,
-        source:
-          'Planning range only. Starts from USDA statewide farm real estate average, then scales for location setting and parcel type. ' +
-          'Retail asking prices for small homestead tracts near towns are often much higher than pure ag land. Always check local listings.'
+        note: 'No local market band yet for this area. Using statewide fallback — can understate prices near cities.',
+        source: 'Fallback: USDA statewide farm average scaled by setting and parcel type. Local retail for small tracts is often higher. Check live listings.',
+        listings: listingSearchUrls(place)
       };
     }
 
@@ -344,10 +421,13 @@
     ACTIVITIES,
     SETTINGS,
     MARKETS,
+    LOCAL_MARKETS,
     STATE_PRICE,
     STATE_NAMES,
     calculate,
     stateFromZip,
-    parseStateFromPlace
+    parseStateFromPlace,
+    findLocalMarket,
+    listingSearchUrls
   };
 })();
