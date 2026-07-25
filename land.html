@@ -84,13 +84,15 @@
           <p id="tot-note" class="text-xs text-emerald-200/70 mt-2"></p>
         </div>
 
-        <!-- Cost: listings first, estimate second -->
         <div id="cost-card" class="rounded-2xl border p-5 bg-white border-stone-200 space-y-3">
           <h3 class="text-sm font-semibold">Land cost</h3>
           <p id="cost-main" class="text-sm text-stone-600">Enter a city or ZIP in the header.</p>
           <p id="cost-note" class="text-xs text-stone-500"></p>
           <p id="cost-detail" class="text-xs text-stone-500"></p>
           <div id="listing-links" class="hidden flex flex-wrap gap-2 pt-1"></div>
+          <p id="cost-disclaimer" class="text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80">
+            Planning estimate only. Prices vary by parcel, access, water, and demand — verify with current local listings before relying on this range.
+          </p>
         </div>
       </div>
 
@@ -271,6 +273,7 @@
       const costNote = document.getElementById('cost-note');
       const costDetail = document.getElementById('cost-detail');
       const listingLinks = document.getElementById('listing-links');
+      const costDisclaimer = document.getElementById('cost-disclaimer');
 
       if (lookingUp) {
         costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
@@ -279,13 +282,15 @@
         costNote.textContent = '';
         costDetail.textContent = '';
         listingLinks.className = 'hidden';
+        costDisclaimer.className = 'text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80';
       } else if (!r.cost.hasLocation) {
         costCard.className = 'rounded-2xl border p-5 bg-white border-stone-200 space-y-3';
         costMain.className = 'text-sm text-stone-600';
         costMain.textContent = r.cost.message;
-        costNote.textContent = 'Cost estimates are only useful after you check live listings near the place you care about.';
+        costNote.textContent = '';
         costDetail.textContent = '';
         listingLinks.className = 'hidden';
+        costDisclaimer.className = 'text-[11px] text-stone-400 leading-relaxed pt-1 border-t border-stone-100/80';
       } else {
         const isLocal = r.cost.sourceType === 'local';
         costCard.className = isLocal
@@ -312,6 +317,10 @@
         } else {
           listingLinks.className = 'hidden';
         }
+
+        costDisclaimer.className = isLocal
+          ? 'text-[11px] text-emerald-800/60 leading-relaxed pt-1 border-t border-emerald-200/80'
+          : 'text-[11px] text-amber-900/55 leading-relaxed pt-1 border-t border-amber-200/80';
       }
 
       const names = r.rows.map(x => x.short).join(', ');
@@ -333,9 +342,7 @@
           : '—';
       document.getElementById('sum-cost-note').textContent =
         r.cost.hasLocation
-          ? (r.cost.sourceType === 'local'
-              ? r.cost.localName + '. Verify with listings.'
-              : 'State fallback — can understate near cities. Check listings.')
+          ? 'Verify with current local listings.'
           : 'Set location in the header.';
     }
 
@@ -363,7 +370,6 @@
         }
       }
 
-      // Local market can match on city name even before state resolves
       if (!r.cost.hasLocation && loc.place) {
         const local = window.TractformLand.findLocalMarket(loc.place, resolvedState);
         if (local) {
