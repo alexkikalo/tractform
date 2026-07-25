@@ -67,24 +67,90 @@
   </section>
   <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
   <script src="/site.js"></script>
+  <script src="/data/land.js"></script>
   <script>
-    const uses = { livestock:{name:'Livestock',blurb:'Prioritize forage, water, fencing, and handling areas.'}, garden:{name:'Garden / crops',blurb:'Prioritize sun, soil near water, and frost window.'}, timber:{name:'Timber',blurb:'Prioritize equipment access and long-cycle stands.'}, homestead:{name:'Mixed homestead',blurb:'Balance pasture, garden, building sites, and chore routes.'} };
-    const terrainStats = { open:{build:30,access:75,forage:70,label:'Open pasture'}, rolling:{build:45,access:60,forage:55,label:'Rolling / mixed'}, wooded:{build:55,access:40,forage:25,label:'Mostly wooded'}, steep:{build:80,access:25,forage:30,label:'Steep or broken'} };
-    let use='livestock';
-    function setBar(id,pct,label){document.getElementById(id).style.width=pct+'%';document.getElementById(id+'-l').textContent=label;}
-    function zoneClimate(){const loc=window.TractformLocation?window.TractformLocation.get():{};const n=loc.zone&&window.TractformLocation?window.TractformLocation.zoneNumber(loc.zone):null;if(n==null)return{cold:40,heat:40,season:'—',frost:'—',garden:50,coldL:'—',heatL:'—',gardenL:'—'};const cold=Math.max(5,Math.min(95,(8-n)*12+20));const heat=Math.max(5,Math.min(95,(n-4)*12+15));const garden=Math.max(20,Math.min(90,100-Math.abs(n-7)*10));return{cold,heat,garden,season:n<=4?'~90–130 days':n<=6?'~140–180 days':n<=8?'~180–230 days':'~230–300+ days',frost:n<=4?'High / late':n<=6?'Moderate':n<=8?'Mild':'Low',coldL:cold>60?'High':cold>35?'Moderate':'Low',heatL:heat>60?'High':heat>35?'Moderate':'Low',gardenL:garden>65?'Strong':garden>40?'Fair':'Short season'};}
-    function refresh(){const t=document.getElementById('terrain').value;const acres=parseFloat(document.getElementById('acres').value)||1;const u=uses[use];const ts=terrainStats[t];const c=zoneClimate();const loc=window.TractformLocation?window.TractformLocation.get():{};
-      document.querySelectorAll('.use-btn').forEach(b=>{const on=b.dataset.use===use;b.classList.toggle('bg-emerald-800',on);b.classList.toggle('text-white',on);b.classList.toggle('border-emerald-800',on);b.classList.toggle('bg-white',!on);b.classList.toggle('text-stone-700',!on);b.classList.toggle('border-stone-300',!on);});
-      document.getElementById('use-name').textContent=u.name;document.getElementById('use-blurb').textContent=u.blurb;document.getElementById('selection-summary').textContent=acres+' acres · '+ts.label;
-      setBar('s-cold',c.cold,c.coldL);setBar('s-heat',c.heat,c.heatL);setBar('s-forage',use==='timber'?ts.forage*0.4:ts.forage,ts.forage>55?'Good':ts.forage>35?'Fair':'Limited');
-      setBar('s-garden',use==='garden'?Math.min(95,c.garden+10):c.garden,c.gardenL);setBar('s-build',ts.build,ts.build>60?'Hard':ts.build>40?'Moderate':'Easier');setBar('s-access',ts.access,ts.access>60?'Good':ts.access>40?'Fair':'Limited');
-      document.getElementById('tot-season').textContent=c.season;document.getElementById('tot-frost').textContent=c.frost;document.getElementById('tot-fit').textContent=u.name.split(' ')[0];
-      const card=document.getElementById('zone-card'),st=document.getElementById('zone-status'),det=document.getElementById('zone-detail');
-      if(!loc.zone){card.className='rounded-2xl border p-4 bg-white border-stone-200';st.className='text-sm font-medium text-stone-600';st.textContent='Set zone in the header for climate stats.';det.textContent='Cold, heat, and season will calibrate to your USDA zone.';}
-      else{card.className='rounded-2xl border p-4 bg-emerald-50 border-emerald-200';st.className='text-sm font-medium text-emerald-800';st.textContent='Zone '+loc.zone+(loc.place?' · '+loc.place:'');det.textContent='Growing season '+c.season+', frost '+c.frost.toLowerCase()+'.';}}
-    document.querySelectorAll('.use-btn').forEach(b=>b.addEventListener('click',()=>{use=b.dataset.use;refresh();}));
-    document.getElementById('terrain').addEventListener('change',refresh);document.getElementById('acres').addEventListener('input',refresh);
-    if(window.TractformLocation)window.TractformLocation.onChange(refresh);refresh();
+    let use = 'livestock';
+
+    function setBar(id, pct, label) {
+      document.getElementById(id).style.width = pct + '%';
+      document.getElementById(id + '-l').textContent = label;
+    }
+
+    function getState() {
+      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
+      return {
+        use,
+        terrain: document.getElementById('terrain').value,
+        acres: document.getElementById('acres').value,
+        zone: loc.zone || null,
+        place: loc.place || null
+      };
+    }
+
+    function render(r) {
+      if (!r) return;
+
+      document.querySelectorAll('.use-btn').forEach(b => {
+        const on = b.dataset.use === use;
+        b.classList.toggle('bg-emerald-800', on);
+        b.classList.toggle('text-white', on);
+        b.classList.toggle('border-emerald-800', on);
+        b.classList.toggle('bg-white', !on);
+        b.classList.toggle('text-stone-700', !on);
+        b.classList.toggle('border-stone-300', !on);
+      });
+
+      document.getElementById('use-name').textContent = r.useName;
+      document.getElementById('use-blurb').textContent = r.blurb;
+      document.getElementById('selection-summary').textContent =
+        r.acres + ' acres · ' + r.terrainLabel;
+
+      const b = r.bars;
+      setBar('s-cold', b.cold.pct, b.cold.label);
+      setBar('s-heat', b.heat.pct, b.heat.label);
+      setBar('s-forage', b.forage.pct, b.forage.label);
+      setBar('s-garden', b.garden.pct, b.garden.label);
+      setBar('s-build', b.build.pct, b.build.label);
+      setBar('s-access', b.access.pct, b.access.label);
+
+      document.getElementById('tot-season').textContent = r.seasonLabel;
+      document.getElementById('tot-frost').textContent = r.frostLabel;
+      document.getElementById('tot-fit').textContent = r.fitLabel;
+
+      const card = document.getElementById('zone-card');
+      const st = document.getElementById('zone-status');
+      const det = document.getElementById('zone-detail');
+
+      if (r.zoneStatus.hasZone) {
+        card.className = 'rounded-2xl border p-4 bg-emerald-50 border-emerald-200';
+        st.className = 'text-sm font-medium text-emerald-800';
+      } else {
+        card.className = 'rounded-2xl border p-4 bg-white border-stone-200';
+        st.className = 'text-sm font-medium text-stone-600';
+      }
+      st.textContent = r.zoneStatus.label;
+      det.textContent = r.zoneStatus.detail;
+    }
+
+    function refresh() {
+      const results = window.TractformLand.calculate(getState());
+      render(results);
+    }
+
+    document.querySelectorAll('.use-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        use = b.dataset.use;
+        refresh();
+      });
+    });
+    document.getElementById('terrain').addEventListener('change', refresh);
+    document.getElementById('acres').addEventListener('input', refresh);
+
+    if (window.TractformLocation) {
+      window.TractformLocation.onChange(refresh);
+    }
+
+    refresh();
   </script>
 </body>
 </html>

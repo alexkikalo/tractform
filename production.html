@@ -109,76 +109,8 @@
   </footer>
 
   <script src="/site.js"></script>
+  <script src="/data/livestock.js"></script>
   <script>
-    const data = {
-      sheep: {
-        name: 'Sheep', video: '/videos/Sheep.mp4', unit: 'head',
-        blurb: 'Meat, wool, or dual-purpose. Manageable for small acreage when stocking rates and fencing are right.',
-        zoneMin: 3, zoneMax: 9, coldNote: 'Provide windbreak and dry bedding in hard freezes.', heatNote: 'Shade and fresh water are critical above the mid-90s.',
-        breeds: [
-          { id: 'katahdin', name: 'Katahdin', note: 'Hair sheep — no shearing. Easy care, good meat.', landPer: 0.25, waterGal: 1.5, laborMin: 2, uses: 'Meat', zoneMin: 3, zoneMax: 9 },
-          { id: 'dorper', name: 'Dorper', note: 'Hair sheep, hardy, fast growth.', landPer: 0.25, waterGal: 1.5, laborMin: 2, uses: 'Meat', zoneMin: 4, zoneMax: 10 },
-          { id: 'suffolk', name: 'Suffolk', note: 'Wool + meat. Needs shearing.', landPer: 0.3, waterGal: 2, laborMin: 3, uses: 'Meat, wool', zoneMin: 3, zoneMax: 8 },
-          { id: 'east-friesian', name: 'East Friesian', note: 'Dairy-oriented. Higher feed and labor.', landPer: 0.35, waterGal: 2.5, laborMin: 8, uses: 'Milk, meat', zoneMin: 4, zoneMax: 8 }
-        ],
-        stats: { land: 40, water: 25, feed: 45, shelter: 30, labor: 40, barrier: 35, yield: 55, life: 60,
-          labels: { land: 'Moderate', water: 'Low–mod', feed: 'Pasture-first', shelter: 'Light', labor: 'Moderate', barrier: 'Approachable', yield: 'Solid', life: '10–12 yr' } }
-      },
-      chickens: {
-        name: 'Chickens', video: '/videos/Chicken.mp4', unit: 'birds',
-        blurb: 'Eggs, meat, or both. Lowest barrier if the coop is predator-proof.',
-        zoneMin: 3, zoneMax: 10, coldNote: 'Insulate coop; heated water in deep freezes.', heatNote: 'Shade, airflow, and extra water — heat stress cuts laying.',
-        breeds: [
-          { id: 'barred-rock', name: 'Barred Plymouth Rock', note: 'Dual-purpose classic. Steady layers, calm.', landPer: 0.02, waterGal: 0.15, laborMin: 0.5, uses: 'Eggs, meat', zoneMin: 3, zoneMax: 9 },
-          { id: 'rir', name: 'Rhode Island Red', note: 'Hardy layer, good forage.', landPer: 0.02, waterGal: 0.15, laborMin: 0.5, uses: 'Eggs, meat', zoneMin: 3, zoneMax: 10 },
-          { id: 'leghorn', name: 'Leghorn', note: 'High egg output, lighter body.', landPer: 0.015, waterGal: 0.12, laborMin: 0.4, uses: 'Eggs', zoneMin: 5, zoneMax: 10 },
-          { id: 'orpington', name: 'Orpington', note: 'Broody, gentle, dual-purpose. Cold-tolerant.', landPer: 0.025, waterGal: 0.18, laborMin: 0.5, uses: 'Eggs, meat', zoneMin: 3, zoneMax: 8 },
-          { id: 'cornish', name: 'Cornish Cross', note: 'Meat bird — short cycle, high feed.', landPer: 0.02, waterGal: 0.2, laborMin: 0.6, uses: 'Meat', zoneMin: 4, zoneMax: 10 }
-        ],
-        stats: { land: 15, water: 15, feed: 35, shelter: 50, labor: 45, barrier: 20, yield: 50, life: 25,
-          labels: { land: 'Very low', water: 'Low', feed: 'Bag-based', shelter: 'Critical', labor: 'Daily', barrier: 'Lowest', yield: 'Steady', life: '2–4 yr layers' } }
-      },
-      goats: {
-        name: 'Goats', video: '/videos/Goat.mp4', unit: 'head',
-        blurb: 'Milk, meat, or brush. Escape artists — fencing is half the system.',
-        zoneMin: 4, zoneMax: 10, coldNote: 'Dry draft-free shelter; they handle cold better than wet.', heatNote: 'Shade and browse; dairy breeds need extra water.',
-        breeds: [
-          { id: 'boer', name: 'Boer', note: 'Meat focus. Strong and fast-growing.', landPer: 0.2, waterGal: 2, laborMin: 3, uses: 'Meat, brush', zoneMin: 5, zoneMax: 10 },
-          { id: 'nubian', name: 'Nubian', note: 'Dairy. Rich milk, vocal.', landPer: 0.22, waterGal: 2.5, laborMin: 12, uses: 'Milk, meat', zoneMin: 6, zoneMax: 10 },
-          { id: 'nigerian', name: 'Nigerian Dwarf', note: 'Small dairy. Less space, still daily milk work.', landPer: 0.1, waterGal: 1, laborMin: 10, uses: 'Milk', zoneMin: 5, zoneMax: 10 },
-          { id: 'kiko', name: 'Kiko', note: 'Hardy meat / brush. Low-input.', landPer: 0.2, waterGal: 2, laborMin: 2.5, uses: 'Meat, brush', zoneMin: 4, zoneMax: 9 }
-        ],
-        stats: { land: 35, water: 35, feed: 50, shelter: 40, labor: 50, barrier: 45, yield: 60, life: 65,
-          labels: { land: 'Moderate', water: 'Moderate', feed: 'Browse + hay', shelter: 'Dry shelter', labor: 'Mod–high', barrier: 'Medium', yield: 'High options', life: '10–15 yr' } }
-      },
-      cattle: {
-        name: 'Cattle', video: '/videos/Cow.mp4', unit: 'head',
-        blurb: 'Beef or dairy. Land and winter feed usually decide whether the plan works.',
-        zoneMin: 3, zoneMax: 10, coldNote: 'Windbreaks and winter feed reserves dominate cold climates.', heatNote: 'Shade, water capacity, and heat-tolerant breeds matter.',
-        breeds: [
-          { id: 'angus', name: 'Angus', note: 'Beef. Common, market-friendly.', landPer: 1.5, waterGal: 15, laborMin: 8, uses: 'Beef', zoneMin: 3, zoneMax: 9 },
-          { id: 'hereford', name: 'Hereford', note: 'Beef. Hardy, good mothers.', landPer: 1.5, waterGal: 15, laborMin: 8, uses: 'Beef', zoneMin: 3, zoneMax: 9 },
-          { id: 'jersey', name: 'Jersey', note: 'Dairy. High butterfat, daily milking.', landPer: 1.2, waterGal: 20, laborMin: 45, uses: 'Milk', zoneMin: 4, zoneMax: 9 },
-          { id: 'highland', name: 'Highland', note: 'Hardy beef, thrives on rough forage. Excellent cold tolerance.', landPer: 1.8, waterGal: 12, laborMin: 7, uses: 'Beef', zoneMin: 2, zoneMax: 7 }
-        ],
-        stats: { land: 85, water: 90, feed: 80, shelter: 45, labor: 55, barrier: 80, yield: 70, life: 70,
-          labels: { land: 'High', water: 'Very high', feed: 'Heavy', shelter: 'Moderate', labor: 'Scales up', barrier: 'High', yield: 'High volume', life: 'Multi-year' } }
-      },
-      pigs: {
-        name: 'Pigs', video: '/videos/Pig.mp4', unit: 'head',
-        blurb: 'Efficient meat on small acreage. Strong fencing and a finishing plan are essential.',
-        zoneMin: 4, zoneMax: 10, coldNote: 'Dry shelter and deep bedding; piglets need extra warmth.', heatNote: 'Wallows or misters — pigs overheat easily without cooling.',
-        breeds: [
-          { id: 'berkshire', name: 'Berkshire', note: 'Quality meat. Pasture-capable.', landPer: 0.15, waterGal: 4, laborMin: 4, uses: 'Meat', zoneMin: 4, zoneMax: 9 },
-          { id: 'yorkshire', name: 'Yorkshire', note: 'Lean, efficient growth.', landPer: 0.12, waterGal: 4, laborMin: 4, uses: 'Meat', zoneMin: 4, zoneMax: 10 },
-          { id: 'kunekune', name: 'Kunekune', note: 'Smaller, grazing-focused, friendly.', landPer: 0.2, waterGal: 3, laborMin: 3, uses: 'Meat, grazers', zoneMin: 5, zoneMax: 9 },
-          { id: 'duroc', name: 'Duroc', note: 'Fast growth, good feed conversion.', landPer: 0.12, waterGal: 4, laborMin: 4, uses: 'Meat', zoneMin: 4, zoneMax: 10 }
-        ],
-        stats: { land: 30, water: 55, feed: 70, shelter: 40, labor: 45, barrier: 40, yield: 75, life: 20,
-          labels: { land: 'Low–mod', water: 'Mod–high', feed: 'High', shelter: 'Simple solid', labor: 'Moderate', barrier: 'Medium', yield: 'Fast meat', life: '5–8 mo finish' } }
-      }
-    };
-
     let current = 'sheep';
     const breedSel = document.getElementById('breed');
     const qtyInput = document.getElementById('qty');
@@ -188,86 +120,111 @@
       document.getElementById('stat-' + key).style.width = pct + '%';
       document.getElementById('stat-' + key + '-label').textContent = label;
     }
-    function currentBreed() {
-      const a = data[current];
-      return a.breeds.find(b => b.id === breedSel.value) || a.breeds[0];
-    }
-    function refreshBreeds() {
-      const a = data[current];
-      breedSel.innerHTML = a.breeds.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-      document.getElementById('qty-unit').textContent = a.unit;
-    }
-    function updateZoneFit() {
+
+    function getState() {
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
-      const a = data[current];
-      const breed = currentBreed();
-      const zMin = breed.zoneMin || a.zoneMin;
-      const zMax = breed.zoneMax || a.zoneMax;
+      return {
+        animal: current,
+        breed: breedSel.value,
+        quantity: qtyInput.value,
+        zone: loc.zone || null,
+        place: loc.place || null
+      };
+    }
+
+    function refreshBreeds() {
+      const breeds = window.TractformLivestock.listBreeds(current);
+      breedSel.innerHTML = breeds.map(b =>
+        `<option value="${b.id}">${b.name}</option>`
+      ).join('');
+      const unit = window.TractformLivestock.ANIMALS[current].unit;
+      document.getElementById('qty-unit').textContent = unit;
+    }
+
+    function render(results) {
+      if (!results) return;
+
+      // Animal buttons
+      document.querySelectorAll('.animal-btn').forEach(b => {
+        const on = b.dataset.animal === current;
+        b.classList.toggle('bg-emerald-800', on);
+        b.classList.toggle('text-white', on);
+        b.classList.toggle('border-emerald-800', on);
+        b.classList.toggle('bg-white', !on);
+        b.classList.toggle('text-stone-700', !on);
+        b.classList.toggle('border-stone-300', !on);
+      });
+
+      // Video + summary
+      if (videoEl.getAttribute('src') !== results.video) {
+        videoEl.src = results.video;
+        videoEl.play().catch(() => {});
+      }
+      document.getElementById('animal-name').textContent = results.animalName;
+      document.getElementById('selection-summary').textContent =
+        `${results.quantity} × ${results.breedName}`;
+      document.getElementById('animal-blurb').textContent = results.blurb;
+      document.getElementById('breed-note').textContent = results.breedNote;
+
+      // Bars
+      const b = results.bars;
+      setStat('land', b.land.pct, b.land.label);
+      setStat('water', b.water.pct, b.water.label);
+      setStat('feed', b.feed.pct, b.feed.label);
+      setStat('shelter', b.shelter.pct, b.shelter.label);
+      setStat('labor', b.labor.pct, b.labor.label);
+      setStat('barrier', b.barrier.pct, b.barrier.label);
+      setStat('yield', b.yield.pct, b.yield.label);
+      setStat('life', b.life.pct, b.life.label);
+      document.getElementById('stat-detail').textContent = results.breedNote;
+
+      // Totals strip
+      document.getElementById('total-land').textContent = results.landLabel;
+      document.getElementById('total-water').textContent = results.waterLabel;
+      document.getElementById('total-labor').textContent = results.laborLabel;
+      document.getElementById('total-uses').textContent = results.uses;
+
+      // Zone card
       const card = document.getElementById('zone-card');
       const st = document.getElementById('zone-status');
       const det = document.getElementById('zone-detail');
-      if (!loc.zone) {
-        card.className = 'rounded-2xl border p-4 bg-white border-stone-200';
-        st.className = 'text-sm font-medium text-stone-600';
-        st.textContent = 'Set zone in the header for climate fit.';
-        det.textContent = `${breed.name}: typically zones ${zMin}–${zMax}.`;
-        return;
-      }
-      const n = window.TractformLocation.zoneNumber(loc.zone);
-      const inRange = n >= zMin && n <= zMax;
-      const place = loc.place ? ` (${loc.place})` : '';
-      if (inRange) {
+      const zf = results.zoneFit;
+
+      if (zf.status === 'good') {
         card.className = 'rounded-2xl border p-4 bg-emerald-50 border-emerald-200';
         st.className = 'text-sm font-medium text-emerald-800';
-        st.textContent = `Good fit for zone ${loc.zone}${place}`;
-        let extra = `Best for zones ${zMin}–${zMax}.`;
-        if (n <= zMin + 1) extra += ' ' + a.coldNote;
-        if (n >= zMax - 1) extra += ' ' + a.heatNote;
-        det.textContent = extra;
-      } else {
+      } else if (zf.status === 'colder' || zf.status === 'warmer') {
         card.className = 'rounded-2xl border p-4 bg-amber-50 border-amber-200';
         st.className = 'text-sm font-medium text-amber-900';
-        st.textContent = n < zMin ? `Zone ${loc.zone} is colder than typical for ${breed.name}` : `Zone ${loc.zone} is warmer than typical for ${breed.name}`;
-        det.textContent = (n < zMin ? a.coldNote : a.heatNote) + ` Preferred zones ${zMin}–${zMax}.`;
+      } else {
+        card.className = 'rounded-2xl border p-4 bg-white border-stone-200';
+        st.className = 'text-sm font-medium text-stone-600';
       }
+      st.textContent = zf.label;
+      det.textContent = zf.detail;
     }
+
     function refreshAll() {
-      const a = data[current];
-      const breed = currentBreed();
-      const qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
-      document.querySelectorAll('.animal-btn').forEach(b => {
-        const on = b.dataset.animal === current;
-        b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
-        b.classList.toggle('bg-white', !on); b.classList.toggle('text-stone-700', !on); b.classList.toggle('border-stone-300', !on);
-      });
-      if (videoEl.getAttribute('src') !== a.video) { videoEl.src = a.video; videoEl.play().catch(() => {}); }
-      document.getElementById('animal-name').textContent = a.name;
-      document.getElementById('selection-summary').textContent = `${qty} × ${breed.name}`;
-      document.getElementById('animal-blurb').textContent = a.blurb;
-      document.getElementById('breed-note').textContent = breed.note;
-      const s = a.stats;
-      setStat('land', s.land, s.labels.land);
-      setStat('water', s.water, s.labels.water);
-      setStat('feed', s.feed, s.labels.feed);
-      setStat('shelter', s.shelter, s.labels.shelter);
-      setStat('labor', s.labor, s.labels.labor);
-      setStat('barrier', s.barrier, s.labels.barrier);
-      setStat('yield', s.yield, s.labels.yield);
-      setStat('life', s.life, s.labels.life);
-      document.getElementById('stat-detail').textContent = breed.note;
-      const acres = breed.landPer * qty, water = breed.waterGal * qty, labor = breed.laborMin * qty;
-      if (current === 'chickens') document.getElementById('total-land').textContent = `~${Math.ceil(qty * 4)} sq ft coop`;
-      else document.getElementById('total-land').textContent = acres < 1 ? `~${(acres * 43.56).toFixed(0)}k sq ft` : `~${acres.toFixed(1)} acres`;
-      document.getElementById('total-water').textContent = water < 10 ? `~${water.toFixed(1)} gal` : `~${Math.round(water)} gal`;
-      document.getElementById('total-labor').textContent = labor < 60 ? `~${Math.round(labor)} min` : `~${(labor / 60).toFixed(1)} hr`;
-      document.getElementById('total-uses').textContent = breed.uses;
-      updateZoneFit();
+      const results = window.TractformLivestock.calculate(getState());
+      render(results);
     }
-    document.querySelectorAll('.animal-btn').forEach(btn => btn.addEventListener('click', () => { current = btn.dataset.animal; refreshBreeds(); refreshAll(); }));
+
+    document.querySelectorAll('.animal-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        current = btn.dataset.animal;
+        refreshBreeds();
+        refreshAll();
+      });
+    });
     breedSel.addEventListener('change', refreshAll);
     qtyInput.addEventListener('input', refreshAll);
-    if (window.TractformLocation) window.TractformLocation.onChange(() => updateZoneFit());
-    refreshBreeds(); refreshAll();
+
+    if (window.TractformLocation) {
+      window.TractformLocation.onChange(() => refreshAll());
+    }
+
+    refreshBreeds();
+    refreshAll();
   </script>
 </body>
 </html>
