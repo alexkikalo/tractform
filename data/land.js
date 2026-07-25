@@ -2,8 +2,9 @@
    Multi-activity planning with scale, terrain, and location-aware cost.
 
    Cost priority:
-   1) Local market band (county/metro) when place matches
-   2) State USDA base × setting × parcel type (fallback only)
+   1) Local market band when city matches AND state is known/matches
+   2) State USDA base × setting × parcel type (fallback)
+   State must come from the location control — never guessed from city name alone.
 */
 (function () {
   const ACTIVITIES = {
@@ -113,7 +114,6 @@
     }
   };
 
-  // USDA 2025 statewide farm real estate base ($/acre) — fallback only
   const STATE_PRICE = {
     AL: 4200, AK: 2800, AZ: 3800, AR: 4100, CA: 13700,
     CO: 2200, CT: 14400, DE: 9550, FL: 7200, GA: 4800,
@@ -140,9 +140,6 @@
     VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
   };
 
-  /* Local market bands for homestead-scale parcels (approx. retail asking / recent medians).
-     Prefer these over state×multiplier when the place matches.
-     Expand this table over time — it is the real product improvement. */
   const LOCAL_MARKETS = [
     {
       id: 'tx-wise',
@@ -159,7 +156,7 @@
       id: 'tx-denton',
       state: 'TX',
       name: 'Denton County, TX',
-      match: [/\bdenton\b/i, /\bsanger\b/i, /\bpilot point\b/i, /\bkrum\b/i, /\baubrey\b/i, /\bpilot\b/i, /\b76227\b/, /\b76207\b/, /\b76205\b/, /\b76201\b/, /\b76210\b/],
+      match: [/\bdenton\b/i, /\bsanger\b/i, /\bpilot point\b/i, /\bkrum\b/i, /\baubrey\b/i, /\b76227\b/, /\b76207\b/, /\b76205\b/, /\b76201\b/, /\b76210\b/],
       homesteadLow: 30000,
       homesteadHigh: 80000,
       workingLow: 25000,
@@ -170,7 +167,7 @@
       id: 'tx-parker',
       state: 'TX',
       name: 'Parker County, TX (Weatherford area)',
-      match: [/\bweatherford\b/i, /\bparker county\b/i, /\baledo\b/i, /\bhudson oaks\b/i, /\bspringtown\b/i, /\b76087\b/, /\b76086\b/, /\b76082\b/],
+      match: [/\bweatherford\b/i, /\bparker county\b/i, /\baledo\b/i, /\bhudson oaks\b/i, /\b76087\b/, /\b76086\b/, /\b76082\b/],
       homesteadLow: 22000,
       homesteadHigh: 60000,
       workingLow: 10000,
@@ -224,45 +221,16 @@
     homestead: { id: 'homestead', label: 'Homestead / small acreage', hint: 'Residential-oriented 2–30 acre parcels', low: 1.0, high: 1.35 }
   };
 
-  function parseStateFromPlace(place) {
-    if (!place) return null;
-    const s = String(place).trim().toUpperCase();
-    const m = s.match(/\b([A-Z]{2})\b(?:\s*\d{5})?$/);
-    if (m && STATE_PRICE[m[1]]) return m[1];
-    for (const [code, name] of Object.entries(STATE_NAMES)) {
-      if (s.includes(name.toUpperCase())) return code;
-    }
-    return null;
-  }
-
-  function findLocalMarket(place, stateCode) {
-    if (!place) return null;
-    const text = String(place);
+  /** Local markets require an explicit state — never match city alone. */
+  function findLocalMarket(place, stateCode, zip) {
+    if (!stateCode) return null;
+    const text = [place, zip].filter(Boolean).join(' ');
+    if (!text.trim()) return null;
     for (const m of LOCAL_MARKETS) {
-      if (stateCode && m.state !== stateCode) continue;
+      if (m.state !== stateCode) continue;
       if (m.match.some(re => re.test(text))) return m;
     }
-    // If state unknown, still try match (city name may be unique enough)
-    if (!stateCode) {
-      for (const m of LOCAL_MARKETS) {
-        if (m.match.some(re => re.test(text))) return m;
-      }
-    }
     return null;
-  }
-
-  async function stateFromZip(zip) {
-    const clean = String(zip).replace(/\D/g, '').slice(0, 5);
-    if (clean.length !== 5) return null;
-    try {
-      const res = await fetch('https://usps-zip-codes.deno.dev/' + clean, { mode: 'cors' });
-      if (!res.ok) return null;
-      const data = await res.json();
-      const st = (data.state || data.State || '').toUpperCase();
-      return STATE_PRICE[st] ? st : null;
-    } catch {
-      return null;
-    }
   }
 
   function listingSearchUrls(place) {
@@ -270,8 +238,7 @@
     if (!q) return null;
     return {
       landwatch: 'https://www.landwatch.com/search?key=' + q + '&property_type=land',
-      zillow: 'https://www.zillow.com/' + encodeURIComponent(String(place).trim().replace(/,\s*/g, '-').replace(/\s+/g, '-')) + '/land/',
-      landsearch: 'https://www.landsearch.com/properties/' + q.replace(/%20/g, '-')
+      zillow: 'https://www.zillow.com/' + encodeURIComponent(String(place).trim().replace(/,\s*/g, '-').replace(/\s+/g, '-')) + '/land/'
     };
   }
 
@@ -310,15 +277,18 @@
     const buffer = hasBuffer ? 0 : Math.max(0.25, +(acresSum * 0.1).toFixed(2));
     const totalAcres = +(acresSum + buffer).toFixed(2);
 
-    const place = state.place || '';
-    const zipMatch = String(place).match(/\b(\d{5})\b/);
-    let stateCode = state.stateCode || parseStateFromPlace(place);
-    const local = findLocalMarket(place, stateCode);
+    const city = state.city || '';
+    const zip = state.zip || '';
+    const stateCode = state.stateCode || null;
+    const place = state.place ||
+      (city && stateCode ? city + ', ' + stateCode : city || stateCode || '');
+
+    const local = findLocalMarket(place + ' ' + city, stateCode, zip);
 
     let cost = {
       hasLocation: false,
-      sourceType: null, // 'local' | 'state'
-      message: 'Enter a city or ZIP in the header to see approximate land cost.',
+      sourceType: null,
+      message: 'Select a state in the header location control to see approximate land cost.',
       perAcreLow: null,
       perAcreHigh: null,
       perAcreMid: null,
@@ -332,16 +302,14 @@
       marketLabel: market.label,
       note: null,
       source: null,
-      listings: listingSearchUrls(place)
+      listings: place ? listingSearchUrls(place) : null
     };
 
     if (local) {
-      // Prefer local market band — do not understate high-pressure areas
       const isHomestead = marketKey === 'homestead';
       const perLow = isHomestead ? local.homesteadLow : local.workingLow;
       const perHigh = isHomestead ? local.homesteadHigh : local.workingHigh;
       const perMid = Math.round((perLow + perHigh) / 2);
-      if (!stateCode) stateCode = local.state;
       cost = {
         hasLocation: true,
         sourceType: 'local',
@@ -349,8 +317,8 @@
         perAcreLow: perLow,
         perAcreHigh: perHigh,
         perAcreMid: perMid,
-        stateCode,
-        stateName: STATE_NAMES[stateCode] || stateCode,
+        stateCode: local.state,
+        stateName: STATE_NAMES[local.state] || local.state,
         localName: local.name,
         totalLow: Math.round(perLow * totalAcres),
         totalHigh: Math.round(perHigh * totalAcres),
@@ -358,7 +326,7 @@
         settingLabel: setting.label,
         marketLabel: market.label,
         note: local.note,
-        source: 'Local market band for ' + local.name + ' based on recent listing/sale ranges for similar parcel types. Always verify with current listings.',
+        source: 'Local market band for ' + local.name + '. Always verify with current listings.',
         listings: listingSearchUrls(place)
       };
     } else if (stateCode && STATE_PRICE[stateCode]) {
@@ -381,8 +349,8 @@
         totalMid: Math.round(perMid * totalAcres),
         settingLabel: setting.label,
         marketLabel: market.label,
-        note: 'No local market band yet for this area. Using statewide fallback — can understate prices near cities.',
-        source: 'Fallback: USDA statewide farm average scaled by setting and parcel type. Local retail for small tracts is often higher. Check live listings.',
+        note: 'No local market band for this city yet. Statewide fallback can understate prices near cities.',
+        source: 'Fallback: USDA statewide farm average scaled by setting and parcel type. Check live listings.',
         listings: listingSearchUrls(place)
       };
     }
@@ -412,8 +380,7 @@
       season,
       frost,
       zone,
-      place,
-      _pendingZip: (!stateCode && zipMatch) ? zipMatch[1] : null
+      place
     };
   }
 
@@ -425,8 +392,6 @@
     STATE_PRICE,
     STATE_NAMES,
     calculate,
-    stateFromZip,
-    parseStateFromPlace,
     findLocalMarket,
     listingSearchUrls
   };
