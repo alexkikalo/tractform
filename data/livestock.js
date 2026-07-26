@@ -6,7 +6,6 @@
   const ANIMALS = {
     sheep: {
       name: 'Sheep',
-      // Fallback only; each breed has its own video under /videos/animals/sheep/
       video: '/videos/animals/sheep/Katahdin.mp4',
       unit: 'head',
       blurb: 'Meat, wool, or dual-purpose. Manageable on small acreage when stocking rates and fencing are right.',
@@ -84,7 +83,7 @@
 
     chickens: {
       name: 'Chickens',
-      video: '/videos/Chicken.mp4',
+      video: '/videos/animals/chickens/Barred%20Plymouth%20Rock.mp4',
       unit: 'birds',
       blurb: 'Eggs, meat, or both. Lowest barrier if the coop is predator-proof.',
       zoneMin: 3,
@@ -94,6 +93,7 @@
       breeds: {
         'barred-rock': {
           name: 'Barred Plymouth Rock',
+          video: '/videos/animals/chickens/Barred%20Plymouth%20Rock.mp4',
           note: 'Dual-purpose classic. Steady layers, calm.',
           landPer: 0.02,
           waterGal: 0.15,
@@ -109,6 +109,7 @@
         },
         rir: {
           name: 'Rhode Island Red',
+          video: '/videos/animals/chickens/Rhode%20Island%20Red.mp4',
           note: 'Hardy layer, good forage.',
           landPer: 0.02,
           waterGal: 0.15,
@@ -124,6 +125,7 @@
         },
         leghorn: {
           name: 'Leghorn',
+          video: '/videos/animals/chickens/Leghorn.mp4',
           note: 'High egg output, lighter body.',
           landPer: 0.015,
           waterGal: 0.12,
@@ -139,6 +141,7 @@
         },
         orpington: {
           name: 'Orpington',
+          video: '/videos/animals/chickens/Orpington.mp4',
           note: 'Broody, gentle, dual-purpose. Cold-tolerant.',
           landPer: 0.025,
           waterGal: 0.18,
@@ -154,6 +157,7 @@
         },
         cornish: {
           name: 'Cornish Cross',
+          video: '/videos/animals/chickens/Cornish%20Cross.mp4',
           note: 'Meat bird — short cycle, high feed.',
           landPer: 0.02,
           waterGal: 0.25,
@@ -390,7 +394,6 @@
     }
   };
 
-  /** Pure calculator: inputs → results */
   function calculate(state) {
     const animalKey = state.animal || 'sheep';
     const animal = ANIMALS[animalKey];
@@ -464,7 +467,6 @@
       ? `~${Math.round(laborMin)} min/day`
       : `~${(laborMin / 60).toFixed(1)} hr/day`;
 
-    // Breed video takes priority when present (e.g. sheep breeds)
     const video = breed.video || animal.video;
 
     return {
