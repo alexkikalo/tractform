@@ -8,13 +8,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body{font-family:'Inter',system-ui,sans-serif}
+    /* Reserve space at still/video ratio (1500×844 ≈ 16:9) so the card does not jump between loads */
+    .video-frame{
+      width:100%;
+      aspect-ratio:16/9;
+      background:#ffffff;
+      border-radius:.75rem;
+      overflow:hidden;
+      border:1px solid rgb(6 78 59 / 0.5);
+    }
     .animal-video{
       width:100%;
-      max-width:100%;
-      height:auto;
-      border-radius:.75rem;
-      background:#ffffff;
+      height:100%;
       display:block;
+      object-fit:contain; /* no crop; 16:9 sources fill 1:1 without soft cover scaling */
+      background:#ffffff;
     }
   </style>
 </head>
@@ -71,7 +79,9 @@
 
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
-          <video id="animal-video" class="animal-video w-full border border-emerald-800/50" src="/videos/animals/sheep/Katahdin.mp4" autoplay muted loop playsinline></video>
+          <div class="video-frame">
+            <video id="animal-video" class="animal-video" src="/videos/animals/sheep/Katahdin.mp4" autoplay muted loop playsinline></video>
+          </div>
           <div>
             <h2 id="animal-name" class="text-lg font-bold text-white">Sheep</h2>
             <p id="selection-summary" class="text-sm text-emerald-300 font-medium">6 × Katahdin</p>
@@ -159,7 +169,6 @@
       const b = results.bars || {};
       document.getElementById('s-shelter').textContent = (b.shelter && b.shelter.label) || '—';
       document.getElementById('s-feed').textContent = (b.feed && b.feed.label) || '—';
-
       document.getElementById('s-life').textContent = (b.life && b.life.label) || '—';
 
       const st = document.getElementById('zone-status');
