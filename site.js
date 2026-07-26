@@ -1,7 +1,7 @@
 /* Tractform — shared site controls
 
    - Location: By place (city+state → ZIP → zone) or Zone only
-   - Mobile nav: hamburger menu for small screens
+   - Mobile nav: hamburger left of location chip
 */
 (function () {
   const STORAGE_KEY = 'tractform_location';
@@ -151,11 +151,12 @@
     const loc = getLocation();
     const label = document.getElementById('tf-tab-label');
     if (!label) return;
-    if (loc.mode === 'zone' && loc.zone) label.textContent = 'Zone ' + loc.zone;
-    else if (loc.zone && loc.state) label.textContent = loc.state + ' · Zone ' + loc.zone;
+    // Compact on narrow screens: prefer short zone/state labels
+    if (loc.mode === 'zone' && loc.zone) label.textContent = 'Z ' + loc.zone;
+    else if (loc.zone && loc.state) label.textContent = loc.state + ' · ' + loc.zone;
     else if (loc.state) label.textContent = loc.state;
-    else if (loc.zone) label.textContent = 'Zone ' + loc.zone;
-    else label.textContent = 'Location';
+    else if (loc.zone) label.textContent = 'Z ' + loc.zone;
+    else label.textContent = 'Place';
   }
 
   function currentPath() {
@@ -170,10 +171,11 @@
     return path === href || path.endsWith(href);
   }
 
-  /* ---- Mobile hamburger nav ---- */
+  /* ---- Mobile hamburger (sits left of location chip) ---- */
   function mountMobileNav() {
     const header = document.querySelector('header');
     const headerInner = document.querySelector('header > div');
+    const locWrap = document.getElementById('tf-loc-wrap');
     if (!header || !headerInner || document.getElementById('tf-menu-btn')) return;
 
     const btn = document.createElement('button');
@@ -191,10 +193,19 @@
         '<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />' +
       '</svg>';
 
-    // Place menu button just after the logo link
-    const logo = headerInner.querySelector('a[href="/"]');
-    if (logo && logo.nextSibling) headerInner.insertBefore(btn, logo.nextSibling);
-    else headerInner.insertBefore(btn, headerInner.firstChild);
+    // Keep menu + location as a tight right cluster
+    if (locWrap) {
+      locWrap.classList.remove('ml-auto');
+      const cluster = document.createElement('div');
+      cluster.id = 'tf-header-actions';
+      cluster.className = 'ml-auto flex items-center gap-2 shrink-0';
+      headerInner.insertBefore(cluster, locWrap);
+      cluster.appendChild(btn);
+      cluster.appendChild(locWrap);
+    } else {
+      btn.className += ' ml-auto';
+      headerInner.appendChild(btn);
+    }
 
     const panel = document.createElement('div');
     panel.id = 'tf-mobile-nav';
@@ -232,7 +243,6 @@
       if (!header.contains(e.target)) setOpen(false);
     });
 
-    // Close after choosing a link (same-page feel)
     panel.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () { setOpen(false); });
     });
@@ -253,14 +263,14 @@
 
     const wrap = document.createElement('div');
     wrap.id = 'tf-loc-wrap';
-    wrap.className = 'relative ml-auto flex items-center shrink-0';
+    wrap.className = 'relative flex items-center shrink-0';
     wrap.innerHTML =
-      '<button type="button" id="tf-loc-tab" class="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-emerald-200" aria-hidden="true">' +
+      '<button type="button" id="tf-loc-tab" class="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 pl-2.5 pr-2.5 sm:px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition max-w-[9.5rem] sm:max-w-none">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-emerald-200 shrink-0" aria-hidden="true">' +
           '<path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.017.007.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" />' +
         '</svg>' +
-        '<span id="tf-tab-label">Location</span>' +
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 text-emerald-200/80">' +
+        '<span id="tf-tab-label" class="truncate">Place</span>' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 text-emerald-200/80 shrink-0 hidden sm:block">' +
           '<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />' +
         '</svg>' +
       '</button>' +
@@ -461,8 +471,9 @@
   }
 
   function mountAll() {
-    mountMobileNav();
+    // Location first so menu can cluster left of it
     mountLocation();
+    mountMobileNav();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountAll);
