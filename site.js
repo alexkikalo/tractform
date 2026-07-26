@@ -1,13 +1,19 @@
-/* Tractform — location control
+/* Tractform — shared site controls
 
-   Two mutually exclusive modes:
-   1) By place — city + state (and/or ZIP) drive zone. Zone is locked to lookup.
-   2) Zone only — pick a hardiness zone; place fields cleared.
-
-   Flow for place: city+state → ZIP → zone, or ZIP → state + zone.
+   - Location: By place (city+state → ZIP → zone) or Zone only
+   - Mobile nav: hamburger menu for small screens
 */
 (function () {
   const STORAGE_KEY = 'tractform_location';
+
+  const NAV_LINKS = [
+    { href: '/land.html', label: 'Land' },
+    { href: '/utilities.html', label: 'Utilities' },
+    { href: '/buildings.html', label: 'Buildings' },
+    { href: '/production.html', label: 'Livestock' },
+    { href: '/gardens.html', label: 'Gardens' },
+    { href: '/family.html', label: 'Household' }
+  ];
 
   const ZONES = [
     '1a','1b','2a','2b','3a','3b','4a','4b','5a','5b',
@@ -93,7 +99,6 @@
     }
   }
 
-  /** ZIP → { state, city } via Zippopotam */
   async function placeFromZip(zip) {
     const clean = String(zip).replace(/\D/g, '').slice(0, 5);
     if (clean.length !== 5) return null;
@@ -113,7 +118,6 @@
     }
   }
 
-  /** city + state → preferred ZIP via Zippopotam */
   async function zipFromCityState(city, state) {
     const c = String(city || '').trim().toLowerCase();
     const st = String(state || '').trim().toLowerCase();
@@ -127,7 +131,6 @@
       const data = await res.json();
       const places = data.places || [];
       if (!places.length) return null;
-      // Prefer first post code; cities can span multiple ZIPs
       return String(places[0]['post code'] || '').replace(/\D/g, '').slice(0, 5) || null;
     } catch {
       return null;
@@ -148,20 +151,95 @@
     const loc = getLocation();
     const label = document.getElementById('tf-tab-label');
     if (!label) return;
-    if (loc.mode === 'zone' && loc.zone) {
-      label.textContent = 'Zone ' + loc.zone;
-    } else if (loc.zone && loc.state) {
-      label.textContent = loc.state + ' · Zone ' + loc.zone;
-    } else if (loc.state) {
-      label.textContent = loc.state;
-    } else if (loc.zone) {
-      label.textContent = 'Zone ' + loc.zone;
-    } else {
-      label.textContent = 'Location';
-    }
+    if (loc.mode === 'zone' && loc.zone) label.textContent = 'Zone ' + loc.zone;
+    else if (loc.zone && loc.state) label.textContent = loc.state + ' · Zone ' + loc.zone;
+    else if (loc.state) label.textContent = loc.state;
+    else if (loc.zone) label.textContent = 'Zone ' + loc.zone;
+    else label.textContent = 'Location';
   }
 
-  function mount() {
+  function currentPath() {
+    let p = (location.pathname || '/').replace(/\/+$/, '');
+    if (!p) p = '/';
+    return p;
+  }
+
+  function isActiveHref(href) {
+    const path = currentPath();
+    if (href === '/') return path === '/' || path === '/index.html';
+    return path === href || path.endsWith(href);
+  }
+
+  /* ---- Mobile hamburger nav ---- */
+  function mountMobileNav() {
+    const header = document.querySelector('header');
+    const headerInner = document.querySelector('header > div');
+    if (!header || !headerInner || document.getElementById('tf-menu-btn')) return;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'tf-menu-btn';
+    btn.setAttribute('aria-label', 'Open menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.className =
+      'sm:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/25 bg-white/10 text-white hover:bg-white/20 transition shrink-0';
+    btn.innerHTML =
+      '<svg id="tf-menu-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">' +
+        '<path fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm0 5.25a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z" clip-rule="evenodd" />' +
+      '</svg>' +
+      '<svg id="tf-menu-icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 hidden">' +
+        '<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />' +
+      '</svg>';
+
+    // Place menu button just after the logo link
+    const logo = headerInner.querySelector('a[href="/"]');
+    if (logo && logo.nextSibling) headerInner.insertBefore(btn, logo.nextSibling);
+    else headerInner.insertBefore(btn, headerInner.firstChild);
+
+    const panel = document.createElement('div');
+    panel.id = 'tf-mobile-nav';
+    panel.className = 'hidden sm:hidden border-t border-emerald-800/80 bg-emerald-950';
+    panel.innerHTML =
+      '<nav class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">' +
+      NAV_LINKS.map(function (link) {
+        const active = isActiveHref(link.href);
+        return (
+          '<a href="' + link.href + '" class="rounded-lg px-3 py-2.5 text-sm font-medium ' +
+          (active ? 'bg-white/15 text-white' : 'text-emerald-100/90 hover:bg-white/10 hover:text-white') +
+          '">' + link.label + '</a>'
+        );
+      }).join('') +
+      '</nav>';
+
+    header.appendChild(panel);
+
+    function setOpen(open) {
+      panel.classList.toggle('hidden', !open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      const openIcon = document.getElementById('tf-menu-icon-open');
+      const closeIcon = document.getElementById('tf-menu-icon-close');
+      if (openIcon) openIcon.classList.toggle('hidden', open);
+      if (closeIcon) closeIcon.classList.toggle('hidden', !open);
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(panel.classList.contains('hidden'));
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!header.contains(e.target)) setOpen(false);
+    });
+
+    // Close after choosing a link (same-page feel)
+    panel.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+  }
+
+  /* ---- Location control ---- */
+  function mountLocation() {
     const headerInner = document.querySelector('header > div');
     if (!headerInner || document.getElementById('tf-loc-wrap')) return;
 
@@ -186,7 +264,7 @@
           '<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />' +
         '</svg>' +
       '</button>' +
-      '<div id="tf-loc-panel" class="hidden absolute right-0 top-full mt-2 w-80 rounded-xl border border-stone-200 bg-white shadow-lg p-4 z-50 text-stone-900">' +
+      '<div id="tf-loc-panel" class="hidden absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-stone-200 bg-white shadow-lg p-4 z-50 text-stone-900">' +
         '<p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-2">Location</p>' +
         '<div class="flex rounded-lg border border-stone-200 p-0.5 mb-3 text-xs font-medium">' +
           '<button type="button" id="tf-mode-place" class="flex-1 rounded-md px-2 py-1.5 transition">By place</button>' +
@@ -218,7 +296,7 @@
         '<p id="tf-mode-hint" class="text-xs text-stone-400 mt-1"></p>' +
       '</div>';
 
-    headerInner.classList.add('gap-4');
+    headerInner.classList.add('gap-3');
     headerInner.appendChild(wrap);
 
     const tab = document.getElementById('tf-loc-tab');
@@ -255,7 +333,6 @@
       stateSelect.disabled = !placeOn;
       zipInput.disabled = !placeOn;
 
-      // Zone is locked in place mode (driven by ZIP); editable only in zone-only mode
       zoneSelect.disabled = placeOn;
       zoneSelect.classList.toggle('bg-stone-50', placeOn);
       zoneSelect.classList.toggle('text-stone-500', placeOn);
@@ -283,13 +360,11 @@
       if (next === mode) return;
       mode = next;
       if (mode === 'zone') {
-        // Keep current zone if any; clear place
         cityInput.value = '';
         stateSelect.value = '';
         zipInput.value = '';
         statusEl.textContent = '';
       } else {
-        // Entering place mode: zone will be filled by lookup; clear manual-only zone if no ZIP yet
         if (!zipInput.value) zoneSelect.value = '';
         statusEl.textContent = '';
       }
@@ -380,14 +455,18 @@
     setModeUI();
     updateTabLabel();
 
-    // If loaded in place mode with ZIP but missing zone, refresh zone
     if (mode === 'place' && loc.zip && loc.zip.length === 5 && !loc.zone) {
       applyZip(loc.zip);
     }
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
-  else mount();
+  function mountAll() {
+    mountMobileNav();
+    mountLocation();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountAll);
+  else mountAll();
 
   window.TractformLocation = {
     get: getLocation,
