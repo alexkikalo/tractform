@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>body{font-family:'Inter',system-ui,sans-serif}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
 </head>
-<body class="bg-stone-100 text-stone-900 antialiased">
+<body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
   <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
     <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div><span class="font-semibold tracking-tight">Tractform</span></a>
@@ -21,6 +21,7 @@
       </nav>
     </div>
   </header>
+  <main class="flex-1">
   <section class="max-w-6xl mx-auto px-6 pt-8 pb-3"><h1 class="text-2xl font-bold tracking-tight">Gardens</h1></section>
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
@@ -60,7 +61,17 @@
       </div>
     </div>
   </section>
-  <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
+  </main>
+  <footer class="mt-auto border-t border-stone-200 bg-white py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-stone-500">
+      <a href="/" class="font-medium text-emerald-900">Tractform</a>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a href="/disclaimer.html" class="hover:text-emerald-900">Disclaimer</a>
+        <a href="/privacy.html" class="hover:text-emerald-900">Privacy</a>
+        <span>&copy; 2026 Tractform</span>
+      </div>
+    </div>
+  </footer>
   <script src="/site.js"></script>
   <script>
     const goals = {
@@ -70,37 +81,29 @@
       market: { name: 'Market garden', blurb: 'High labor, high turnover.', labor: 0.035, soil: 'Intensive', bar: 'Higher' }
     };
     let g = 'kitchen';
-
     function refresh() {
       const goal = goals[g];
       const area = +document.getElementById('area').value || 100;
       const waterM = document.getElementById('water').value;
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       const zn = loc.zone && window.TractformLocation ? window.TractformLocation.zoneNumber(loc.zone) : 7;
-
       document.querySelectorAll('.g-btn').forEach(b => {
         const on = b.dataset.g === g;
         b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
         b.classList.toggle('bg-white', !on); b.classList.toggle('text-stone-700', !on); b.classList.toggle('border-stone-300', !on);
       });
-
       document.getElementById('g-name').textContent = goal.name;
       document.getElementById('g-blurb').textContent = goal.blurb;
       document.getElementById('g-sum').textContent = area.toLocaleString() + ' sq ft · ' + waterM;
-
       const days = zn <= 4 ? '~100–140' : zn <= 6 ? '~140–180' : zn <= 8 ? '~180–230' : '~240–320';
       const laborHrs = goal.labor * area;
-      const laborLabel = laborHrs < 5 ? '~' + laborHrs.toFixed(1) + ' hr/wk' : '~' + Math.round(laborHrs) + ' hr/wk';
-      const waterLabel = waterM === 'drip' ? 'Drip (efficient)' : waterM === 'hand' ? 'Hand / hose' : 'Overhead (higher use)';
-
       document.getElementById('s-area').textContent = area.toLocaleString() + ' sq ft';
       document.getElementById('s-days').textContent = days;
-      document.getElementById('s-labor').textContent = laborLabel;
-      document.getElementById('s-h2o').textContent = waterLabel;
+      document.getElementById('s-labor').textContent = laborHrs < 5 ? '~' + laborHrs.toFixed(1) + ' hr/wk' : '~' + Math.round(laborHrs) + ' hr/wk';
+      document.getElementById('s-h2o').textContent = waterM === 'drip' ? 'Drip (efficient)' : waterM === 'hand' ? 'Hand / hose' : 'Overhead (higher use)';
       document.getElementById('s-soil').textContent = goal.soil;
       document.getElementById('s-start').textContent = goal.bar;
     }
-
     document.querySelectorAll('.g-btn').forEach(b => b.addEventListener('click', () => { g = b.dataset.g; refresh(); }));
     document.getElementById('area').addEventListener('input', refresh);
     document.getElementById('water').addEventListener('change', refresh);

@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>body{font-family:'Inter',system-ui,sans-serif}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}</style>
 </head>
-<body class="bg-stone-100 text-stone-900 antialiased">
+<body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
   <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
     <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div><span class="font-semibold tracking-tight">Tractform</span></a>
@@ -21,6 +21,7 @@
       </nav>
     </div>
   </header>
+  <main class="flex-1">
   <section class="max-w-6xl mx-auto px-6 pt-8 pb-3"><h1 class="text-2xl font-bold tracking-tight">Household</h1></section>
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
@@ -60,7 +61,17 @@
       </div>
     </div>
   </section>
-  <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
+  </main>
+  <footer class="mt-auto border-t border-stone-200 bg-white py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-stone-500">
+      <a href="/" class="font-medium text-emerald-900">Tractform</a>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a href="/disclaimer.html" class="hover:text-emerald-900">Disclaimer</a>
+        <a href="/privacy.html" class="hover:text-emerald-900">Privacy</a>
+        <span>&copy; 2026 Tractform</span>
+      </div>
+    </div>
+  </footer>
   <script src="/site.js"></script>
   <script>
     function refresh() {
@@ -70,7 +81,6 @@
       const c611 = +document.getElementById('c611').value || 0;
       const c1215 = +document.getElementById('c1215').value || 0;
       const help = document.getElementById('help').value;
-
       const kids = c05 + c611 + c1215;
       const people = adults + kids;
       let adultHrs = Math.max(2, adults * 25 - off * 0.35);
@@ -79,10 +89,7 @@
       if (help === 'high') kidHrs *= 1.3;
       const careDrain = c05 * 8 + c611 * 3;
       const netHrs = Math.max(1, adultHrs + kidHrs - careDrain * 0.3);
-
-      document.getElementById('h-sum').textContent =
-        adults + ' adult' + (adults === 1 ? '' : 's') + ' · ' + kids + ' child' + (kids === 1 ? '' : 'ren');
-
+      document.getElementById('h-sum').textContent = adults + ' adult' + (adults === 1 ? '' : 's') + ' · ' + kids + ' child' + (kids === 1 ? '' : 'ren');
       document.getElementById('s-people').textContent = people;
       document.getElementById('s-hours').textContent = '~' + Math.round(netHrs) + ' hr/wk';
       document.getElementById('s-food').textContent = people + ' person' + (people === 1 ? '' : 's');
@@ -90,7 +97,6 @@
       document.getElementById('s-gar').textContent = netHrs >= 15 ? 'Serious garden' : netHrs >= 8 ? 'Kitchen scale' : 'Beds only';
       document.getElementById('s-bld').textContent = (adultHrs - 10) > 15 ? 'Room for a build' : (adultHrs - 10) > 5 ? 'One small project' : 'Stabilize first';
     }
-
     ['adults','offfarm','c05','c611','c1215','help'].forEach(id => {
       document.getElementById(id).addEventListener('input', refresh);
       document.getElementById(id).addEventListener('change', refresh);

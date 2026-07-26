@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>body{font-family:'Inter',system-ui,sans-serif}.media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem;text-align:center}</style>
 </head>
-<body class="bg-stone-100 text-stone-900 antialiased">
+<body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
   <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
     <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-2 shrink-0"><div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div><span class="font-semibold tracking-tight">Tractform</span></a>
@@ -23,8 +23,8 @@
     </div>
   </header>
 
+  <main class="flex-1">
   <section class="max-w-6xl mx-auto px-6 pt-8 pb-3"><h1 class="text-2xl font-bold tracking-tight">Utilities</h1></section>
-
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
       <div class="lg:col-span-2 space-y-4">
@@ -42,7 +42,6 @@
           <div><label class="block text-sm font-semibold mb-2">Irrigation</label><select id="irrig" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"><option value="none">None</option><option value="garden" selected>Garden only</option><option value="field">Field / orchard</option></select></div>
         </div>
       </div>
-
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Utilities media</div>
@@ -63,23 +62,28 @@
       </div>
     </div>
   </section>
+  </main>
 
-  <footer class="border-t border-stone-200 bg-white py-8"><div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500"><a href="/" class="font-medium text-emerald-900">Tractform</a><p>&copy; 2026 Tractform</p></div></footer>
+  <footer class="mt-auto border-t border-stone-200 bg-white py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-stone-500">
+      <a href="/" class="font-medium text-emerald-900">Tractform</a>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a href="/disclaimer.html" class="hover:text-emerald-900">Disclaimer</a>
+        <a href="/privacy.html" class="hover:text-emerald-900">Privacy</a>
+        <span>&copy; 2026 Tractform</span>
+      </div>
+    </div>
+  </footer>
   <script src="/site.js"></script>
   <script>
     let focus = 'water';
-    const blurbs = {
-      water: 'Source, yield, storage, and distribution matched to peak demand.',
-      power: 'Grid, solar, and generator sized to pumps, tools, and cold-chain loads.',
-      septic: 'Soil and occupancy drive system type more than preference.'
-    };
+    const blurbs = { water: 'Source, yield, storage, and distribution matched to peak demand.', power: 'Grid, solar, and generator sized to pumps, tools, and cold-chain loads.', septic: 'Soil and occupancy drive system type more than preference.' };
     function refresh() {
       const people = +document.getElementById('people').value || 1;
       const live = document.getElementById('livestock').value;
       const irrig = document.getElementById('irrig').value;
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       const zn = loc.zone && window.TractformLocation ? window.TractformLocation.zoneNumber(loc.zone) : 7;
-
       document.querySelectorAll('.f-btn').forEach(b => {
         const on = b.dataset.focus === focus;
         b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
@@ -87,18 +91,15 @@
       });
       document.getElementById('focus-name').textContent = focus === 'water' ? 'Water / well' : focus === 'power' ? 'Power / solar' : 'Septic';
       document.getElementById('focus-blurb').textContent = blurbs[focus];
-
       let gal = people * 75;
       if (live === 'small') gal += 40;
       if (live === 'cattle') gal += 200;
       if (irrig === 'garden') gal += 50;
       if (irrig === 'field') gal += 300;
-
       const wellFt = zn <= 4 ? '80–200 ft' : zn <= 7 ? '100–300 ft' : zn <= 9 ? '150–400 ft' : '200–500+ ft';
       const solarKwh = zn <= 4 ? '~3.0–3.8 kWh/kW' : zn <= 6 ? '~3.8–4.6 kWh/kW' : zn <= 8 ? '~4.5–5.4 kWh/kW' : '~5.0–6.2 kWh/kW';
       const septic = people <= 3 ? 'Standard residential' : people <= 6 ? 'Standard / maybe larger tank' : 'Engineered / higher capacity';
       const stor = gal < 200 ? '1–2 day buffer' : gal < 400 ? '2–3 day buffer' : '3+ day or larger cistern';
-
       document.getElementById('s-water').textContent = '~' + Math.round(gal) + ' gal';
       document.getElementById('s-well').textContent = wellFt;
       document.getElementById('s-solar').textContent = solarKwh;
@@ -107,10 +108,7 @@
       document.getElementById('s-stor').textContent = stor;
     }
     document.querySelectorAll('.f-btn').forEach(b => b.addEventListener('click', () => { focus = b.dataset.focus; refresh(); }));
-    ['people','livestock','irrig'].forEach(id => {
-      document.getElementById(id).addEventListener('input', refresh);
-      document.getElementById(id).addEventListener('change', refresh);
-    });
+    ['people','livestock','irrig'].forEach(id => { document.getElementById(id).addEventListener('input', refresh); document.getElementById(id).addEventListener('change', refresh); });
     if (window.TractformLocation) window.TractformLocation.onChange(refresh);
     refresh();
   </script>
