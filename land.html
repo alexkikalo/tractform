@@ -11,7 +11,7 @@
     .media-ph{width:100%;aspect-ratio:16/10;border-radius:.75rem;background:#064e3b;border:1px dashed #065f46;display:flex;align-items:center;justify-content:center;color:#6ee7b7;font-size:.75rem}
   </style>
 </head>
-<body class="bg-stone-100 text-stone-900 antialiased">
+<body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
   <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
     <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-2 shrink-0">
@@ -29,22 +29,19 @@
     </div>
   </header>
 
+  <main class="flex-1">
   <section class="max-w-6xl mx-auto px-6 pt-8 pb-3">
     <h1 class="text-2xl font-bold tracking-tight">Land</h1>
     <p class="text-sm text-stone-500 mt-1">Pick activities and scale. See acreage, terrain, and cost in the plan summary.</p>
   </section>
-
   <section class="max-w-6xl mx-auto px-6 pb-16">
     <div class="grid lg:grid-cols-3 gap-6 items-start">
-      <!-- INPUTS ONLY -->
       <div class="lg:col-span-2 space-y-4">
         <div class="bg-white border border-stone-200 rounded-2xl p-5">
           <label class="block text-sm font-semibold mb-3">Activities <span class="font-normal text-stone-500">(select all that apply)</span></label>
           <div class="flex flex-wrap gap-2" id="activity-controls"></div>
         </div>
-
         <div id="scale-panel" class="bg-white border border-stone-200 rounded-2xl p-5 space-y-4"></div>
-
         <div class="bg-white border border-stone-200 rounded-2xl p-5 space-y-4">
           <div>
             <label class="block text-sm font-semibold mb-2">Land setting <span class="font-normal text-stone-500">(used if no local market match)</span></label>
@@ -58,8 +55,6 @@
           </div>
         </div>
       </div>
-
-      <!-- OUTPUTS ONLY -->
       <div class="lg:col-span-1">
         <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-4">
           <div class="media-ph">Parcel media</div>
@@ -67,7 +62,6 @@
             <h2 class="text-lg font-bold text-white">Your land plan</h2>
             <p id="plan-blurb" class="text-xs text-emerald-100/80 mt-1.5 leading-relaxed"></p>
           </div>
-
           <div class="border-t border-emerald-800 pt-3">
             <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-2">Land use</p>
             <div id="cart-lines" class="space-y-2.5 text-sm"></div>
@@ -80,13 +74,11 @@
               <span id="sum-acres" class="tabular-nums text-white">—</span>
             </div>
           </div>
-
           <div class="border-t border-emerald-800 pt-3 space-y-2.5 text-sm">
             <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">Context</p>
             <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Growing season</span><span id="sum-season" class="font-medium tabular-nums text-right">—</span></div>
             <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Market data</span><span id="sum-market-src" class="font-medium text-right text-xs">—</span></div>
           </div>
-
           <div class="border-t border-emerald-800 pt-3 space-y-2 text-sm">
             <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold mb-1">Land cost</p>
             <p id="sum-cost-main" class="text-sm text-emerald-50 font-medium leading-snug">—</p>
@@ -98,11 +90,16 @@
       </div>
     </div>
   </section>
+  </main>
 
-  <footer class="border-t border-stone-200 bg-white py-8">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between text-sm text-stone-500">
+  <footer class="mt-auto border-t border-stone-200 bg-white py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-stone-500">
       <a href="/" class="font-medium text-emerald-900">Tractform</a>
-      <p>&copy; 2026 Tractform</p>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a href="/disclaimer.html" class="hover:text-emerald-900">Disclaimer</a>
+        <a href="/privacy.html" class="hover:text-emerald-900">Privacy</a>
+        <span>&copy; 2026 Tractform</span>
+      </div>
     </div>
   </footer>
 
@@ -112,208 +109,117 @@
     const selected = new Map([['homesite', 'medium'], ['garden', 'medium']]);
     let setting = 'mixed';
     let market = 'homestead';
-
     function money(n) {
       if (n == null) return '—';
       if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
       return '$' + Math.round(n).toLocaleString();
     }
-
     function buildActivityControls() {
       const wrap = document.getElementById('activity-controls');
       const acts = window.TractformLand.ACTIVITIES;
       wrap.innerHTML = Object.values(acts).map(a => {
         const on = selected.has(a.id);
-        return `<button type="button" data-id="${a.id}"
-          class="act-btn px-3 py-2 rounded-lg border text-sm font-medium transition
-          ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
-          ${a.short}
-        </button>`;
+        return `<button type="button" data-id="${a.id}" class="act-btn px-3 py-2 rounded-lg border text-sm font-medium transition ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">${a.short}</button>`;
       }).join('');
       wrap.querySelectorAll('.act-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.id;
           if (selected.has(id)) { if (selected.size > 1) selected.delete(id); }
           else selected.set(id, 'medium');
-          buildActivityControls();
-          buildScalePanel();
-          refresh();
+          buildActivityControls(); buildScalePanel(); refresh();
         });
       });
     }
-
     function buildScalePanel() {
       const panel = document.getElementById('scale-panel');
       const acts = window.TractformLand.ACTIVITIES;
-      if (selected.size === 0) {
-        panel.innerHTML = '<p class="text-sm text-stone-500">Select at least one activity.</p>';
-        return;
-      }
+      if (selected.size === 0) { panel.innerHTML = '<p class="text-sm text-stone-500">Select at least one activity.</p>'; return; }
       panel.innerHTML = '<p class="text-sm font-semibold mb-1">Scale for each activity</p>' +
         Array.from(selected.entries()).map(([id, scaleKey]) => {
-          const a = acts[id];
-          if (!a) return '';
+          const a = acts[id]; if (!a) return '';
           const buttons = Object.entries(a.scales).map(([k, sc]) => {
             const on = k === scaleKey;
-            return `<button type="button" data-id="${id}" data-scale="${k}"
-              class="scale-btn px-2.5 py-1.5 rounded-md border text-xs font-medium
-              ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
-              ${sc.label}
-            </button>`;
+            return `<button type="button" data-id="${id}" data-scale="${k}" class="scale-btn px-2.5 py-1.5 rounded-md border text-xs font-medium ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">${sc.label}</button>`;
           }).join('');
           const current = a.scales[scaleKey];
-          return `<div class="border border-stone-100 rounded-xl p-3">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <span class="text-sm font-medium">${a.name}</span>
-              <div class="flex gap-1.5">${buttons}</div>
-            </div>
-            <p class="text-xs text-stone-500">${current.desc}</p>
-          </div>`;
+          return `<div class="border border-stone-100 rounded-xl p-3"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><span class="text-sm font-medium">${a.name}</span><div class="flex gap-1.5">${buttons}</div></div><p class="text-xs text-stone-500">${current.desc}</p></div>`;
         }).join('');
       panel.querySelectorAll('.scale-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          selected.set(btn.dataset.id, btn.dataset.scale);
-          buildScalePanel();
-          refresh();
-        });
+        btn.addEventListener('click', () => { selected.set(btn.dataset.id, btn.dataset.scale); buildScalePanel(); refresh(); });
       });
     }
-
     function buildSettingControls() {
       const wrap = document.getElementById('setting-controls');
       const settings = window.TractformLand.SETTINGS;
       wrap.innerHTML = Object.values(settings).map(s => {
         const on = s.id === setting;
-        return `<button type="button" data-id="${s.id}"
-          class="set-btn px-3 py-2 rounded-lg border text-sm font-medium transition
-          ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
-          ${s.label}
-        </button>`;
+        return `<button type="button" data-id="${s.id}" class="set-btn px-3 py-2 rounded-lg border text-sm font-medium transition ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">${s.label}</button>`;
       }).join('');
       wrap.querySelectorAll('.set-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          setting = btn.dataset.id;
-          buildSettingControls();
-          document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint;
-          refresh();
+          setting = btn.dataset.id; buildSettingControls();
+          document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint; refresh();
         });
       });
       document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint;
     }
-
     function buildMarketControls() {
       const wrap = document.getElementById('market-controls');
       const markets = window.TractformLand.MARKETS;
       wrap.innerHTML = Object.values(markets).map(m => {
         const on = m.id === market;
-        return `<button type="button" data-id="${m.id}"
-          class="mkt-btn px-3 py-2 rounded-lg border text-sm font-medium transition
-          ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">
-          ${m.label}
-        </button>`;
+        return `<button type="button" data-id="${m.id}" class="mkt-btn px-3 py-2 rounded-lg border text-sm font-medium transition ${on ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-stone-300 bg-white text-stone-700'}">${m.label}</button>`;
       }).join('');
       wrap.querySelectorAll('.mkt-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          market = btn.dataset.id;
-          buildMarketControls();
-          document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint;
-          refresh();
+          market = btn.dataset.id; buildMarketControls();
+          document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint; refresh();
         });
       });
       document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint;
     }
-
     function render(r) {
       const cart = document.getElementById('cart-lines');
-      if (!r.rows.length) {
-        cart.innerHTML = '<p class="text-emerald-300/70 text-xs">No activities selected</p>';
-      } else {
-        cart.innerHTML = r.rows.map(row => `
-          <div class="flex justify-between gap-3 items-start">
-            <div class="min-w-0">
-              <div class="text-emerald-50 font-medium truncate">${row.short}</div>
-              <div class="text-[11px] text-emerald-300/60">${row.scaleLabel} · ${row.terrainLabel}</div>
-            </div>
-            <span class="tabular-nums text-emerald-100 shrink-0">${row.acres} ac</span>
-          </div>
-        `).join('');
-      }
-
+      if (!r.rows.length) cart.innerHTML = '<p class="text-emerald-300/70 text-xs">No activities selected</p>';
+      else cart.innerHTML = r.rows.map(row => `<div class="flex justify-between gap-3 items-start"><div class="min-w-0"><div class="text-emerald-50 font-medium truncate">${row.short}</div><div class="text-[11px] text-emerald-300/60">${row.scaleLabel} · ${row.terrainLabel}</div></div><span class="tabular-nums text-emerald-100 shrink-0">${row.acres} ac</span></div>`).join('');
       const bufEl = document.getElementById('cart-buffer');
-      if (!r.hasBuffer && r.buffer > 0) {
-        bufEl.classList.remove('hidden');
-        bufEl.classList.add('flex');
-        document.getElementById('cart-buffer-acres').textContent = r.buffer + ' ac';
-      } else {
-        bufEl.classList.add('hidden');
-        bufEl.classList.remove('flex');
-      }
-
+      if (!r.hasBuffer && r.buffer > 0) { bufEl.classList.remove('hidden'); bufEl.classList.add('flex'); document.getElementById('cart-buffer-acres').textContent = r.buffer + ' ac'; }
+      else { bufEl.classList.add('hidden'); bufEl.classList.remove('flex'); }
       document.getElementById('sum-acres').textContent = r.totalAcres + ' ac';
-      document.getElementById('plan-blurb').textContent =
-        r.rows.length
-          ? r.rows.length + ' activit' + (r.rows.length === 1 ? 'y' : 'ies') + ' selected'
-          : 'Pick activities on the left.';
-
+      document.getElementById('plan-blurb').textContent = r.rows.length ? r.rows.length + ' activit' + (r.rows.length === 1 ? 'y' : 'ies') + ' selected' : 'Pick activities on the left.';
       document.getElementById('sum-season').textContent = r.season;
-      document.getElementById('sum-market-src').textContent =
-        r.cost.sourceType === 'local' ? 'Local band' :
-        r.cost.sourceType === 'state' ? 'State fallback' : '—';
-
+      document.getElementById('sum-market-src').textContent = r.cost.sourceType === 'local' ? 'Local band' : r.cost.sourceType === 'state' ? 'State fallback' : '—';
       const costMain = document.getElementById('sum-cost-main');
       const costNote = document.getElementById('sum-cost-note');
       const listingLinks = document.getElementById('listing-links');
-
       if (!r.cost.hasLocation) {
         costMain.textContent = 'Select a state in Location';
         costNote.textContent = r.cost.message || '';
         listingLinks.className = 'hidden';
       } else {
         const where = r.cost.localName || r.cost.stateName;
-        costMain.textContent =
-          money(r.cost.perAcreLow) + '–' + money(r.cost.perAcreHigh) + '/acre · ' + where +
-          '\nlot ~' + money(r.cost.totalLow) + '–' + money(r.cost.totalHigh);
-        costMain.innerHTML =
-          money(r.cost.perAcreLow) + '–' + money(r.cost.perAcreHigh) + '/acre<br>' +
-          '<span class="text-emerald-200/80 font-normal text-xs">' + where + '</span><br>' +
-          'lot ~' + money(r.cost.totalLow) + '–' + money(r.cost.totalHigh);
+        costMain.innerHTML = money(r.cost.perAcreLow) + '–' + money(r.cost.perAcreHigh) + '/acre<br><span class="text-emerald-200/80 font-normal text-xs">' + where + '</span><br>lot ~' + money(r.cost.totalLow) + '–' + money(r.cost.totalHigh);
         costNote.textContent = r.cost.note || 'Verify with current local listings.';
-
         if (r.cost.listings) {
           listingLinks.className = 'flex flex-wrap gap-2 pt-1';
-          listingLinks.innerHTML =
-            `<a class="text-[11px] font-medium px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/15" target="_blank" rel="noopener" href="${r.cost.listings.landwatch}">LandWatch</a>` +
-            `<a class="text-[11px] font-medium px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/15" target="_blank" rel="noopener" href="${r.cost.listings.zillow}">Zillow Land</a>`;
-        } else {
-          listingLinks.className = 'hidden';
-        }
+          listingLinks.innerHTML = `<a class="text-[11px] font-medium px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/15" target="_blank" rel="noopener" href="${r.cost.listings.landwatch}">LandWatch</a><a class="text-[11px] font-medium px-2 py-1 rounded-md bg-white/10 border border-white/20 hover:bg-white/15" target="_blank" rel="noopener" href="${r.cost.listings.zillow}">Zillow Land</a>`;
+        } else listingLinks.className = 'hidden';
       }
     }
-
     function refresh() {
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       const activityList = Array.from(selected.entries()).map(([id, scale]) => ({ id, scale }));
       const r = window.TractformLand.calculate({
-        activities: activityList,
-        setting,
-        market,
-        city: loc.city || '',
-        stateCode: loc.state || null,
-        zip: loc.zip || '',
+        activities: activityList, setting, market,
+        city: loc.city || '', stateCode: loc.state || null, zip: loc.zip || '',
         place: loc.place || (window.TractformLocation && window.TractformLocation.displayPlace(loc)) || '',
         zone: loc.zone || null
       });
       render(r);
     }
-
     if (window.TractformLocation) window.TractformLocation.onChange(() => refresh());
     window.addEventListener('focus', () => refresh());
-
-    buildActivityControls();
-    buildScalePanel();
-    buildSettingControls();
-    buildMarketControls();
-    refresh();
+    buildActivityControls(); buildScalePanel(); buildSettingControls(); buildMarketControls(); refresh();
   </script>
 </body>
 </html>
