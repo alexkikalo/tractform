@@ -15,8 +15,6 @@
       border-radius:.75rem;
       background:#ffffff;
       display:block;
-      aspect-ratio:16/10;
-      object-fit:cover;
     }
   </style>
 </head>
@@ -161,6 +159,7 @@
       const b = results.bars || {};
       document.getElementById('s-shelter').textContent = (b.shelter && b.shelter.label) || '—';
       document.getElementById('s-feed').textContent = (b.feed && b.feed.label) || '—';
+
       document.getElementById('s-life').textContent = (b.life && b.life.label) || '—';
 
       const st = document.getElementById('zone-status');
