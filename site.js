@@ -12,7 +12,8 @@
     { href: '/buildings.html', label: 'Buildings' },
     { href: '/production.html', label: 'Livestock' },
     { href: '/gardens.html', label: 'Gardens' },
-    { href: '/family.html', label: 'Household' }
+    { href: '/family.html', label: 'Household' },
+    { href: '/plan.html', label: 'Plan' }
   ];
 
   const ZONES = [
@@ -151,7 +152,6 @@
     const loc = getLocation();
     const label = document.getElementById('tf-tab-label');
     if (!label) return;
-    // Compact on narrow screens: prefer short zone/state labels
     if (loc.mode === 'zone' && loc.zone) label.textContent = 'Z ' + loc.zone;
     else if (loc.zone && loc.state) label.textContent = loc.state + ' · ' + loc.zone;
     else if (loc.state) label.textContent = loc.state;
@@ -171,7 +171,6 @@
     return path === href || path.endsWith(href);
   }
 
-  /* ---- Mobile hamburger (sits left of location chip) ---- */
   function mountMobileNav() {
     const header = document.querySelector('header');
     const headerInner = document.querySelector('header > div');
@@ -193,7 +192,6 @@
         '<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />' +
       '</svg>';
 
-    // Keep menu + location as a tight right cluster
     if (locWrap) {
       locWrap.classList.remove('ml-auto');
       const cluster = document.createElement('div');
@@ -248,7 +246,6 @@
     });
   }
 
-  /* ---- Location control ---- */
   function mountLocation() {
     const headerInner = document.querySelector('header > div');
     if (!headerInner || document.getElementById('tf-loc-wrap')) return;
@@ -470,10 +467,36 @@
     }
   }
 
+  function loadPlanScript() {
+    if (window.TractformPlan) {
+      window.TractformPlan.mount();
+      return;
+    }
+    if (document.querySelector('script[data-tf-plan], script[src="/data/plan.js"], script[src$="data/plan.js"]')) return;
+    const s = document.createElement('script');
+    s.src = '/data/plan.js';
+    s.dataset.tfPlan = '1';
+    s.onload = function () {
+      if (window.TractformPlan) window.TractformPlan.mount();
+    };
+    document.head.appendChild(s);
+  }
+
+  function ensurePlanNav() {
+    const nav = document.querySelector('header nav');
+    if (!nav || nav.querySelector('a[href="/plan.html"]')) return;
+    const a = document.createElement('a');
+    a.href = '/plan.html';
+    a.textContent = 'Plan';
+    a.className = isActiveHref('/plan.html') ? 'text-white font-semibold' : 'hover:text-white';
+    nav.appendChild(a);
+  }
+
   function mountAll() {
-    // Location first so menu can cluster left of it
     mountLocation();
     mountMobileNav();
+    ensurePlanNav();
+    loadPlanScript();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountAll);
