@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your plan — Tractform</title>
+  <meta name="description" content="Combined homestead plan: land mix, livestock, buildings, gardens, and utility demand in one summary." />
+  <meta property="og:title" content="Your plan — Tractform" />
+  <meta property="og:description" content="Combined homestead plan across land, livestock, buildings, gardens, and utilities." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://tractform.com/plan.html" />
+  <meta name="twitter:card" content="summary" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>body{font-family:'Inter',system-ui,sans-serif}@media print{.no-print{display:none!important}header,footer{display:none!important}}</style>
+</head>
+<body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
+  <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md no-print">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0">
+        <div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div>
+        <span class="font-semibold tracking-tight">Tractform</span>
+      </a>
+      <nav class="hidden sm:flex gap-5 text-sm font-medium text-emerald-100/90">
+        <a href="/land.html" class="hover:text-white">Land</a>
+        <a href="/utilities.html" class="hover:text-white">Utilities</a>
+        <a href="/buildings.html" class="hover:text-white">Buildings</a>
+        <a href="/production.html" class="hover:text-white">Livestock</a>
+        <a href="/gardens.html" class="hover:text-white">Gardens</a>
+        <a href="/family.html" class="hover:text-white">Household</a>
+        <a href="/plan.html" class="text-white font-semibold">Plan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <section class="max-w-6xl mx-auto px-6 pt-8 pb-3 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Your plan</h1>
+        <p class="text-sm text-stone-500 mt-1">One homestead snapshot from every topic you’ve added.</p>
+      </div>
+      <div class="flex gap-2 no-print">
+        <button type="button" id="print-plan" class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-medium hover:border-emerald-600">Print</button>
+        <button type="button" id="clear-plan" class="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-medium text-stone-600 hover:border-red-400 hover:text-red-700">Clear plan</button>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-16 grid lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-2 space-y-4" id="plan-sections"></div>
+      <div class="lg:col-span-1">
+        <div class="lg:sticky lg:top-20 rounded-2xl bg-emerald-950 text-emerald-50 p-5 shadow-lg space-y-3">
+          <h2 class="text-lg font-bold text-white">Rollup</h2>
+          <p id="sum-place" class="text-xs text-emerald-200/80"></p>
+          <div class="border-t border-emerald-800 pt-3 space-y-2.5 text-sm">
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">People</span><span id="sum-people" class="font-medium">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Acres on hand</span><span id="sum-have" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Recommended lot</span><span id="sum-need" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Livestock land</span><span id="sum-live-land" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between gap-2 pt-2 border-t border-emerald-800/60"><span class="text-emerald-300/80">Peak water</span><span id="sum-water" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Chore time</span><span id="sum-labor" class="font-medium tabular-nums">—</span></div>
+            <div class="flex justify-between gap-2"><span class="text-emerald-300/80">Shelter</span><span id="sum-shelter" class="font-medium tabular-nums">—</span></div>
+          </div>
+          <p id="sum-fit" class="text-xs text-emerald-200/80 leading-relaxed pt-1"></p>
+          <p class="text-[11px] text-emerald-500/70 leading-relaxed">Planning estimates only. Verify water, code, and stocking with local sources.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-auto border-t border-stone-200 bg-white py-8 no-print">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-stone-500">
+      <a href="/" class="font-medium text-emerald-900">Tractform</a>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a href="/disclaimer.html" class="hover:text-emerald-900">Disclaimer</a>
+        <a href="/privacy.html" class="hover:text-emerald-900">Privacy</a>
+        <span>&copy; 2026 Tractform</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/site.js"></script>
+  <script src="/data/plan.js"></script>
+  <script src="/data/land.js"></script>
+  <script src="/data/livestock.js"></script>
+  <script>
+    function card(title, href, inner) {
+      return '<div class="bg-white border border-stone-200 rounded-2xl p-5">' +
+        '<div class="flex items-center justify-between gap-3 mb-3">' +
+          '<h2 class="font-semibold text-emerald-950">' + title + '</h2>' +
+          '<a class="text-xs font-medium text-emerald-800 hover:underline no-print" href="' + href + '">Edit</a>' +
+        '</div>' + inner + '</div>';
+    }
+    function emptyHint(href, label) {
+      return '<p class="text-sm text-stone-500">Nothing saved yet. <a class="text-emerald-800 font-medium hover:underline" href="' + href + '">' + label + '</a></p>';
+    }
+    function render() {
+      const plan = window.TractformPlan.get();
+      const sum = window.TractformPlan.summarize(plan);
+      const loc = window.TractformLocation ? window.TractformLocation.get() : {};
+      const place = window.TractformLocation ? window.TractformLocation.displayPlace(loc) : '';
+      document.getElementById('sum-place').textContent = place
+        ? place + (loc.zone ? ' \u00b7 Zone ' + loc.zone : '')
+        : (loc.zone ? 'Zone ' + loc.zone : 'Set a place in the header for climate and cost.');
+      document.getElementById('sum-people').textContent = String(sum.people || '\u2014');
+      document.getElementById('sum-have').textContent = sum.acresOnHand != null ? sum.acresOnHand + ' ac' : 'Not set';
+      document.getElementById('sum-need').textContent = sum.landAcres ? sum.landAcres + ' ac' : '\u2014';
+      document.getElementById('sum-live-land').textContent = sum.livestockLand ? sum.livestockLand + ' ac' : '\u2014';
+      document.getElementById('sum-water').textContent = sum.waterGal ? '~' + sum.waterGal + ' gal/day' : '\u2014';
+      document.getElementById('sum-labor').textContent = sum.laborMin
+        ? (sum.laborMin < 60 ? '~' + sum.laborMin + ' min/day' : '~' + (sum.laborMin / 60).toFixed(1) + ' hr/day')
+        : '\u2014';
+      document.getElementById('sum-shelter').textContent = sum.shelterSqFt ? Math.round(sum.shelterSqFt).toLocaleString() + ' sq ft' : '\u2014';
+      const fit = document.getElementById('sum-fit');
+      if (sum.acresOnHand != null && sum.landAcres) {
+        const d = +(sum.acresOnHand - sum.landAcres).toFixed(2);
+        fit.textContent = d >= 0
+          ? 'On-hand acreage covers the land mix with ' + d + ' ac spare.'
+          : 'Short ' + Math.abs(d) + ' ac versus the saved land mix.';
+      } else {
+        fit.textContent = 'Set acres on hand in the plan cart to check fit.';
+      }
+
+      const shorts = window.TractformPlan.LAND_SHORT;
+      let html = '';
+      if (plan.land && plan.land.activities && plan.land.activities.length) {
+        const rows = plan.land.activities.map(function (a) {
+          return '<li class="flex justify-between text-sm py-1"><span>' + (shorts[a.id] || a.id) + '</span><span class="text-stone-500">' + (a.scale || 'medium') + '</span></li>';
+        }).join('');
+        html += card('Land', '/land.html', '<ul>' + rows + '</ul><p class="text-xs text-stone-500 mt-2">Recommended lot ' + (sum.landAcres || '\u2014') + ' ac</p>');
+      } else {
+        html += card('Land', '/land.html', emptyHint('/land.html', 'Build a land mix'));
+      }
+
+      if (plan.livestock.length) {
+        const rows = plan.livestock.map(function (r) {
+          return '<li class="flex justify-between text-sm py-1"><span>' + r.quantity + ' \u00d7 ' + (r.breedName || r.breed) + '</span><span class="text-stone-500">' + (r.landLabel || '') + '</span></li>';
+        }).join('');
+        html += card('Livestock', '/production.html', '<ul>' + rows + '</ul>');
+      } else {
+        html += card('Livestock', '/production.html', emptyHint('/production.html', 'Add animals'));
+      }
+
+      if (plan.buildings.length) {
+        const rows = plan.buildings.map(function (r) {
+          return '<li class="flex justify-between text-sm py-1"><span>' + (r.typeName || r.type) + '</span><span class="text-stone-500">' + Number(r.sqft).toLocaleString() + ' sq ft</span></li>';
+        }).join('');
+        html += card('Buildings', '/buildings.html', '<ul>' + rows + '</ul>');
+      } else {
+        html += card('Buildings', '/buildings.html', emptyHint('/buildings.html', 'Add a structure'));
+      }
+
+      if (plan.gardens.length) {
+        const rows = plan.gardens.map(function (r) {
+          return '<li class="flex justify-between text-sm py-1"><span>' + (r.name || r.focus) + '</span><span class="text-stone-500">' + Number(r.area).toLocaleString() + ' sq ft</span></li>';
+        }).join('');
+        html += card('Gardens', '/gardens.html', '<ul>' + rows + '</ul>');
+      } else {
+        html += card('Gardens', '/gardens.html', emptyHint('/gardens.html', 'Add a garden'));
+      }
+
+      const u = plan.utilities || {};
+      html += card('Household / utilities', '/utilities.html',
+        '<ul class="text-sm space-y-1">' +
+          '<li class="flex justify-between"><span>People</span><span>' + (plan.people || 4) + '</span></li>' +
+          '<li class="flex justify-between"><span>Livestock water</span><span>' + (u.livestockWater || '\u2014') + '</span></li>' +
+          '<li class="flex justify-between"><span>Irrigation</span><span>' + (u.irrigation || '\u2014') + '</span></li>' +
+        '</ul>');
+
+      document.getElementById('plan-sections').innerHTML = html;
+    }
+
+    document.getElementById('print-plan').addEventListener('click', function () { window.print(); });
+    document.getElementById('clear-plan').addEventListener('click', function () {
+      if (confirm('Clear the whole plan?')) {
+        window.TractformPlan.clear();
+        render();
+      }
+    });
+    window.addEventListener('tractform:plan', render);
+    if (window.TractformLocation) window.TractformLocation.onChange(render);
+    render();
+  </script>
+</body>
+</html>
