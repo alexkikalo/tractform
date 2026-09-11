@@ -45,6 +45,9 @@
         <div class="bg-white border border-stone-200 rounded-2xl p-5 grid sm:grid-cols-2 gap-4">
           <div><label class="block text-sm font-semibold mb-2">Area (sq ft)</label><input id="area" type="number" min="50" max="200000" value="800" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" /></div>
           <div><label class="block text-sm font-semibold mb-2">Water method</label><select id="water" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"><option value="hand">Hand / hose</option><option value="drip" selected>Drip</option><option value="overhead">Overhead</option></select></div>
+          <div class="sm:col-span-2">
+            <button type="button" id="add-plan" class="inline-flex items-center justify-center rounded-lg bg-emerald-800 text-white text-sm font-medium px-4 py-2.5 hover:bg-emerald-900 transition">Add to plan</button>
+          </div>
         </div>
       </div>
       <div class="lg:col-span-1">
@@ -80,6 +83,7 @@
     </div>
   </footer>
   <script src="/site.js"></script>
+  <script src="/data/plan.js"></script>
   <script>
     const goals = {
       kitchen: { name: 'Kitchen garden', blurb: 'High-value vegetables near the house.', labor: 0.02, soil: 'Moderate beds', bar: 'Low–moderate' },
@@ -112,6 +116,12 @@
       document.getElementById('s-start').textContent = goal.bar;
     }
     document.querySelectorAll('.g-btn').forEach(b => b.addEventListener('click', () => { g = b.dataset.g; refresh(); }));
+    document.getElementById('add-plan').addEventListener('click', () => {
+      if (!window.TractformPlan) return;
+      window.TractformPlan.addGarden({ focus: g, area: document.getElementById('area').value, water: document.getElementById('water').value });
+      window.TractformPlan.toast('Added to plan');
+      window.TractformPlan.open();
+    });
     document.getElementById('area').addEventListener('input', refresh);
     document.getElementById('water').addEventListener('change', refresh);
     if (window.TractformLocation) window.TractformLocation.onChange(refresh);

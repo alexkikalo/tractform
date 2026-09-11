@@ -81,9 +81,27 @@
     </div>
   </footer>
   <script src="/site.js"></script>
+  <script src="/data/plan.js"></script>
   <script>
     let focus = 'water';
     const blurbs = { water: 'Source, yield, storage, and distribution matched to peak demand.', power: 'Grid, solar, and generator sized to pumps, tools, and cold-chain loads.', septic: 'Soil and occupancy drive system type more than preference.' };
+    function persistUtils() {
+      if (!window.TractformPlan) return;
+      window.TractformPlan.patch({
+        people: +document.getElementById('people').value || 1,
+        utilities: {
+          livestockWater: document.getElementById('livestock').value,
+          irrigation: document.getElementById('irrig').value
+        }
+      });
+    }
+    function hydrateUtils() {
+      const plan = window.TractformPlan && window.TractformPlan.get();
+      if (!plan) return;
+      if (plan.people) document.getElementById('people').value = plan.people;
+      if (plan.utilities && plan.utilities.livestockWater) document.getElementById('livestock').value = plan.utilities.livestockWater;
+      if (plan.utilities && plan.utilities.irrigation) document.getElementById('irrig').value = plan.utilities.irrigation;
+    }
     function refresh() {
       const people = +document.getElementById('people').value || 1;
       const live = document.getElementById('livestock').value;
@@ -114,8 +132,12 @@
       document.getElementById('s-stor').textContent = stor;
     }
     document.querySelectorAll('.f-btn').forEach(b => b.addEventListener('click', () => { focus = b.dataset.focus; refresh(); }));
-    ['people','livestock','irrig'].forEach(id => { document.getElementById(id).addEventListener('input', refresh); document.getElementById(id).addEventListener('change', refresh); });
+    ['people','livestock','irrig'].forEach(id => {
+      document.getElementById(id).addEventListener('input', refresh);
+      document.getElementById(id).addEventListener('change', () => { refresh(); persistUtils(); });
+    });
     if (window.TractformLocation) window.TractformLocation.onChange(refresh);
+    hydrateUtils();
     refresh();
   </script>
 </body>

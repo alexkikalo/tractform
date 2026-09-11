@@ -45,6 +45,9 @@
         <div class="bg-white border border-stone-200 rounded-2xl p-5 grid sm:grid-cols-2 gap-4">
           <div><label class="block text-sm font-semibold mb-2">Style</label><select id="style" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm"></select><p id="style-note" class="text-xs text-stone-500 mt-2"></p></div>
           <div><label class="block text-sm font-semibold mb-2">Footprint (sq ft)</label><input id="sqft" type="number" min="40" max="10000" value="1200" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm" /></div>
+          <div class="sm:col-span-2">
+            <button type="button" id="add-plan" class="inline-flex items-center justify-center rounded-lg bg-emerald-800 text-white text-sm font-medium px-4 py-2.5 hover:bg-emerald-900 transition">Add to plan</button>
+          </div>
         </div>
       </div>
       <div class="lg:col-span-1">
@@ -80,6 +83,7 @@
     </div>
   </footer>
   <script src="/site.js"></script>
+  <script src="/data/plan.js"></script>
   <script>
     const types = {
       house: { name: 'House / cabin', blurb: 'Living space — foundation, envelope, and code path dominate.', styles: [
@@ -133,6 +137,12 @@
       document.getElementById('s-speed').textContent = st.s > 70 ? 'Days–weeks' : st.s > 45 ? 'Weeks–months' : 'Months+';
     }
     document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => { cur = b.dataset.type; fillStyles(); refresh(); }));
+    document.getElementById('add-plan').addEventListener('click', () => {
+      if (!window.TractformPlan) return;
+      window.TractformPlan.addBuilding({ type: cur, style: styleSel.value, sqft: sqft.value });
+      window.TractformPlan.toast('Added to plan');
+      window.TractformPlan.open();
+    });
     styleSel.addEventListener('change', refresh);
     sqft.addEventListener('input', refresh);
     if (window.TractformLocation) window.TractformLocation.onChange(refresh);
