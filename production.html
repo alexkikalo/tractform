@@ -32,6 +32,7 @@
         <a href="/production.html" class="text-white font-semibold">Livestock</a>
         <a href="/gardens.html" class="hover:text-white">Gardens</a>
         <a href="/family.html" class="hover:text-white">Household</a>
+        <a href="/plan.html" class="hover:text-white">Plan</a>
       </nav>
     </div>
   </header>
@@ -65,6 +66,9 @@
               <input id="qty" type="number" min="1" max="500" value="6" class="w-full rounded-lg border border-stone-300 px-3 py-2.5 text-sm tabular-nums" />
               <span id="qty-unit" class="text-sm text-stone-500">head</span>
             </div>
+          </div>
+          <div class="sm:col-span-2">
+            <button type="button" id="add-plan" class="inline-flex items-center justify-center rounded-lg bg-emerald-800 text-white text-sm font-medium px-4 py-2.5 hover:bg-emerald-900 transition">Add to plan</button>
           </div>
         </div>
       </div>
@@ -111,6 +115,7 @@
   </footer>
 
   <script src="/site.js"></script>
+  <script src="/data/plan.js"></script>
   <script src="/data/livestock.js"></script>
   <script>
     let current = 'sheep';
@@ -123,7 +128,7 @@
     }
     function refreshBreeds() {
       const breeds = window.TractformLivestock.listBreeds(current);
-      breedSel.innerHTML = breeds.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+      breedSel.innerHTML = breeds.map(b => '<option value="' + b.id + '">' + b.name + '</option>').join('');
       document.getElementById('qty-unit').textContent = window.TractformLivestock.ANIMALS[current].unit;
     }
     function render(results) {
@@ -133,9 +138,9 @@
         b.classList.toggle('bg-emerald-800', on); b.classList.toggle('text-white', on); b.classList.toggle('border-emerald-800', on);
         b.classList.toggle('bg-white', !on); b.classList.toggle('text-stone-700', !on); b.classList.toggle('border-stone-300', !on);
       });
-      if (videoEl.getAttribute('src') !== results.video) { videoEl.src = results.video; videoEl.play().catch(() => {}); }
+      if (videoEl.getAttribute('src') !== results.video) { videoEl.src = results.video; videoEl.play().catch(function () {}); }
       document.getElementById('animal-name').textContent = results.animalName;
-      document.getElementById('selection-summary').textContent = `${results.quantity} × ${results.breedName}`;
+      document.getElementById('selection-summary').textContent = results.quantity + ' \u00d7 ' + results.breedName;
       document.getElementById('animal-blurb').textContent = results.blurb;
       document.getElementById('breed-note').textContent = results.breedNote;
       document.getElementById('s-land').textContent = results.landLabel;
@@ -143,9 +148,9 @@
       document.getElementById('s-labor').textContent = results.laborLabel;
       document.getElementById('s-uses').textContent = results.uses;
       const b = results.bars || {};
-      document.getElementById('s-shelter').textContent = (b.shelter && b.shelter.label) || '—';
-      document.getElementById('s-feed').textContent = (b.feed && b.feed.label) || '—';
-      document.getElementById('s-life').textContent = (b.life && b.life.label) || '—';
+      document.getElementById('s-shelter').textContent = (b.shelter && b.shelter.label) || '\u2014';
+      document.getElementById('s-feed').textContent = (b.feed && b.feed.label) || '\u2014';
+      document.getElementById('s-life').textContent = (b.life && b.life.label) || '\u2014';
       const st = document.getElementById('zone-status');
       const det = document.getElementById('zone-detail');
       const zf = results.zoneFit;
@@ -155,12 +160,18 @@
       else st.className = 'text-sm font-medium text-emerald-100';
     }
     function refreshAll() { render(window.TractformLivestock.calculate(getState())); }
-    document.querySelectorAll('.animal-btn').forEach(btn => {
-      btn.addEventListener('click', () => { current = btn.dataset.animal; refreshBreeds(); refreshAll(); });
+    document.querySelectorAll('.animal-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { current = btn.dataset.animal; refreshBreeds(); refreshAll(); });
+    });
+    document.getElementById('add-plan').addEventListener('click', function () {
+      if (!window.TractformPlan) return;
+      window.TractformPlan.addLivestock({ animal: current, breed: breedSel.value, quantity: qtyInput.value });
+      window.TractformPlan.toast('Added to plan');
+      window.TractformPlan.open();
     });
     breedSel.addEventListener('change', refreshAll);
     qtyInput.addEventListener('input', refreshAll);
-    if (window.TractformLocation) window.TractformLocation.onChange(() => refreshAll());
+    if (window.TractformLocation) window.TractformLocation.onChange(function () { refreshAll(); });
     refreshBreeds(); refreshAll();
   </script>
 </body>
