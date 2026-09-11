@@ -424,12 +424,9 @@
     btn.id = 'tf-plan-btn';
     btn.setAttribute('aria-label', 'Open plan');
     btn.setAttribute('aria-expanded', 'false');
-    btn.className = 'relative inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 pl-2 pr-2.5 sm:px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition shrink-0';
+    btn.className = 'relative inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition shrink-0';
     btn.innerHTML =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-emerald-200 shrink-0" aria-hidden="true">' +
-        '<path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-3.12-3.122A1.5 1.5 0 0012.378 3H4.5zM6 8.75A.75.75 0 016.75 8h6.5a.75.75 0 010 1.5h-6.5A.75.75 0 016 8.75zm.75 2.75a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" clip-rule="evenodd" />' +
-      '</svg>' +
-      '<span class="hidden sm:inline">Plan</span>' +
+      '<span>Plan</span>' +
       '<span id="tf-plan-badge" class="hidden min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-amber-400 text-emerald-950 text-[10px] font-bold leading-[1.1rem] text-center">0</span>';
 
     const cluster = document.getElementById('tf-header-actions');
