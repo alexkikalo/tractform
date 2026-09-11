@@ -99,17 +99,17 @@
       const loc = window.TractformLocation ? window.TractformLocation.get() : {};
       const place = window.TractformLocation ? window.TractformLocation.displayPlace(loc) : '';
       document.getElementById('sum-place').textContent = place
-        ? place + (loc.zone ? ' \u00b7 Zone ' + loc.zone : '')
+        ? place + (loc.zone ? ' · Zone ' + loc.zone : '')
         : (loc.zone ? 'Zone ' + loc.zone : 'Set a place in the header for climate and cost.');
-      document.getElementById('sum-people').textContent = String(sum.people || '\u2014');
+      document.getElementById('sum-people').textContent = String(sum.people || '—');
       document.getElementById('sum-have').textContent = sum.acresOnHand != null ? sum.acresOnHand + ' ac' : 'Not set';
-      document.getElementById('sum-need').textContent = sum.landAcres ? sum.landAcres + ' ac' : '\u2014';
-      document.getElementById('sum-live-land').textContent = sum.livestockLand ? sum.livestockLand + ' ac' : '\u2014';
-      document.getElementById('sum-water').textContent = sum.waterGal ? '~' + sum.waterGal + ' gal/day' : '\u2014';
+      document.getElementById('sum-need').textContent = sum.landAcres ? sum.landAcres + ' ac' : '—';
+      document.getElementById('sum-live-land').textContent = sum.livestockLand ? sum.livestockLand + ' ac' : '—';
+      document.getElementById('sum-water').textContent = sum.waterGal ? '~' + sum.waterGal + ' gal/day' : '—';
       document.getElementById('sum-labor').textContent = sum.laborMin
         ? (sum.laborMin < 60 ? '~' + sum.laborMin + ' min/day' : '~' + (sum.laborMin / 60).toFixed(1) + ' hr/day')
-        : '\u2014';
-      document.getElementById('sum-shelter').textContent = sum.shelterSqFt ? Math.round(sum.shelterSqFt).toLocaleString() + ' sq ft' : '\u2014';
+        : '—';
+      document.getElementById('sum-shelter').textContent = sum.shelterSqFt ? Math.round(sum.shelterSqFt).toLocaleString() + ' sq ft' : '—';
       const fit = document.getElementById('sum-fit');
       if (sum.acresOnHand != null && sum.landAcres) {
         const d = +(sum.acresOnHand - sum.landAcres).toFixed(2);
@@ -117,7 +117,7 @@
           ? 'On-hand acreage covers the land mix with ' + d + ' ac spare.'
           : 'Short ' + Math.abs(d) + ' ac versus the saved land mix.';
       } else {
-        fit.textContent = 'Set acres on hand in the plan cart to check fit.';
+        fit.textContent = 'Set acres on hand in the plan drawer to check fit.';
       }
 
       const shorts = window.TractformPlan.LAND_SHORT;
@@ -126,14 +126,14 @@
         const rows = plan.land.activities.map(function (a) {
           return '<li class="flex justify-between text-sm py-1"><span>' + (shorts[a.id] || a.id) + '</span><span class="text-stone-500">' + (a.scale || 'medium') + '</span></li>';
         }).join('');
-        html += card('Land', '/land.html', '<ul>' + rows + '</ul><p class="text-xs text-stone-500 mt-2">Recommended lot ' + (sum.landAcres || '\u2014') + ' ac</p>');
+        html += card('Land', '/land.html', '<ul>' + rows + '</ul><p class="text-xs text-stone-500 mt-2">Recommended lot ' + (sum.landAcres || '—') + ' ac</p>');
       } else {
         html += card('Land', '/land.html', emptyHint('/land.html', 'Build a land mix'));
       }
 
       if (plan.livestock.length) {
         const rows = plan.livestock.map(function (r) {
-          return '<li class="flex justify-between text-sm py-1"><span>' + r.quantity + ' \u00d7 ' + (r.breedName || r.breed) + '</span><span class="text-stone-500">' + (r.landLabel || '') + '</span></li>';
+          return '<li class="flex justify-between text-sm py-1"><span>' + r.quantity + ' × ' + (r.breedName || r.breed) + '</span><span class="text-stone-500">' + (r.landLabel || '') + '</span></li>';
         }).join('');
         html += card('Livestock', '/production.html', '<ul>' + rows + '</ul>');
       } else {
@@ -162,8 +162,8 @@
       html += card('Household / utilities', '/utilities.html',
         '<ul class="text-sm space-y-1">' +
           '<li class="flex justify-between"><span>People</span><span>' + (plan.people || 4) + '</span></li>' +
-          '<li class="flex justify-between"><span>Livestock water</span><span>' + (u.livestockWater || '\u2014') + '</span></li>' +
-          '<li class="flex justify-between"><span>Irrigation</span><span>' + (u.irrigation || '\u2014') + '</span></li>' +
+          '<li class="flex justify-between"><span>Livestock water</span><span>' + (u.livestockWater || '—') + '</span></li>' +
+          '<li class="flex justify-between"><span>Irrigation</span><span>' + (u.irrigation || '—') + '</span></li>' +
         '</ul>');
 
       document.getElementById('plan-sections').innerHTML = html;
