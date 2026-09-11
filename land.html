@@ -59,6 +59,7 @@
             <div class="flex flex-wrap gap-2" id="market-controls"></div>
             <p id="market-hint" class="text-xs text-stone-500 mt-2"></p>
           </div>
+          <button type="button" id="save-land-plan" class="inline-flex items-center justify-center rounded-lg bg-emerald-800 text-white text-sm font-medium px-4 py-2.5 hover:bg-emerald-900 transition">Save land mix to plan</button>
         </div>
       </div>
       <div class="lg:col-span-1">
@@ -110,11 +111,30 @@
   </footer>
 
   <script src="/site.js"></script>
+  <script src="/data/plan.js"></script>
   <script src="/data/land.js"></script>
   <script>
     const selected = new Map([['homesite', 'medium'], ['garden', 'medium']]);
     let setting = 'mixed';
     let market = 'homestead';
+    let landTouched = false;
+    function persistLand() {
+      if (!window.TractformPlan) return;
+      window.TractformPlan.setLand({
+        activities: Array.from(selected.entries()).map(([id, scale]) => ({ id, scale })),
+        setting,
+        market
+      });
+    }
+    function hydrateLand() {
+      const plan = window.TractformPlan && window.TractformPlan.get();
+      if (!plan || !plan.land || !Array.isArray(plan.land.activities) || !plan.land.activities.length) return;
+      selected.clear();
+      plan.land.activities.forEach(a => selected.set(a.id, a.scale || 'medium'));
+      if (plan.land.setting) setting = plan.land.setting;
+      if (plan.land.market) market = plan.land.market;
+    }
+    hydrateLand();
     function money(n) {
       if (n == null) return '—';
       if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
@@ -132,7 +152,8 @@
           const id = btn.dataset.id;
           if (selected.has(id)) { if (selected.size > 1) selected.delete(id); }
           else selected.set(id, 'medium');
-          buildActivityControls(); buildScalePanel(); refresh();
+          landTouched = true;
+          buildActivityControls(); buildScalePanel(); refresh(); persistLand();
         });
       });
     }
@@ -151,7 +172,7 @@
           return `<div class="border border-stone-100 rounded-xl p-3"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><span class="text-sm font-medium">${a.name}</span><div class="flex gap-1.5">${buttons}</div></div><p class="text-xs text-stone-500">${current.desc}</p></div>`;
         }).join('');
       panel.querySelectorAll('.scale-btn').forEach(btn => {
-        btn.addEventListener('click', () => { selected.set(btn.dataset.id, btn.dataset.scale); buildScalePanel(); refresh(); });
+        btn.addEventListener('click', () => { selected.set(btn.dataset.id, btn.dataset.scale); landTouched = true; buildScalePanel(); refresh(); persistLand(); });
       });
     }
     function buildSettingControls() {
@@ -164,7 +185,8 @@
       wrap.querySelectorAll('.set-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           setting = btn.dataset.id; buildSettingControls();
-          document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint; refresh();
+          document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint;
+          landTouched = true; refresh(); persistLand();
         });
       });
       document.getElementById('setting-hint').textContent = window.TractformLand.SETTINGS[setting].hint;
@@ -179,7 +201,8 @@
       wrap.querySelectorAll('.mkt-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           market = btn.dataset.id; buildMarketControls();
-          document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint; refresh();
+          document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint;
+          landTouched = true; refresh(); persistLand();
         });
       });
       document.getElementById('market-hint').textContent = window.TractformLand.MARKETS[market].hint;
@@ -223,6 +246,10 @@
       });
       render(r);
     }
+    document.getElementById('save-land-plan').addEventListener('click', () => {
+      persistLand();
+      if (window.TractformPlan) { window.TractformPlan.toast('Land mix saved'); window.TractformPlan.open(); }
+    });
     if (window.TractformLocation) window.TractformLocation.onChange(() => refresh());
     window.addEventListener('focus', () => refresh());
     buildActivityControls(); buildScalePanel(); buildSettingControls(); buildMarketControls(); refresh();
