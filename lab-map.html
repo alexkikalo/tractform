@@ -39,7 +39,7 @@
       <p class="text-sm text-stone-500 mt-1 max-w-3xl">
         Click a white node to select it, then drag. Click a green mid-edge handle to add a node.
         Rename and delete uses from the inspector (the parcel outline cannot be deleted).
-        Drop trees, pond, or elevation patches the same way as a garden.
+        Trees and ponds are areas. Raise / Lower are contour lines: arm the tool, then drag a stroke like Zoo Tycoon terraforming.
       </p>
     </section>
     <section class="max-w-[90rem] mx-auto px-4 sm:px-6 pb-16 grid lg:grid-cols-[16rem_minmax(0,1fr)_20rem] gap-4 items-start">
@@ -75,8 +75,9 @@
         </div>
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
           <p class="text-sm font-semibold">Already on the land</p>
-          <p class="text-[11px] text-stone-500">Trees, water, high and low ground — Sims-style patches, not a survey.</p>
+          <p class="text-[11px] text-stone-500">Trees and pond drop as shapes. Raise / Lower are line tools — click one, then drag on the map.</p>
           <div id="feature-palette" class="space-y-1.5"></div>
+          <p id="tool-meta" class="text-[11px] text-emerald-800 hidden"></p>
         </div>
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
           <p class="text-sm font-semibold">View</p>
@@ -87,7 +88,7 @@
       </aside>
       <div class="bg-white border border-stone-200 rounded-2xl p-3 overflow-hidden">
         <svg id="stage" class="w-full h-[70vh] min-h-[28rem] rounded-xl" xmlns="http://www.w3.org/2000/svg"></svg>
-        <p class="text-[11px] text-stone-400 mt-2 px-1">Wheel zoom · drag empty space to pan · green dots add a node</p>
+        <p class="text-[11px] text-stone-400 mt-2 px-1">Wheel zoom · empty drag pans · green dots add a node · Raise/Lower draw a contour</p>
       </div>
       <aside class="space-y-4 lg:sticky lg:top-20">
         <div class="bg-emerald-950 text-emerald-50 rounded-2xl p-5 space-y-3">
