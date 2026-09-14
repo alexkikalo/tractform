@@ -13,7 +13,6 @@
     #stage{touch-action:none;cursor:grab;background:#f5f5f4}
     #stage.drag{cursor:grabbing}
     .chip{cursor:grab}
-    .chip.on{box-shadow:0 0 0 2px #065f46}
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
@@ -39,8 +38,8 @@
       <p class="text-[11px] uppercase tracking-wide font-semibold text-amber-800 mb-1">Hidden lab · not in the main nav</p>
       <h1 class="text-2xl font-bold tracking-tight">Parcel map</h1>
       <p class="text-sm text-stone-500 mt-1 max-w-3xl">
-        Drag the white nodes to reshape the tract. Double-click an edge to add a node, Alt-click a node to delete it.
-        Scroll to zoom — grid steps from 1/8 acre down to 1 yard. Drag uses onto the parcel.
+        Click a white node to select it, then drag. Click a green mid-edge handle to add a node.
+        Uses are the same: drop, then reshape their corners. Node count is the spin on the left.
       </p>
     </section>
 
@@ -51,7 +50,7 @@
           <label class="block text-xs text-stone-500">Target acres
             <input id="acres" type="number" min="0.25" max="640" step="0.125" value="5" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm tabular-nums" />
           </label>
-          <p class="text-xs text-stone-500">Reset shape</p>
+          <p class="text-xs text-stone-500">Reset outline</p>
           <div class="flex flex-wrap gap-1.5" id="shape-btns">
             <button type="button" data-shape="square" class="shape-btn px-2.5 py-1.5 rounded-md border text-xs font-medium border-emerald-800 bg-emerald-800 text-white">Square</button>
             <button type="button" data-shape="wide" class="shape-btn px-2.5 py-1.5 rounded-md border text-xs font-medium border-stone-300 bg-white">Wide 2:1</button>
@@ -59,9 +58,22 @@
           </div>
           <p id="area-meta" class="text-xs text-stone-500 leading-relaxed"></p>
         </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-3">
+          <p class="text-sm font-semibold">Nodes</p>
+          <p id="node-target" class="text-[11px] text-stone-500">Editing parcel outline</p>
+          <label class="block text-xs text-stone-500">Count
+            <input id="node-spin" type="number" min="3" max="48" step="1" value="4" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm tabular-nums" />
+          </label>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button type="button" id="add-node" class="rounded-lg border border-stone-300 px-2 py-2 text-xs font-medium hover:bg-stone-50">Add node</button>
+            <button type="button" id="del-node" class="rounded-lg border border-stone-300 px-2 py-2 text-xs font-medium hover:bg-stone-50">Delete node</button>
+          </div>
+        </div>
+
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
           <p class="text-sm font-semibold">Uses</p>
-          <p class="text-[11px] text-stone-500">Drag onto the map, then drag the stamp to move it.</p>
+          <p class="text-[11px] text-stone-500">Drop on the map, then drag a corner to reshape.</p>
           <div id="palette" class="space-y-1.5"></div>
         </div>
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
@@ -74,7 +86,7 @@
 
       <div class="bg-white border border-stone-200 rounded-2xl p-3 overflow-hidden">
         <svg id="stage" class="w-full h-[70vh] min-h-[28rem] rounded-xl" xmlns="http://www.w3.org/2000/svg"></svg>
-        <p class="text-[11px] text-stone-400 mt-2 px-1">Wheel zoom · drag empty space to pan · snap is visual only</p>
+        <p class="text-[11px] text-stone-400 mt-2 px-1">Wheel zoom · drag empty space to pan · green dots add a node</p>
       </div>
 
       <aside class="space-y-4 lg:sticky lg:top-20">
@@ -85,13 +97,16 @@
           <ul id="verdict-list" class="space-y-2 text-xs"></ul>
         </div>
         <div id="inspector" class="bg-white border border-stone-200 rounded-2xl p-5 space-y-3 hidden">
-          <p class="text-[10px] uppercase tracking-wide text-stone-400 font-semibold">Selected</p>
+          <p class="text-[10px] uppercase tracking-wide text-stone-400 font-semibold">Selected use</p>
           <h2 id="ins-name" class="text-lg font-bold"></h2>
           <p id="ins-acres" class="text-sm text-stone-600"></p>
+          <label class="block text-xs text-stone-500">Scale to acres
+            <input id="ins-scale" type="number" min="0.01" max="200" step="0.05" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm tabular-nums" />
+          </label>
           <div id="ins-flags" class="space-y-2"></div>
           <p id="ins-note" class="text-xs text-stone-500 leading-relaxed"></p>
           <a id="ins-link" href="#" class="inline-flex text-sm font-medium text-emerald-800 hover:underline">Open topic →</a>
-          <button type="button" id="ins-remove" class="block text-xs text-stone-500 hover:text-red-800">Remove</button>
+          <button type="button" id="ins-remove" class="block text-xs text-stone-500 hover:text-red-800">Remove use</button>
         </div>
       </aside>
     </section>
@@ -106,6 +121,5 @@
 
   <script src="/site.js"></script>
   <script src="/data/lab-map.js"></script>
-
 </body>
 </html>
