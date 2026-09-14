@@ -32,17 +32,16 @@
       </nav>
     </div>
   </header>
-
   <main class="flex-1">
     <section class="max-w-[90rem] mx-auto px-4 sm:px-6 pt-6 pb-3">
       <p class="text-[11px] uppercase tracking-wide font-semibold text-amber-800 mb-1">Hidden lab · not in the main nav</p>
       <h1 class="text-2xl font-bold tracking-tight">Parcel map</h1>
       <p class="text-sm text-stone-500 mt-1 max-w-3xl">
         Click a white node to select it, then drag. Click a green mid-edge handle to add a node.
-        Uses are the same: drop, then reshape their corners. Node count is the spin on the left.
+        Rename and delete uses from the inspector (the parcel outline cannot be deleted).
+        Drop trees, pond, or elevation patches the same way as a garden.
       </p>
     </section>
-
     <section class="max-w-[90rem] mx-auto px-4 sm:px-6 pb-16 grid lg:grid-cols-[16rem_minmax(0,1fr)_20rem] gap-4 items-start">
       <aside class="space-y-4">
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-3">
@@ -58,7 +57,6 @@
           </div>
           <p id="area-meta" class="text-xs text-stone-500 leading-relaxed"></p>
         </div>
-
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-3">
           <p class="text-sm font-semibold">Nodes</p>
           <p id="node-target" class="text-[11px] text-stone-500">Editing parcel outline</p>
@@ -70,11 +68,15 @@
             <button type="button" id="del-node" class="rounded-lg border border-stone-300 px-2 py-2 text-xs font-medium hover:bg-stone-50">Delete node</button>
           </div>
         </div>
-
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
           <p class="text-sm font-semibold">Uses</p>
           <p class="text-[11px] text-stone-500">Drop on the map, then drag a corner to reshape.</p>
           <div id="palette" class="space-y-1.5"></div>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
+          <p class="text-sm font-semibold">Already on the land</p>
+          <p class="text-[11px] text-stone-500">Trees, water, high and low ground — Sims-style patches, not a survey.</p>
+          <div id="feature-palette" class="space-y-1.5"></div>
         </div>
         <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
           <p class="text-sm font-semibold">View</p>
@@ -83,12 +85,10 @@
           <button type="button" id="clear-uses" class="w-full rounded-lg px-3 py-2 text-xs text-stone-500 hover:text-stone-800">Clear uses</button>
         </div>
       </aside>
-
       <div class="bg-white border border-stone-200 rounded-2xl p-3 overflow-hidden">
         <svg id="stage" class="w-full h-[70vh] min-h-[28rem] rounded-xl" xmlns="http://www.w3.org/2000/svg"></svg>
         <p class="text-[11px] text-stone-400 mt-2 px-1">Wheel zoom · drag empty space to pan · green dots add a node</p>
       </div>
-
       <aside class="space-y-4 lg:sticky lg:top-20">
         <div class="bg-emerald-950 text-emerald-50 rounded-2xl p-5 space-y-3">
           <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Verdict</p>
@@ -97,28 +97,29 @@
           <ul id="verdict-list" class="space-y-2 text-xs"></ul>
         </div>
         <div id="inspector" class="bg-white border border-stone-200 rounded-2xl p-5 space-y-3 hidden">
-          <p class="text-[10px] uppercase tracking-wide text-stone-400 font-semibold">Selected use</p>
-          <h2 id="ins-name" class="text-lg font-bold"></h2>
+          <p id="ins-kind" class="text-[10px] uppercase tracking-wide text-stone-400 font-semibold">Selected</p>
+          <label class="block text-xs text-stone-500">Name
+            <input id="ins-label" type="text" maxlength="48" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm" />
+          </label>
           <p id="ins-acres" class="text-sm text-stone-600"></p>
-          <label class="block text-xs text-stone-500">Scale to acres
+          <label id="ins-scale-wrap" class="block text-xs text-stone-500">Scale to acres
             <input id="ins-scale" type="number" min="0.01" max="200" step="0.05" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm tabular-nums" />
           </label>
           <div id="ins-flags" class="space-y-2"></div>
           <p id="ins-note" class="text-xs text-stone-500 leading-relaxed"></p>
           <a id="ins-link" href="#" class="inline-flex text-sm font-medium text-emerald-800 hover:underline">Open topic →</a>
-          <button type="button" id="ins-remove" class="block text-xs text-stone-500 hover:text-red-800">Remove use</button>
+          <button type="button" id="ins-remove" class="hidden w-full rounded-lg bg-red-800 text-white text-sm font-medium px-3 py-2.5 hover:bg-red-900">Delete this shape</button>
+          <p id="ins-locked" class="hidden text-xs text-stone-500">The parcel outline cannot be deleted. Reset shape instead.</p>
         </div>
       </aside>
     </section>
   </main>
-
   <footer class="mt-auto border-t border-stone-200 bg-white py-8">
     <div class="max-w-[90rem] mx-auto px-6 text-sm text-stone-500 flex justify-between gap-3">
       <a href="/" class="font-medium text-emerald-900">Tractform</a>
       <span>Lab prototype · <code class="text-xs">/lab-map.html</code></span>
     </div>
   </footer>
-
   <script src="/site.js"></script>
   <script src="/data/lab-map.js"></script>
 </body>
