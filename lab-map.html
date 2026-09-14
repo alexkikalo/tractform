@@ -1,1 +1,111 @@
-<placeholder>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab — Parcel map (prototype) — Tractform</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="description" content="Hidden prototype: node-edited parcel shape with zoomable grid." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Inter',system-ui,sans-serif}
+    #stage{touch-action:none;cursor:grab;background:#f5f5f4}
+    #stage.drag{cursor:grabbing}
+    .chip{cursor:grab}
+    .chip.on{box-shadow:0 0 0 2px #065f46}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-stone-100 text-stone-900 antialiased">
+  <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2 shrink-0">
+        <div class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center"><span class="font-bold text-sm">T</span></div>
+        <span class="font-semibold tracking-tight">Tractform</span>
+      </a>
+      <nav class="hidden sm:flex gap-5 text-sm font-medium text-emerald-100/90">
+        <a href="/land.html" class="hover:text-white">Land</a>
+        <a href="/utilities.html" class="hover:text-white">Utilities</a>
+        <a href="/buildings.html" class="hover:text-white">Buildings</a>
+        <a href="/production.html" class="hover:text-white">Livestock</a>
+        <a href="/gardens.html" class="hover:text-white">Gardens</a>
+        <a href="/family.html" class="hover:text-white">Household</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <section class="max-w-[90rem] mx-auto px-4 sm:px-6 pt-6 pb-3">
+      <p class="text-[11px] uppercase tracking-wide font-semibold text-amber-800 mb-1">Hidden lab · not in the main nav</p>
+      <h1 class="text-2xl font-bold tracking-tight">Parcel map</h1>
+      <p class="text-sm text-stone-500 mt-1 max-w-3xl">
+        Drag the white nodes to reshape the tract. Double-click an edge to add a node, Alt-click a node to delete it.
+        Scroll to zoom — grid steps from 1/8 acre down to 1 yard. Drag uses onto the parcel.
+      </p>
+    </section>
+
+    <section class="max-w-[90rem] mx-auto px-4 sm:px-6 pb-16 grid lg:grid-cols-[16rem_minmax(0,1fr)_20rem] gap-4 items-start">
+      <aside class="space-y-4">
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-3">
+          <p class="text-sm font-semibold">Parcel</p>
+          <label class="block text-xs text-stone-500">Target acres
+            <input id="acres" type="number" min="0.25" max="640" step="0.125" value="5" class="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm tabular-nums" />
+          </label>
+          <p class="text-xs text-stone-500">Reset shape</p>
+          <div class="flex flex-wrap gap-1.5" id="shape-btns">
+            <button type="button" data-shape="square" class="shape-btn px-2.5 py-1.5 rounded-md border text-xs font-medium border-emerald-800 bg-emerald-800 text-white">Square</button>
+            <button type="button" data-shape="wide" class="shape-btn px-2.5 py-1.5 rounded-md border text-xs font-medium border-stone-300 bg-white">Wide 2:1</button>
+            <button type="button" data-shape="deep" class="shape-btn px-2.5 py-1.5 rounded-md border text-xs font-medium border-stone-300 bg-white">Deep 1:2</button>
+          </div>
+          <p id="area-meta" class="text-xs text-stone-500 leading-relaxed"></p>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
+          <p class="text-sm font-semibold">Uses</p>
+          <p class="text-[11px] text-stone-500">Drag onto the map, then drag the stamp to move it.</p>
+          <div id="palette" class="space-y-1.5"></div>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 space-y-2">
+          <p class="text-sm font-semibold">View</p>
+          <p id="zoom-meta" class="text-xs text-stone-500"></p>
+          <button type="button" id="fit-btn" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-xs font-medium hover:bg-stone-50">Fit parcel</button>
+          <button type="button" id="clear-uses" class="w-full rounded-lg px-3 py-2 text-xs text-stone-500 hover:text-stone-800">Clear uses</button>
+        </div>
+      </aside>
+
+      <div class="bg-white border border-stone-200 rounded-2xl p-3 overflow-hidden">
+        <svg id="stage" class="w-full h-[70vh] min-h-[28rem] rounded-xl" xmlns="http://www.w3.org/2000/svg"></svg>
+        <p class="text-[11px] text-stone-400 mt-2 px-1">Wheel zoom · drag empty space to pan · snap is visual only</p>
+      </div>
+
+      <aside class="space-y-4 lg:sticky lg:top-20">
+        <div class="bg-emerald-950 text-emerald-50 rounded-2xl p-5 space-y-3">
+          <p class="text-[10px] uppercase tracking-wide text-emerald-400 font-semibold">Verdict</p>
+          <p id="verdict-head" class="text-sm font-semibold text-white">Empty parcel.</p>
+          <p id="verdict-detail" class="text-xs text-emerald-200/80 leading-relaxed">Reshape the tract, then drop uses.</p>
+          <ul id="verdict-list" class="space-y-2 text-xs"></ul>
+        </div>
+        <div id="inspector" class="bg-white border border-stone-200 rounded-2xl p-5 space-y-3 hidden">
+          <p class="text-[10px] uppercase tracking-wide text-stone-400 font-semibold">Selected</p>
+          <h2 id="ins-name" class="text-lg font-bold"></h2>
+          <p id="ins-acres" class="text-sm text-stone-600"></p>
+          <div id="ins-flags" class="space-y-2"></div>
+          <p id="ins-note" class="text-xs text-stone-500 leading-relaxed"></p>
+          <a id="ins-link" href="#" class="inline-flex text-sm font-medium text-emerald-800 hover:underline">Open topic →</a>
+          <button type="button" id="ins-remove" class="block text-xs text-stone-500 hover:text-red-800">Remove</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="mt-auto border-t border-stone-200 bg-white py-8">
+    <div class="max-w-[90rem] mx-auto px-6 text-sm text-stone-500 flex justify-between gap-3">
+      <a href="/" class="font-medium text-emerald-900">Tractform</a>
+      <span>Lab prototype · <code class="text-xs">/lab-map.html</code></span>
+    </div>
+  </footer>
+
+  <script src="/site.js"></script>
+  <script src="/data/lab-map.js"></script>
+
+</body>
+</html>
